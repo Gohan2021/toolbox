@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Servicios de reparación y proyectos de construccion" >
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="estilos.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Seleccionar usuario</title>
+    <link rel="icon" href="../imagenes/obrero.png">
+    <style>
+      html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          
+      }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <img src="/imagenes/fondo-1.jpg" alt=".." class="img-fluid opacity-50 fondo-img" width="100%">
+    <div class="container-fondo">
+      <nav class="navbar bg-body-transparent px-5 mx-4" style="width: 100%;">
+        <div class="container-fluid mt-3">
+          <a class="navbar-brand text-warning d-flex" style="margin-left:28rem;" href="#"><img src="../imagenes/Logo.svg" height="40" class="mx-2" alt="..."><h3 class="fw-bold">TOOLBOX</h3></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" style="border: none;">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title w-25 text-center" id="offcanvasNavbarLabel">Menú</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item dropdown px-2">
+                  <a class="nav-link dropdown-toggle btn btn-outline-warning text-start px-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Nuestros servicios
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">¿Qué ofrecemos?</a></li>
+                    <li><a class="dropdown-item" href="#">Misión</a></li>
+                    <li><a class="dropdown-item" href="#">Visión</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown px-2">
+                  <a class="nav-link dropdown-toggle btn btn-outline-warning text-start px-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Comunidad
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item px-2">
+                  <a class="nav-link btn btn-outline-warning text-start px-3" href="#footer">Contactanos</a>
+                </li>
+                <li class="nav-item dropdown px-2">
+                  <a class="nav-link dropdown-toggle btn btn-outline-warning text-start px-3" href="#" data-bs-toggle="dropdown" aria-expanded="false"><span>Mi cuenta</span><img src="/imagenes/login_1000997.png" class="px-1 mb-1" height="16" alt=".."></a>
+                    <div class="dropdown-menu">
+                        <form class="px-1 py-3">
+                          <div class="mb-3">
+                            <label for="exampleDropdownFormEmail1" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@ejemplo.com">
+                          </div>
+                          <div class="mb-3">
+                            <label for="exampleDropdownFormPassword1" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Contraseña">
+                          </div>
+                          <div class="mb-3">
+                            <div class="form-check">
+                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                              <label class="form-check-label" for="dropdownCheck">
+                                Recordarme
+                              </label>
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-outline-dark">ingresar</button>
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item btn btn-warning" href="form.html">Registrarme</a>
+                        <a class="dropdown-item btn btn-warning" href="#">olvidé mi contraseña</a>
+                    </div>
+                </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <div class="container-fluid" style="margin-top: 4.375rem; height: 23.75rem;">
+      <div class="row m-5">
+        <div class="col-md-6">
+          <div class="card text-bg-dark">
+            <img src="/imagenes/reparador.jpg" class="card-img opacity-25 object-fit-cover" height="300px" alt="...">
+            <div class="card-img-overlay text-center px-5 pt-5">
+              <h2 class="card-title">Ingresar como cliente</h2>
+              <h5 class="card-text text-white fw-semibold my-3">¿Requieres un servicio de reparación en tu casa o contratar un trabajador de confianza y calificado para tus proyectos de construcción?.</h5>
+              <button class="btn btn-warning mt-4 fw-bold w-50"><a class="text-decoration-none text-black" href="index.html">Más información aquí</a></button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card text-bg-dark">
+            <img src="/imagenes/worker.jpg" class="card-img opacity-25 object-fit-cover" height="300px" alt="...">
+            <div class="card-img-overlay text-center px-5 pt-5">
+              <h2 class="card-title">Ingresar como profesional</h2>
+              <h5 class="card-text text-white fw-semibold my-3">Descubre nuevos clientes y ofrece tus servicios como trabajador independiete</h5>
+              <button class="btn btn-warning mt-4 fw-bold w-50"><a class="text-decoration-none text-black" href="index.html">Más información aquí</a></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+   <!-- Footer -->
+  <footer id="footer" class="contact-container mt-5 text-white bg-black">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h4>CONTACTANOS</h4>
+                <p>Número Telefónico:</p>
+                <p>Correo:</p>
+                <p>Oficina:</p>
+                <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
+            </div>
+            <div class="col-md-4 text-center">
+                <h4>SIGUENOS EN</h4>
+                <div class="d-flex justify-content-center">
+                    <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
+                        <i class="fab fa-facebook fa-2x"></i>
+                    </a>
+                    <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
+                        <i class="fab fa-instagram fa-2x"></i>
+                    </a>
+                    <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
+                        <i class="fab fa-linkedin fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <h4>ACERCA DE NOSOTROS</h4>
+                <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a dar a conocer tus habilidades y servicios.</p>
+                <a class="text-white" href="#">Politicas de privacidad y uso</a>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
+            <div>Icons made by 
+                <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+            </div>
+        </div>
+    </div>
+  </footer>
+</body>
+</html>
