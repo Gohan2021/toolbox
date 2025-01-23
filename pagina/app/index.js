@@ -1,5 +1,6 @@
 import express from "express";
 import database from './database.js';
+import cors from "cors"; // Importing CORS
 
 //fix para el dirname
 import path from 'path';
@@ -9,7 +10,19 @@ import { methods as authentication } from "./controllers/authentication.controll
 
 //server
 const app = express();
+app.use(cors({
+    origin: ["http://127.0.0.1:5501","http://127.0.0.1:5500"]
+})); // CORS configuration
 app.set("port", 4000);
+
+// Attempt to connect to the database before starting the server
+try {
+    await database(); // Attempt to get a connection
+} catch (error) {
+    console.error('Failed to connect to the database:', error.message);
+    process.exit(1); // Exit the process if the connection fails
+}
+
 app.listen(app.get("port"), () => {
     console.log("Servidor corriendo en puerto", app.get("port"));
 });
@@ -21,17 +34,18 @@ app.use(express.json());
 //rutas
 app.get("/prueba", (req, res) => res.send("Mensaje"));
 
-
 app.get("/", (req, res) => res.sendFile(__dirname + "/pages/index.html"));
-app.get("/form", (req, res)=> res.sendFile(__dirname + "/pages/form.html"));
+app.get("/form", (req, res) => res.sendFile(__dirname + "/pages/form.html"));
+
 // Route for SELECT query
 app.get('/clientes', async (req, res) => {
     try {
-        const [rows] = await database.query('SELECT * FROM cliente'); // Usar la conexión
+        const connection = await database(); // Get the database connection
+        const [rows] = await connection.query('SELECT * FROM aliado'); // Use the connection to query
         res.json(rows);
     } catch (err) {
-        console.error('Error en la consulta:', err);
-        res.status(500).json({ error: 'Error al obtener los datos de la base de datos' });
+        console.error('Error en la consulta:', err.message); // Log the specific error message
+        res.status(500).json({ error: 'Error al obtener los datos de la base de datos', details: err.message });
     }
 });
 

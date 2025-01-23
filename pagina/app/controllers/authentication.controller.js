@@ -13,21 +13,22 @@ const clientes = [{
 async function login(req, res) {
     // Lógica de inicio de sesión
 }
+
 // REGISTRO ALIADO
 async function registerAliado(req, res) {
-    const { userNameAliado,surnameAliado,userIDAliado,emailAliado,passwordAliado } = req.body;
+    const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado } = req.body;
 
     if (!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
     }
 
-    const usuarioRevisar = usuarios.find(usuario => usuario.user === userNameAliado);
+    const usuarioRevisar = aliados.find(usuario => usuario.user === userNameAliado);
     if (usuarioRevisar) {
         return res.status(400).send({ status: "Error", message: "Este usuario ya existe" });
     }
 
     const salt = await bcryptjs.genSalt(5);
-    const hashPassword = await bcryptjs.hash(passwordAliado, salt); // Ensure this is passwordAliado, not password
+    const hashPassword = await bcryptjs.hash(passwordAliado, salt);
     const nuevoAliado = {
         user: userNameAliado,
         surnameAliado: surnameAliado,
@@ -40,28 +41,28 @@ async function registerAliado(req, res) {
     console.log(aliados);
     return res.status(201).send({ status: "Success", message: `Nuevo aliado ${nuevoAliado.user} registrado exitosamente`, redirect: "/form" });
 }
+
 // REGISTRO CLIENTE
 async function registerCliente(req, res) {
     const { userNameCliente, surnameCliente, emailCliente, passwordCliente, telCliente, serviciosCliente } = req.body;
 
-    if (!userNameCliente || !surnameCliente ||!emailCliente || !passwordCliente || !telCliente || !serviciosCliente) {
+    if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente || !serviciosCliente) {
         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
     }
     const usuarioRevisar = clientes.find(usuario => usuario.user === userNameCliente);
-    if(usuarioRevisar){
+    if (usuarioRevisar) {
         return res.status(400).send({ status: "Error", message: "Este usuario ya existe" });
     }
     const salt = await bcryptjs.genSalt(5);
-    const hashPassword = await bcryptjs.hash(passwordCliente, salt); // Ensure this is passwordCliente, not password
+    const hashPassword = await bcryptjs.hash(passwordCliente, salt);
     const nuevoCliente = {
         user: userNameCliente,
-        surnameCliente:surnameCliente,
+        surnameCliente: surnameCliente,
         emailCliente: emailCliente,
         passwordCliente: hashPassword,
-        telCliente:telCliente,
-        serviciosCliente:serviciosCliente
+        telCliente: telCliente,
+        serviciosCliente: serviciosCliente
     };
-    // Guardar el cliente en la base de datos o array
     clientes.push(nuevoCliente);
     console.log(clientes);
     return res.status(201).send({ status: "Success", message: `Nuevo cliente ${nuevoCliente.user} registrado exitosamente`, redirect: "/form" });
