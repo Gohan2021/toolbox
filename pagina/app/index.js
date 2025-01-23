@@ -41,11 +41,39 @@ app.get("/form", (req, res) => res.sendFile(__dirname + "/pages/form.html"));
 app.get('/clientes', async (req, res) => {
     try {
         const connection = await database(); // Get the database connection
-        const [rows] = await connection.query('SELECT * FROM aliado'); // Use the connection to query
+        const [rows] = await connection.query('SELECT * FROM cliente'); // Use the connection to query
         res.json(rows);
     } catch (err) {
         console.error('Error en la consulta:', err.message); // Log the specific error message
         res.status(500).json({ error: 'Error al obtener los datos de la base de datos', details: err.message });
+    }
+});
+
+// Endpoint for registering aliado
+app.post('/api/register/aliado', async (req, res) => {
+    const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado } = req.body;
+    try {
+        const connection = await database(); // Get the database connection
+        await connection.query('INSERT INTO aliados (userName, surname, userID, email, password) VALUES (?, ?, ?, ?, ?)', 
+            [userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado]);
+        res.status(201).json({ message: 'Aliado registered successfully' });
+    } catch (err) {
+        console.error('Error registering aliado:', err.message);
+        res.status(500).json({ error: 'Error registering aliado', details: err.message });
+    }
+});
+
+// Endpoint for registering cliente
+app.post('/api/register/cliente', async (req, res) => {
+    const { userNameCliente, surnameCliente, emailCliente, passwordCliente, telCliente, serviciosCliente } = req.body;
+    try {
+        const connection = await database(); // Get the database connection
+        await connection.query('INSERT INTO cliente (nombre, apellido, email, contraseña, telefono) VALUES (?, ?, ?, ?, ?)', 
+            [userNameCliente, surnameCliente, emailCliente, passwordCliente, telCliente, serviciosCliente]);
+        res.status(201).json({ message: 'Cliente registered successfully' });
+    } catch (err) {
+        console.error('Error registering cliente:', err.message);
+        res.status(500).json({ error: 'Error registering cliente', details: err.message });
     }
 });
 
