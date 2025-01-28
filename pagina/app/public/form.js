@@ -1,4 +1,4 @@
-const mensajeError = document.getElementsByClassName("error")[0];
+const mensajeError = document.getElementById('error');
 
 // Function to add another skill input
 function addSkill() {
@@ -48,10 +48,6 @@ async function registerAliado(e) {
     const dirAliado = e.target.elements.dirAliado.value;
     const independentSkills = e.target.elements.independentSkills.value;
     const expAliado = e.target.elements.expAliado.value;
-    // Collect all skills
-    // const skills = Array.from(document.querySelectorAll('#skillsContainer input[type="text"]')).map(input => input.value);
-    
-    console.log('Datos del aliado:', { userNameAliado, surnameAliado, userIDAliado, dobAliado ,emailAliado, passwordAliado, telAliado, dirAliado, expAliado ,independentSkills }); // Debugging
 
     const res = await fetch("http://localhost:4000/api/register/aliado", {
         method: "POST",
@@ -62,13 +58,13 @@ async function registerAliado(e) {
             userNameAliado: userNameAliado,
             surnameAliado: surnameAliado,
             userIDAliado: userIDAliado,
-            dobAliado : dobAliado,
+            dobAliado: dobAliado,
             emailAliado: emailAliado,
             passwordAliado: passwordAliado,
             telAliado: telAliado, 
             dirAliado: dirAliado,
-            independentSkills: independentSkills, // Include skills in the request
-            expAliado : expAliado
+            independentSkills: independentSkills,
+            expAliado: expAliado
         })
     });
     
@@ -78,10 +74,11 @@ async function registerAliado(e) {
     
     // Show or hide error message based on response
     if (!res.ok) {
-        mensajeError.classList.remove("d-none"); // Show error message
+        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
+        mensajeError.classList.remove("hidden"); // Show error message
         return;
     } else {
-        mensajeError.classList.add("d-none"); // Hide error message
+        mensajeError.classList.add("hidden"); // Hide error message
     }
     
     // Reload the page if the response is successful and there is a redirect
@@ -100,8 +97,6 @@ async function registerCliente(e) {
     const passwordCliente = e.target.elements.passwordCliente.value;
     const telCliente = e.target.elements.telCliente.value;
     const serviciosCliente = e.target.elements.serviciosCliente.value;
-    
-    console.log('Datos del cliente:', { userNameCliente, surnameCliente, emailCliente, passwordCliente, telCliente, serviciosCliente }); // Debugging
 
     const res = await fetch("http://localhost:4000/api/register/cliente", {
         method: "POST",
@@ -110,24 +105,25 @@ async function registerCliente(e) {
         },
         body: JSON.stringify({
             userNameCliente: userNameCliente,
-            surnameCliente:surnameCliente,
+            surnameCliente: surnameCliente,
             emailCliente: emailCliente,
             passwordCliente: passwordCliente,
-            telCliente:telCliente,
-            serviciosCliente:serviciosCliente
+            telCliente: telCliente,
+            serviciosCliente: serviciosCliente
         })
     });
     
     // Handle server response
     const data = await res.json();
     console.log('Respuesta del servidor:', data);
-
+    
     // Show or hide error message based on response
     if (!res.ok) {
-        mensajeError.classList.remove("d-none"); // Show error message
+        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
+        mensajeError.classList.remove("hidden"); // Show error message
         return;
     } else {
-        mensajeError.classList.add("d-none"); // Hide error message
+        mensajeError.classList.add("hidden"); // Hide error message
     }
     
     // Reload the page if the response is successful and there is a redirect

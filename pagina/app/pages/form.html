@@ -167,7 +167,7 @@
                         <label for="formFileMultiple" class="form-label">Subir imágenes de trabajos realizados</label>
                         <input class="form-control" type="file" id="formFileMultiple" multiple>
                     </div>
-                    <p class="error text-danger d-none">Error al realizar el registro, verifica que todos los campos estén completados</p>
+                    <p id="error" class="text-danger hidden">Error al realizar el registro, la cédula, el correo o el teléfono ya están registrados</p>
                     <button type="submit" class="btn btn-warning w-100">Crear Perfil</button>
                 </div>
             </form>
@@ -206,6 +206,7 @@
                         <label for="serviciosCliente" class="form-label">¿Que servicios buscas?</label>
                         <textarea class="form-control" name="serviciosCliente" id="serviciosCliente" rows="3" placeholder="Ingresa los servicios que requieres, como: plomeria, carpinteria, electricidad, etc." required></textarea>
                     </div>
+                    <p id="error" class="text-danger hidden">Error en el registro, el correo ya existe</p>
                     <button type="submit" class="btn btn-warning w-100">Crear Perfil</button>
                 </div>
             </form>
