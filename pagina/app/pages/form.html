@@ -127,6 +127,15 @@
                         <!-- Cedula -->
                         <label for="userIDAliado" class="form-label my-2">Número de identificación</label>
                         <input type="number" class="form-control" name="userIDAliado" id="userIDAliado" placeholder="Ingresa identificación" required>
+                        <!-- Date of Birth -->
+                        <label for="dobAliado" class="form-label my-2">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="dobAliado" name="dobAliado" required>
+                        <!-- telefono -->
+                        <label for="telAliado" class="form-label my-2">Teléfono</label>
+                        <input type="number" class="form-control" name="telAliado" id="telAliado" placeholder="Ingresa teléfono" required>
+                        <!-- direccion -->
+                         <label for="dirAliado" class="form-label my-2">Dirección</label>
+                         <input type="text" class="form-control" name="dirAliado" id="dirAliado" placeholder="ingresa la direccion de residencia">
                         <!-- Correo -->
                         <label for="emailUserAliado" class="form-label my-2">Correo</label>
                         <input type="email" class="form-control" name="emailUserAliado" id="emailUserAliado" placeholder="name@example.com">
@@ -142,10 +151,18 @@
                             </div>
                           </div>
                     </div>
+                    <!-- Servicios -->
                     <div class="mb-3">
-                        <label for="independentSkills" class="form-label">Servicios que ofreces</label>
-                        <textarea class="form-control" id="independentSkills" rows="3" placeholder="Ingresa tus habilidades separadas por comas" required></textarea>
+                        <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
+                        <label for="independentSkills" class="form-label">Servicio que ofreces</label>
+                        <input type="text" class="form-control mb-2" id="independentSkills" placeholder="Ingresa tu habilidad" required>
+                        <!-- experiencia en el servicio -->
+                        <label for="expAliado" class="form-label my-2">Experiencia</label>
+                        <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Ingresa la experiencia en meses o años" required>
                     </div>
+                    <div id="skillsContainer"></div>
+                    <button type="button" class="btn btn-warning mb-3" onclick="addSkill()">Agregar otra habilidad +</button>
+                    <!-- imágenes -->
                     <div class="mb-3">
                         <label for="formFileMultiple" class="form-label">Subir imágenes de trabajos realizados</label>
                         <input class="form-control" type="file" id="formFileMultiple" multiple>
