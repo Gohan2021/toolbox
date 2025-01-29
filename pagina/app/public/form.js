@@ -1,4 +1,6 @@
 const mensajeError = document.getElementById('error');
+const mensajeErrorLogin = document.getElementById('errorLogin');
+
 
 // Function to add another skill input
 function addSkill() {
@@ -131,10 +133,51 @@ async function registerCliente(e) {
         window.location.href = data.redirect;
     }
 }
+// Login ALiado
+async function loginAliado(e) {
+    e.preventDefault();
+    console.log('Iniciando sesión...'); // Debugging
+    const userEmailAliado = e.target.elements.userEmailAliado.value;
+    const userPasswordAliado = e.target.elements.userPasswordAliado.value;
+
+    const res = await fetch("http://localhost:4000/api/login/aliado", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: userEmailAliado, // Change to 'email'
+            password: userPasswordAliado // Change to 'password'
+        })
+    });
+    const data = await res.json(); // Retrieve the response data
+
+    // Show or hide error message based on response
+    if (!res.ok) {
+        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
+        mensajeErrorLogin.classList.remove("hidden"); // Show error message
+        return;
+    } else {
+        mensajeErrorLogin.classList.add("hidden"); // Hide error message
+    }
+    
+    // Reload the page if the response is successful and there is a redirect
+    if (data.redirect) {
+        window.location.href = data.redirect;
+    }    
+}
+
+
+// Login cliente
+async function loginCliente(e) {
+    
+}
 
 // Assign events to forms
 document.getElementById("register-form-aliado").addEventListener("submit", registerAliado);
 document.getElementById("register-form-cliente").addEventListener("submit", registerCliente);
+document.getElementById("login-form-aliado").addEventListener("submit", loginAliado);
+// document.getElementById("login-form-cliente").addEventListener("submit", loginCliente);
 
 // Function that shows the form depending on the user's choice
 function showFields() {

@@ -32,8 +32,6 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 
 //rutas
-app.get("/prueba", (req, res) => res.send("Mensaje"));
-
 app.get("/", (req, res) => res.sendFile(__dirname + "/pages/index.html"));
 app.get("/form", (req, res) => res.sendFile(__dirname + "/pages/form.html"));
 
@@ -54,6 +52,6 @@ app.get("/myv", (req, res) => res.sendFile(__dirname + "/pages/myv.html"));
 app.get("/politicas", (req, res) => res.sendFile(__dirname + "/pages/politicas.html"));
 app.get("/uso", (req, res) => res.sendFile(__dirname + "/pages/uso.html"));
 
-app.post("/api/login", authentication.login);
+app.post("/api/login/aliado", authentication.loginAliado);
 app.post("/api/register/aliado", authentication.registerAliado);
 app.post("/api/register/cliente", authentication.registerCliente);

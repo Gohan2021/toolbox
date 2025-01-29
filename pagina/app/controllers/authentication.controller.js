@@ -1,15 +1,37 @@
 import bcryptjs from "bcryptjs";
 import database from '../database.js'; // Import database connection
 
-async function login(req, res) {
+async function loginAliado(req, res) {
     // Lógica de inicio de sesión
+    const { email, password } = req.body; // Retrieve email and password from request body
+    console.log(email, password);
+    try {
+        if (!email || !password ) {
+            return res.status(400).send({ status: "Error", message: "Los campos están incompletos"});
+        }
+        const connection = await database(); // Get the database connection
+        const [user] = await connection.query('SELECT * FROM aliado WHERE email = ?', [email]); // Check if user exists
+
+        if (user.length === 0) {
+            return res.status(404).send({ status: "Error", message: "Usuario no encontrado" }); // User not found
+        }
+        const isMatch = await bcryptjs.compare(password, user[0].contraseña); // Compare passwords
+        if (!isMatch) {
+            return res.status(401).send({ status: "Error", message: "Credenciales incorrectas" }); // Incorrect password
+        }
+        // const token = jsonwebtoken.sign({userToken:user.email})
+        return res.status(200).send({ status: "Success", message: "Inicio de sesión exitoso" }); // Successful login
+        } catch (err) {
+            console.error('Error during login:', err.message);
+            res.status(500).json({ error: 'Error during login', details: err.message });
+        }
 }
 
 // REGISTRO ALIADO
 async function registerAliado(req, res) {
     const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado, dobAliado, telAliado, dirAliado, expAliado, independentSkills } = req.body;
     try{
-    if (!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
+    if(!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
     }
     const connection = await database(); // Get the database connection
@@ -103,7 +125,7 @@ async function registerCliente(req, res) {
 }
 
 export const methods = {
-    login,
+    loginAliado,
     registerAliado,
     registerCliente
 };

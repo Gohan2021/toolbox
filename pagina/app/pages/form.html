@@ -74,14 +74,14 @@
                     <div class="dropdown dropstart">
                         <button type="button" class="btn btn-warning px-3 py-1 rounded-4 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"><span class="mx-2 ">Mi cuenta</span><img src="/imagenes/login_1000997.png" class="mb-1" height="16" alt=".."></button>
                         <div class="dropdown-menu">
-                            <form class="px-4 py-3">
+                            <form id="login-form-aliado" class="px-4 py-3">
                               <div class="mb-3">
-                                <label for="exampleDropdownFormEmail1" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@ejemplo.com">
+                                <label for="userEmailAliado" class="form-label">Email</label>
+                                <input type="text" class="form-control" name="userEmailAliado" id="userEmailAliado" placeholder="email@ejemplo.com">
                               </div>
                               <div class="mb-3">
-                                <label for="exampleDropdownFormPassword1" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Contraseña">
+                                <label for="userPasswordAliado" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="userPasswordAliado" id="userPasswordAliado" placeholder="Contraseña">
                               </div>
                               <div class="mb-3">
                                 <div class="form-check">
@@ -91,6 +91,7 @@
                                   </label>
                                 </div>
                               </div>
+                              <p id="errorLogin" class="text-danger hidden">Error durante el login</p>
                               <button type="submit" class="btn btn-outline-dark">ingresar</button>
                             </form>
                             <div class="dropdown-divider"></div>
