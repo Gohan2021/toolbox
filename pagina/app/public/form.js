@@ -1,6 +1,5 @@
 const mensajeError = document.getElementById('error');
-const mensajeErrorLogin = document.getElementById('errorLogin');
-
+const mensajeErrorLogin = document.getElementById('mensajeErrorLogin');
 
 // Function to add another skill input
 function addSkill() {
@@ -39,7 +38,8 @@ function addSkill() {
 async function registerAliado(e) {
     e.preventDefault();
     console.log('Registrando aliado...'); // Debugging
-
+    const mensajeError = document.getElementById('error');
+    // Obtener los datos del formulario
     const userNameAliado = e.target.elements.userNameAliado.value;
     const surnameAliado = e.target.elements.surnameAliado.value;
     const userIDAliado = e.target.elements.userIDAliado.value;
@@ -51,41 +51,78 @@ async function registerAliado(e) {
     const independentSkills = e.target.elements.independentSkills.value;
     const expAliado = e.target.elements.expAliado.value;
 
-    const res = await fetch("http://localhost:4000/api/register/aliado", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            userNameAliado: userNameAliado,
-            surnameAliado: surnameAliado,
-            userIDAliado: userIDAliado,
-            dobAliado: dobAliado,
-            emailAliado: emailAliado,
-            passwordAliado: passwordAliado,
-            telAliado: telAliado, 
-            dirAliado: dirAliado,
-            independentSkills: independentSkills,
-            expAliado: expAliado
-        })
-    });
-    
-    // Handle server response
-    const data = await res.json();
-    console.log('Respuesta del servidor:', data);
-    
-    // Show or hide error message based on response
-    if (!res.ok) {
-        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
-        mensajeError.classList.remove("hidden"); // Show error message
-        return;
-    } else {
-        mensajeError.classList.add("hidden"); // Hide error message
+    // Obtener la imagen del input
+    const imageFile = document.getElementById("imageInput").files[0];
+
+    let imagePath = ""; // Para almacenar la ruta de la imagen
+
+    // Subir la imagen si hay un archivo seleccionado
+    if (imageFile) {
+        const formData = new FormData();
+        formData.append("idphotofront", imageFile);
+
+        try {
+            const imageResponse = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!imageResponse.ok) {
+                throw new Error(`Error al subir la imagen: ${imageResponse.statusText}`);
+            }
+
+            const imageData = await imageResponse.json();
+            console.log("Imagen subida con éxito:", imageData);
+            imagePath = imageData.imagePath; // Guardar la ruta de la imagen
+
+        } catch (error) {
+            console.error("Error al subir la imagen:", error);
+            mostrarError("Error al subir la imagen. Inténtalo de nuevo.");
+            return; // Detener el proceso si la imagen no se subió correctamente
+        }
     }
-    
-    // Reload the page if the response is successful and there is a redirect
-    if (data.redirect) {
-        window.location.href = data.redirect;
+
+    // Ahora registrar el aliado con la imagen subida
+    try {
+        const res = await fetch("http://localhost:4000/api/register/aliado", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userNameAliado: userNameAliado,
+                surnameAliado: surnameAliado,
+                userIDAliado: userIDAliado,
+                dobAliado: dobAliado,
+                emailAliado: emailAliado,
+                passwordAliado: passwordAliado,
+                telAliado: telAliado, 
+                dirAliado: dirAliado,
+                independentSkills: independentSkills,
+                expAliado: expAliado,
+                idPhotoFront: imagePath // Agregar la ruta de la imagen al registro del aliado
+            })
+        });
+        const data = await res.json();
+        console.log('Respuesta del servidor:', data);
+        
+        // Show or hide error message based on response
+        if (!res.ok) {
+            // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
+            mensajeError.classList.remove("hidden"); // Show error message
+            return;
+        } else {
+            mensajeError.classList.add("hidden"); // Hide error message
+        }
+        
+        // Reload the page if the response is successful and there is a redirect
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        }
+
+    } catch (error) {
+        console.error("Error al registrar el aliado:", error);
+        mostrarError("Error en la conexión con el servidor.");
     }
 }
 
@@ -154,7 +191,6 @@ async function loginAliado(e) {
 
     // Show or hide error message based on response
     if (!res.ok) {
-        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
         mensajeErrorLogin.classList.remove("hidden"); // Show error message
         return;
     } else {

@@ -1,8 +1,11 @@
 import bcryptjs from "bcryptjs";
 import database from '../database.js'; // Import database connection
+import jsonwebtoken from "jsonwebtoken";
+import dotenv from "dotenv";
 
+dotenv.config();
+// Inicio de sesión
 async function loginAliado(req, res) {
-    // Lógica de inicio de sesión
     const { email, password } = req.body; // Retrieve email and password from request body
     console.log(email, password);
     try {
@@ -19,7 +22,18 @@ async function loginAliado(req, res) {
         if (!isMatch) {
             return res.status(401).send({ status: "Error", message: "Credenciales incorrectas" }); // Incorrect password
         }
-        // const token = jsonwebtoken.sign({userToken:user.email})
+        // const token = jsonwebtoken.sign({userToken:user.email},
+        //     process.env.JWT_LOGIN,
+        //     {expiresIn:process.env.JWT_EXPIRATION})
+
+        // //COOKIE
+        // const cookieOption = {
+        //     expires: new Date (Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+        //     path: "/",
+        // }
+        // res.cookie("jwt",token,cookieOption);
+        // res.send({status:"ok",message:"Usuario loggead", redirect:"/"})
+
         return res.status(200).send({ status: "Success", message: "Inicio de sesión exitoso" }); // Successful login
         } catch (err) {
             console.error('Error during login:', err.message);
