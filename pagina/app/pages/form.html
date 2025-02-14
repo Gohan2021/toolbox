@@ -130,10 +130,10 @@
                         <input type="number" class="form-control" name="userIDAliado" id="userIDAliado" placeholder="Ingresa identificación" required>
                         <!-- Foto de cedula frontal-->
                         <label for="idphotofront" class="form-label my-2">Foto de la cédula lado frontal</label>
-                        <input class="form-control" type="file" name="idphotofront" id="imageInput" accept="image/*" required>
+                        <input class="form-control" type="file" name="idphotofront" id="imageInputFront" accept="image/*" required>
                         <!-- Foto de cedula trasera-->
-                        <label for="idPhotoback" class="form-label my-2">Foto de la cédula lado trasera</label>
-                        <input class="form-control" type="file" id="idPhotoback" accept="image/*" required>
+                        <label for="idphotoback" class="form-label my-2">Foto de la cédula lado trasera</label>
+                        <input class="form-control" type="file" name="idphotoback" id="imageInputBack" accept="image/*" required>
                         <!-- Date of Birth -->
                         <label for="dobAliado" class="form-label my-2">Fecha de Nacimiento</label>
                         <input type="date" class="form-control" id="dobAliado" name="dobAliado" required>
@@ -161,11 +161,12 @@
                     <!-- Servicios -->
                     <div class="mb-3">
                         <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
-                        <label for="independentSkills" class="form-label">Servicio que ofreces</label>
-                        <input type="text" class="form-control mb-2" id="independentSkills" placeholder="Ingresa tu habilidad" required>
-                        <!-- experiencia en el servicio -->
+                        <!-- Servicios que ofrece -->
+                        <label for="skillsAliado" class="form-label">Servicio que ofreces</label>
+                        <input type="text" class="form-control mb-2" id="skillsAliado" placeholder="Ingresar habilidad o servicio que ofreces" required>
+                        <!-- experiencia en meses del servicio -->
                         <label for="expAliado" class="form-label my-2">Experiencia</label>
-                        <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Ingresa la experiencia en meses o años" required>
+                        <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Experiencia en meses o años en el oficio" required>
                     </div>
                     <div id="skillsContainer"></div>
                     <button type="button" class="btn btn-warning mb-3" onclick="addSkill()">Agregar otra habilidad +</button>

@@ -55,20 +55,32 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ **Endpoint para subir imagen**
-app.post("/api/register/aliado/loadImages", upload.single("idphotofront"), (req, res) => {
+app.post("/api/register/aliado/loadImages", upload.fields([
+    { name: "idphotofront", maxCount: 1 },
+    { name: "idphotoback", maxCount: 1 }
+]), (req, res) => {
     console.log("Datos de la solicitud:", req.body);
-    console.log("Archivo recibido:", req.file);
+    console.log("Archivos recibidos:", req.files);
 
-    if (!req.file) {
-        return res.status(400).json({ error: "No se ha subido ningún archivo" });
+    // Verificar si se recibieron los archivos
+    if (!req.files || (!req.files.idphotofront && !req.files.idphotoback)) {
+        return res.status(400).json({ error: "No se han subido archivos" });
     }
 
-    // Ruta de la imagen guardada
-    const imagePath = `/uploads/${req.file.filename}`;
+    // Obtener las rutas de las imágenes (si existen)
+    const imagePathFront = req.files.idphotofront ? `/uploads/${req.files.idphotofront[0].filename}` : "";
+    const imagePathBack = req.files.idphotoback ? `/uploads/${req.files.idphotoback[0].filename}` : "";
 
-    console.log("Ruta de la imagen guardada:", imagePath);
-    return res.status(200).json({ message: "Imagen subida con éxito", imagePath });
+    console.log("Ruta de la imagen frontal:", imagePathFront);
+    console.log("Ruta de la imagen trasera:", imagePathBack);
+
+    return res.status(200).json({
+        message: "Imágenes subidas con éxito",
+        idPhotoFront: imagePathFront,
+        idPhotoBack: imagePathBack
+    });
 });
+
 
 // Servir archivos estáticos desde la carpeta 'uploads'
 app.use("/uploads", express.static(uploadFolder));

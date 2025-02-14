@@ -42,40 +42,106 @@ async function loginAliado(req, res) {
 }
 
 // REGISTRO ALIADO
+// async function registerAliado(req, res) {
+//     const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado, dobAliado, telAliado, dirAliado, expAliado, independentSkills } = req.body;
+//     try{
+//     if(!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
+//         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
+//     }
+//     const connection = await database(); // Get the database connection
+//     // Check for existing record
+//     const [existing] = await connection.query('SELECT * FROM aliado WHERE cedula = ? OR email = ? OR telefono = ?', [userIDAliado, emailAliado,telAliado]);
+//     if (existing.length > 0) {
+//         return res.status(400).send({ status: "Error", message: "Esta cédula, correo o teléfono ya están registrados" });
+//     }
+//     const salt = await bcryptjs.genSalt(5);
+//     const hashPassword = await bcryptjs.hash(passwordAliado, salt);
+//     const nuevoAliado = {
+//         user: userNameAliado,
+//         surnameAliado: surnameAliado,
+//         userIDAliado: userIDAliado,
+//         email: emailAliado, 
+//         password: hashPassword,
+//         dob: dobAliado,
+//         tel: telAliado,
+//         dir: dirAliado
+//     };
+
+//     // Insert into the database
+//     await connection.query('INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+//         [nuevoAliado.user, nuevoAliado.surnameAliado, nuevoAliado.email, nuevoAliado.password, nuevoAliado.userIDAliado, nuevoAliado.dob, nuevoAliado.tel, nuevoAliado.dir]);
+//     // insert experience    
+//     await connection.query('INSERT INTO experiencia_laboral (puesto, descripcion) VALUES (?, ?)', [expAliado, skillsAliado]);
+
+//     return res.status(201).send({ status: "Success", message: `Nuevo aliado ${nuevoAliado.user} registrado exitosamente`, redirect: "/form" });
+//     }
+//     catch (err) {
+//         console.error('Error registering aliado:', err.message);
+//         res.status(500).json({ error: 'Error registering aliado', details: err.message });
+//     }
+// }
 async function registerAliado(req, res) {
-    const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado, dobAliado, telAliado, dirAliado, expAliado, independentSkills } = req.body;
-    try{
-    if(!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
-        return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
-    }
-    const connection = await database(); // Get the database connection
-    // Check for existing record
-    const [existing] = await connection.query('SELECT * FROM aliado WHERE cedula = ? OR email = ? OR telefono = ?', [userIDAliado, emailAliado,telAliado]);
-    if (existing.length > 0) {
-        return res.status(400).send({ status: "Error", message: "Esta cédula, correo o teléfono ya están registrados" });
-    }
-    const salt = await bcryptjs.genSalt(5);
-    const hashPassword = await bcryptjs.hash(passwordAliado, salt);
-    const nuevoAliado = {
-        user: userNameAliado,
-        surnameAliado: surnameAliado,
-        userIDAliado: userIDAliado,
-        email: emailAliado, 
-        password: hashPassword,
-        dob: dobAliado,
-        tel: telAliado,
-        dir: dirAliado
-    };
+    const { 
+        userNameAliado, 
+        surnameAliado, 
+        userIDAliado, 
+        emailAliado, 
+        passwordAliado, 
+        dobAliado, 
+        telAliado, 
+        dirAliado, 
+        skills, // 🔹 Ahora se recibe como `skills`
 
-    // Insert into the database
-    await connection.query('INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-        [nuevoAliado.user, nuevoAliado.surnameAliado, nuevoAliado.email, nuevoAliado.password, nuevoAliado.userIDAliado, nuevoAliado.dob, nuevoAliado.tel, nuevoAliado.dir]);
-    // insert experience    
-    await connection.query('INSERT INTO experiencia_laboral (puesto, descripcion) VALUES (?, ?)', [expAliado, independentSkills]);
+    } = req.body;
 
-    return res.status(201).send({ status: "Success", message: `Nuevo aliado ${nuevoAliado.user} registrado exitosamente`, redirect: "/form" });
-    }
-    catch (err) {
+    try {
+        // Validación de campos obligatorios
+        if (!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
+            return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
+        }
+
+        const connection = await database(); // Obtener la conexión a la base de datos
+
+        // Verificar si el usuario ya existe en la base de datos
+        const [existing] = await connection.query(
+            'SELECT * FROM aliado WHERE cedula = ? OR email = ? OR telefono = ?', 
+            [userIDAliado, emailAliado, telAliado]
+        );
+
+        if (existing.length > 0) {
+            return res.status(400).send({ status: "Error", message: "Esta cédula, correo o teléfono ya están registrados" });
+        }
+
+        // Hashear la contraseña
+        const salt = await bcryptjs.genSalt(5);
+        const hashPassword = await bcryptjs.hash(passwordAliado, salt);
+
+        // Insertar el aliado en la base de datos
+        const [result] = await connection.query(
+            'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+            [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado]
+        );
+
+        const aliadoId = result.insertId; // Obtener el ID del aliado recién insertado
+        
+
+        // Insertar habilidades (skills debe ser un array)
+        if (Array.isArray(skills) && skills.length > 0) {
+            for (let skill of skills) {
+                await connection.query(
+                    'INSERT INTO experiencia_laboral (id_aliado, puesto, descripcion) VALUES (?, ?, ?)', 
+                    [aliadoId, skill.skill, skill.experience]
+                );
+            }
+        }
+
+        return res.status(201).send({ 
+            status: "Success", 
+            message: `Nuevo aliado ${userNameAliado} registrado exitosamente`, 
+            redirect: "/form" 
+        });
+
+    } catch (err) {
         console.error('Error registering aliado:', err.message);
         res.status(500).json({ error: 'Error registering aliado', details: err.message });
     }

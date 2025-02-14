@@ -3,42 +3,65 @@ const mensajeErrorLogin = document.getElementById('mensajeErrorLogin');
 
 // Function to add another skill input
 function addSkill() {
-    const skillsContainer = document.getElementById('skillsContainer');
-    
-    // Create a new div for skill and experience inputs
-    const newDiv = document.createElement('div');
-    newDiv.className = 'my-3';
-    // Create title
-    const newTitle = document.createElement('h5');
-    newTitle.textContent = 'Otra habilidad';
-    newDiv.appendChild(newTitle);
-    // Create skill input
-    const newSkillInput = document.createElement('input');
-    newSkillInput.type = 'text';
-    newSkillInput.className = 'form-control mb-2';
-    newSkillInput.placeholder = 'Ingresa tu otra habilidad';
-    newSkillInput.required = true; // Make it required if needed
+    const skillsContainer = document.getElementById("skillsContainer");
 
-    // Create experience input
-    const newExpInput = document.createElement('input');
-    newExpInput.type = 'text';
-    newExpInput.className = 'form-control mb-2';
-    newExpInput.placeholder = 'Ingresa la experiencia en meses o años';
-    newExpInput.required = true; // Make it required if needed
+    const skillDiv = document.createElement("div");
+    skillDiv.classList.add("mb-3", "skill-entry");
 
-    // Append inputs to the new div
-    newDiv.appendChild(newSkillInput);
-    newDiv.appendChild(newExpInput);
+    // Título
+    const skillTitle = document.createElement("h5");
+    skillTitle.textContent = "Otra habilidad";
+    skillTitle.classList.add("semi-bold", "mt-3");
 
-    // Append the new div to the skills container
-    skillsContainer.appendChild(newDiv);
+    // Input para habilidad
+    const skillLabel = document.createElement("label");
+    skillLabel.textContent = "Servicio que ofreces";
+    skillLabel.classList.add("form-label");
+
+    const skillInput = document.createElement("input");
+    skillInput.type = "text";
+    skillInput.classList.add("form-control", "mb-2", "skill-input");
+    skillInput.placeholder = "Ingresar habilidad o servicio que ofreces";
+    skillInput.required = true;
+
+    // Input para experiencia
+    const expLabel = document.createElement("label");
+    expLabel.textContent = "Experiencia";
+    expLabel.classList.add("form-label", "my-2");
+
+    const expInput = document.createElement("input");
+    expInput.type = "text";
+    expInput.classList.add("form-control", "exp-input");
+    expInput.placeholder = "Experiencia en meses o años en el oficio";
+    expInput.required = true;
+
+    // Botón para eliminar
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.classList.add("btn", "btn-danger", "mt-2");
+    removeButton.textContent = "Eliminar";
+    removeButton.onclick = function() {
+        skillDiv.remove();
+    };
+
+    // Agregar elementos
+    skillDiv.appendChild(skillTitle);
+    skillDiv.appendChild(skillLabel);
+    skillDiv.appendChild(skillInput);
+    skillDiv.appendChild(expLabel);
+    skillDiv.appendChild(expInput);
+    skillDiv.appendChild(removeButton);
+
+    skillsContainer.appendChild(skillDiv);
 }
 
 // Function for registering aliado
 async function registerAliado(e) {
     e.preventDefault();
-    console.log('Registrando aliado...'); // Debugging
+    console.log('Registrando aliado...');
+
     const mensajeError = document.getElementById('error');
+    
     // Obtener los datos del formulario
     const userNameAliado = e.target.elements.userNameAliado.value;
     const surnameAliado = e.target.elements.surnameAliado.value;
@@ -48,41 +71,76 @@ async function registerAliado(e) {
     const dobAliado = e.target.elements.dobAliado.value;
     const telAliado = e.target.elements.telAliado.value;
     const dirAliado = e.target.elements.dirAliado.value;
-    const independentSkills = e.target.elements.independentSkills.value;
-    const expAliado = e.target.elements.expAliado.value;
+    
+    // **Array para almacenar todas las habilidades**
+    let skills = [];
 
-    // Obtener la imagen del input
-    const imageFile = document.getElementById("imageInput").files[0];
+    // **1️⃣ Capturar la primera habilidad que ya está en el HTML**
+    const firstSkillInput = document.getElementById("skillsAliado");
+    const firstExpInput = document.getElementById("expAliado");
 
-    let imagePath = ""; // Para almacenar la ruta de la imagen
+    if (firstSkillInput && firstExpInput && firstSkillInput.value && firstExpInput.value) {
+        skills.push({
+            skill: firstSkillInput.value,
+            experience: firstExpInput.value
+        });
+    }
 
-    // Subir la imagen si hay un archivo seleccionado
-    if (imageFile) {
+    // **2️⃣ Capturar todas las habilidades dinámicas agregadas con la función `addSkill()`**
+    document.querySelectorAll(".skill-entry").forEach(entry => {
+        const skill = entry.querySelector(".skill-input").value;
+        const experience = entry.querySelector(".exp-input").value;
+        if (skill && experience) {
+            skills.push({ skill, experience });
+        }
+    });
+
+    // **3️⃣ Validar que haya al menos una habilidad ingresada**
+    if (skills.length === 0) {
+        mostrarError("Debe agregar al menos una habilidad.");
+        return;
+    }
+
+    // **Obtener las imágenes de los inputs**
+    const imageFileFront = document.getElementById("imageInputFront").files[0];
+    const imageFileBack = document.getElementById("imageInputBack").files[0];
+
+    let imagePathFront = "";
+    let imagePathBack = "";
+
+    // **Función para subir imágenes**
+    async function uploadImage(imageFile, fieldName) {
+        if (!imageFile) return "";
+
         const formData = new FormData();
-        formData.append("idphotofront", imageFile);
+        formData.append(fieldName, imageFile);
 
         try {
-            const imageResponse = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
+            const response = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
                 method: "POST",
                 body: formData,
             });
 
-            if (!imageResponse.ok) {
-                throw new Error(`Error al subir la imagen: ${imageResponse.statusText}`);
+            if (!response.ok) {
+                throw new Error(`Error al subir la imagen: ${response.statusText}`);
             }
 
-            const imageData = await imageResponse.json();
-            console.log("Imagen subida con éxito:", imageData);
-            imagePath = imageData.imagePath; // Guardar la ruta de la imagen
+            const imageData = await response.json();
+            console.log(`Imagen ${fieldName} subida con éxito:`, imageData);
+            return imageData.imagePath;
 
         } catch (error) {
-            console.error("Error al subir la imagen:", error);
-            mostrarError("Error al subir la imagen. Inténtalo de nuevo.");
-            return; // Detener el proceso si la imagen no se subió correctamente
+            console.error(`Error al subir la imagen ${fieldName}:`, error);
+            mostrarError(`Error al subir la imagen ${fieldName}. Inténtalo de nuevo.`);
+            return "";
         }
     }
 
-    // Ahora registrar el aliado con la imagen subida
+    // **Subir imágenes si están disponibles**
+    imagePathFront = await uploadImage(imageFileFront, "idphotofront");
+    imagePathBack = await uploadImage(imageFileBack, "idphotoback");
+
+    // **4️⃣ Enviar los datos al backend**
     try {
         const res = await fetch("http://localhost:4000/api/register/aliado", {
             method: "POST",
@@ -90,32 +148,33 @@ async function registerAliado(e) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                userNameAliado: userNameAliado,
-                surnameAliado: surnameAliado,
-                userIDAliado: userIDAliado,
-                dobAliado: dobAliado,
-                emailAliado: emailAliado,
-                passwordAliado: passwordAliado,
-                telAliado: telAliado, 
-                dirAliado: dirAliado,
-                independentSkills: independentSkills,
-                expAliado: expAliado,
-                idPhotoFront: imagePath // Agregar la ruta de la imagen al registro del aliado
+                userNameAliado,
+                surnameAliado,
+                userIDAliado,
+                dobAliado,
+                emailAliado,
+                passwordAliado,
+                telAliado, 
+                dirAliado,
+                skills,  // 🔹 Se envía el array con TODAS las habilidades
+                idPhotoFront: imagePathFront,
+                idPhotoBack: imagePathBack
             })
         });
+
         const data = await res.json();
         console.log('Respuesta del servidor:', data);
         
-        // Show or hide error message based on response
+        // **Mostrar error si la respuesta del servidor no es exitosa**
         if (!res.ok) {
-            // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
-            mensajeError.classList.remove("hidden"); // Show error message
+            mensajeError.textContent = data.message || 'Error al realizar el registro';
+            mensajeError.classList.remove("hidden");
             return;
         } else {
-            mensajeError.classList.add("hidden"); // Hide error message
+            mensajeError.classList.add("hidden");
         }
-        
-        // Reload the page if the response is successful and there is a redirect
+
+        // **Redirigir si la respuesta contiene una URL de redirección**
         if (data.redirect) {
             window.location.href = data.redirect;
         }
@@ -125,6 +184,8 @@ async function registerAliado(e) {
         mostrarError("Error en la conexión con el servidor.");
     }
 }
+
+
 
 // Function for registering cliente
 async function registerCliente(e) {
@@ -203,7 +264,6 @@ async function loginAliado(e) {
     }    
 }
 
-
 // Login cliente
 async function loginCliente(e) {
     
@@ -224,10 +284,10 @@ function showFields() {
     if (userType === 'independent') {
         independentFields.classList.remove('hidden');
         clientFields.classList.add('hidden');
-        document.getElementById('independentSkills').setAttribute('required', true);
+        // document.getElementById('independentSkills').setAttribute('required', true);
     } else if (userType === 'client') {
         clientFields.classList.remove('hidden');
         independentFields.classList.add('hidden');
-        document.getElementById('independentSkills').removeAttribute('required');
+        // document.getElementById('independentSkills').removeAttribute('required');
     }
 }
