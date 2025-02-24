@@ -20,8 +20,8 @@ app.use(cors({
 }));
 
 // Middleware para manejar datos JSON y formularios
-app.use(express.urlencoded({ extended: true })); // Formularios
-app.use(express.json()); // JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Intentar conectar a la base de datos antes de iniciar el servidor
 (async () => {
@@ -40,30 +40,30 @@ if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
 }
 
-// Configurar Multer para el almacenamiento de imágenes
+// Configuración de Multer para múltiples archivos
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadFolder); // Guardar en 'uploads/'
+        cb(null, uploadFolder); // Almacenar en la carpeta 'uploads'
     },
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1E9) + ext;
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
         cb(null, uniqueName);
     }
 });
 
 const upload = multer({ storage });
 
-// ✅ **Endpoint para subir imagen**
+// ✅ **Endpoint para subir imágenes**
 app.post("/api/register/aliado/loadImages", upload.fields([
     { name: "idphotofront", maxCount: 1 },
-    { name: "idphotoback", maxCount: 1 }
+    { name: "idphotoback", maxCount: 1 },
+    { name: "imageFilecertName", maxCount: 10 } // Permitir hasta 10 certificados
 ]), (req, res) => {
     console.log("Datos de la solicitud:", req.body);
     console.log("Archivos recibidos:", req.files);
 
     // Verificar si se recibieron los archivos
-    if (!req.files || (!req.files.idphotofront && !req.files.idphotoback)) {
+    if (!req.files) {
         return res.status(400).json({ error: "No se han subido archivos" });
     }
 
@@ -71,16 +71,22 @@ app.post("/api/register/aliado/loadImages", upload.fields([
     const imagePathFront = req.files.idphotofront ? `/uploads/${req.files.idphotofront[0].filename}` : "";
     const imagePathBack = req.files.idphotoback ? `/uploads/${req.files.idphotoback[0].filename}` : "";
 
+    // Mapear las rutas de múltiples certificaciones (si existen)
+    const certificationsPaths = req.files.imageFileCert
+        ? req.files.imageFileCert.map(file => `/uploads/${file.filename}`)
+        : [];
+
     console.log("Ruta de la imagen frontal:", imagePathFront);
     console.log("Ruta de la imagen trasera:", imagePathBack);
+    console.log("Rutas de las imágenes de certificaciones:", certificationsPaths);
 
     return res.status(200).json({
         message: "Imágenes subidas con éxito",
         idPhotoFront: imagePathFront,
-        idPhotoBack: imagePathBack
+        idPhotoBack: imagePathBack,
+        certifications: certificationsPaths
     });
 });
-
 
 // Servir archivos estáticos desde la carpeta 'uploads'
 app.use("/uploads", express.static(uploadFolder));

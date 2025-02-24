@@ -35,6 +35,24 @@ function addSkill() {
     expInput.placeholder = "Experiencia en meses o años en el oficio";
     expInput.required = true;
 
+    // Input para agergar certificados
+    const certLabel = document.createElement("label");
+    certLabel.textContent = "Agregar certificaciones (opcional)";
+    certLabel.classList.add("form-label", "my-2");
+    certLabel.setAttribute("for", "imageFileCert"); // Asociar label con input
+
+    // Crear un ID único para cada input de certificación
+    const certInputId = `imageFileCert_${document.querySelectorAll('.cert-input').length}`;
+    
+    // Crear el input para cargar la certificación
+    const certInput = document.createElement("input");
+    certInput.type = "file";
+    certInput.classList.add("form-control", "cert-input");
+    certInput.name = "imageFilecertName";
+    certInput.id = certInputId;
+    certInput.accept = "image/*"; 
+    certInput.required = false; 
+
     // Botón para eliminar
     const removeButton = document.createElement("button");
     removeButton.type = "button";
@@ -50,6 +68,8 @@ function addSkill() {
     skillDiv.appendChild(skillInput);
     skillDiv.appendChild(expLabel);
     skillDiv.appendChild(expInput);
+    skillDiv.appendChild(certLabel);
+    skillDiv.appendChild(certInput);
     skillDiv.appendChild(removeButton);
 
     skillsContainer.appendChild(skillDiv);
@@ -104,9 +124,11 @@ async function registerAliado(e) {
     // **Obtener las imágenes de los inputs**
     const imageFileFront = document.getElementById("imageInputFront").files[0];
     const imageFileBack = document.getElementById("imageInputBack").files[0];
+    // const certFiles = document.getElementById("imageFilecert").files; // Certificaciones (Múltiples)
 
     let imagePathFront = "";
     let imagePathBack = "";
+    let certificationsPaths = []; // Para almacenar las rutas de las certificaciones
 
     // **Función para subir imágenes**
     async function uploadImage(imageFile, fieldName) {
@@ -131,7 +153,7 @@ async function registerAliado(e) {
 
         } catch (error) {
             console.error(`Error al subir la imagen ${fieldName}:`, error);
-            mostrarError(`Error al subir la imagen ${fieldName}. Inténtalo de nuevo.`);
+            // mostrarError(`Error al subir la imagen ${fieldName}. Inténtalo de nuevo.`);
             return "";
         }
     }
@@ -139,6 +161,18 @@ async function registerAliado(e) {
     // **Subir imágenes si están disponibles**
     imagePathFront = await uploadImage(imageFileFront, "idphotofront");
     imagePathBack = await uploadImage(imageFileBack, "idphotoback");
+
+    // **Subir todas las certificaciones, incluyendo las dinámicas**
+    document.querySelectorAll(".cert-input").forEach(async (input) => {
+        if (input.files.length > 0) {
+            for (let certFile of input.files) {
+                let certPath = await uploadImage(certFile, "imageFilecertName");
+                if (certPath) {
+                    certificationsPaths.push(certPath);
+                }
+            }
+        }
+    });
 
     // **4️⃣ Enviar los datos al backend**
     try {
@@ -158,7 +192,8 @@ async function registerAliado(e) {
                 dirAliado,
                 skills,  // 🔹 Se envía el array con TODAS las habilidades
                 idPhotoFront: imagePathFront,
-                idPhotoBack: imagePathBack
+                idPhotoBack: imagePathBack,
+                certifications: certificationsPaths // 🔹 Se envía el array con todas las certificaciones subidas
             })
         });
 
@@ -291,3 +326,19 @@ function showFields() {
         // document.getElementById('independentSkills').removeAttribute('required');
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const skillsDropdown = document.getElementById("skillsDropdown");
+    const skillsAliadoInput = document.getElementById("skillsAliado");
+
+    document.querySelectorAll(".dropdown-menu .dropdown-item").forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault(); // Evita la recarga de la página
+            e.stopPropagation(); // Detiene la propagación del evento
+
+            const selectedValue = e.target.getAttribute("data-value");
+            skillsDropdown.textContent = selectedValue; // Muestra la opción seleccionada en el botón
+            skillsAliadoInput.value = selectedValue; // Asigna el valor al input oculto
+        });
+    });
+});
+

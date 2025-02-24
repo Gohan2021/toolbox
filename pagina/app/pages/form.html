@@ -115,7 +115,7 @@
                     <option value="independent">Profesional independiente</option>
                 </select>
             </div>
-            <!-- Campos para Independiente -->
+            <!-- Campos para Aliado -->
             <form id="register-form-aliado">
                 <div id="independentFields" class="hidden">
                     <div class="mb-2">
@@ -159,24 +159,34 @@
                           </div>
                     </div>
                     <!-- Servicios -->
-                    <div class="mb-3">
+                    <div class="my-2">
                         <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
-                        <!-- Servicios que ofrece -->
+                        <!-- Servicios que ofrece con Dropdown -->
                         <label for="skillsAliado" class="form-label">Servicio que ofreces</label>
-                        <input type="text" class="form-control mb-2" id="skillsAliado" placeholder="Ingresar habilidad o servicio que ofreces" required>
+                        <div class="dropdown mb-2">
+                            <button class="btn btn-secondary dropdown-toggle form-control text-start" type="button" id="skillsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Selecciona un servicio</button>
+                            <ul class="dropdown-menu" aria-labelledby="skillsDropdown">
+                                <li><a class="dropdown-item" href="#" data-value="Plomería">Plomería</a></li>
+                                <li><a class="dropdown-item" href="#" data-value="Electricidad">Electricidad</a></li>
+                                <li><a class="dropdown-item" href="#" data-value="Carpintería">Carpintería</a></li>
+                                <li><a class="dropdown-item" href="#" data-value="Pintura">Pintura</a></li>
+                                <li><a class="dropdown-item" href="#" data-value="Jardinería">Jardinería</a></li>
+                                <li><a class="dropdown-item" href="#" data-value="Mantenimiento General">Mantenimiento General</a></li>
+                            </ul>
+                            <!-- Input oculto para almacenar el valor seleccionado -->
+                            <input type="hidden" id="skillsAliado" name="skillsAliado" required>
+                        </div>
                         <!-- experiencia en meses del servicio -->
                         <label for="expAliado" class="form-label my-2">Experiencia</label>
                         <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Experiencia en meses o años en el oficio" required>
+                        <!-- Foto de certificados-->
+                        <label for="imageFilecert" class="form-label my-2">Agregar certificaciones (opcional)</label>
+                        <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert" accept="image/*" required>
                     </div>
                     <div id="skillsContainer"></div>
-                    <button type="button" class="btn btn-warning mb-3" onclick="addSkill()">Agregar otra habilidad +</button>
-                    <!-- imágenes -->
-                    <div class="mb-3">
-                        <label for="formFileMultiple" class="form-label">Subir imágenes de trabajos realizados</label>
-                        <input class="form-control" type="file" id="formFileMultiple" multiple>
-                    </div>
+                    <button type="button" class="btn btn-warning my-2" onclick="addSkill()">Agregar otra habilidad </button>                    
                     <p id="error" class="text-danger hidden">Error al realizar el registro, la cédula, el correo o el teléfono ya están registrados</p>
-                    <button type="submit" class="btn btn-warning w-100">Crear Perfil</button>
+                    <button type="submit" class="btn btn-warning mt-3 w-100">Crear Perfil</button>
                 </div>
             </form>
 
