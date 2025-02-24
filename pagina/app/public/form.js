@@ -13,16 +13,63 @@ function addSkill() {
     skillTitle.textContent = "Otra habilidad";
     skillTitle.classList.add("semi-bold", "mt-3");
 
-    // Input para habilidad
+    // Dropdown para seleccionar la habilidad
     const skillLabel = document.createElement("label");
     skillLabel.textContent = "Servicio que ofreces";
     skillLabel.classList.add("form-label");
 
+    const skillsDropdown = document.createElement("div");
+    skillsDropdown.classList.add("dropdown", "mb-2");
+
+    const dropdownToggle = document.createElement("button");
+    dropdownToggle.type = "button";
+    dropdownToggle.classList.add("btn", "btn-secondary", "dropdown-toggle", "form-control", "text-start");
+    dropdownToggle.setAttribute("data-bs-toggle", "dropdown");
+    dropdownToggle.setAttribute("aria-expanded", "false");
+    dropdownToggle.textContent = "Selecciona un servicio";
+
+    const dropdownMenu = document.createElement("ul");
+    dropdownMenu.classList.add("dropdown-menu");
+
+    const skillOptions = [
+        "Plomería",
+        "Electricidad",
+        "Carpintería",
+        "Pintura",
+        "Jardinería",
+        "Mantenimiento General"
+    ];
+
+    // Crear opciones del dropdown
+    skillOptions.forEach(option => {
+        const listItem = document.createElement("li");
+        const linkItem = document.createElement("a");
+        linkItem.classList.add("dropdown-item");
+        linkItem.href = "#";
+        linkItem.textContent = option;
+        linkItem.setAttribute("data-value", option);
+
+        // Evitar el comportamiento predeterminado y actualizar el botón
+        linkItem.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            dropdownToggle.textContent = option; // Mostrar el valor seleccionado en el botón
+            skillInput.value = option; // Asignar el valor al input oculto
+        });
+
+        listItem.appendChild(linkItem);
+        dropdownMenu.appendChild(listItem);
+    });
+
+    // Input oculto para almacenar el valor seleccionado
     const skillInput = document.createElement("input");
-    skillInput.type = "text";
-    skillInput.classList.add("form-control", "mb-2", "skill-input");
-    skillInput.placeholder = "Ingresar habilidad o servicio que ofreces";
+    skillInput.type = "hidden";
+    skillInput.classList.add("skill-input");
     skillInput.required = true;
+
+    skillsDropdown.appendChild(dropdownToggle);
+    skillsDropdown.appendChild(dropdownMenu);
 
     // Input para experiencia
     const expLabel = document.createElement("label");
@@ -65,6 +112,7 @@ function addSkill() {
     // Agregar elementos
     skillDiv.appendChild(skillTitle);
     skillDiv.appendChild(skillLabel);
+    skillDiv.appendChild(skillsDropdown);
     skillDiv.appendChild(skillInput);
     skillDiv.appendChild(expLabel);
     skillDiv.appendChild(expInput);
