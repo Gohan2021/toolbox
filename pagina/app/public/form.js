@@ -375,18 +375,24 @@ function showFields() {
     }
 }
 document.addEventListener("DOMContentLoaded", () => {
-    const skillsDropdown = document.getElementById("skillsDropdown");
-    const skillsAliadoInput = document.getElementById("skillsAliado");
+    // Seleccionar solo los dropdowns con la clase "skillsDropdown"
+    document.querySelectorAll(".skillsDropdown").forEach(dropdown => {
+        const dropdownToggle = dropdown.querySelector(".dropdown-toggle");
+        const hiddenInput = dropdown.querySelector("input[type='hidden']");
 
-    document.querySelectorAll(".dropdown-menu .dropdown-item").forEach(item => {
-        item.addEventListener("click", (e) => {
-            e.preventDefault(); // Evita la recarga de la página
-            e.stopPropagation(); // Detiene la propagación del evento
+        dropdown.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault(); // Evitar recarga de la página
+                e.stopPropagation(); // Detener la propagación del evento
 
-            const selectedValue = e.target.getAttribute("data-value");
-            skillsDropdown.textContent = selectedValue; // Muestra la opción seleccionada en el botón
-            skillsAliadoInput.value = selectedValue; // Asigna el valor al input oculto
+                const selectedValue = e.target.getAttribute("data-value");
+                
+                // Actualizar solo el dropdown específico
+                dropdownToggle.textContent = selectedValue;
+                hiddenInput.value = selectedValue;
+            });
         });
     });
 });
+
 
