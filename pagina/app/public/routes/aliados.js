@@ -1,32 +1,35 @@
-import express from 'express';
-import database from '.../database.js';
+import express from "express";
+import database from "../../database.js";
 
 const router = express.Router();
 
-// Endpoint dinámico para obtener los aliados de cualquier servicio
-router.get('/:servicio', async (req, res) => {
-    const { servicio } = req.params; // Servicio dinámico desde la URL
+// Endpoint para obtener los aliados de un servicio específico
+router.get("/servicios/:servicioId", async (req, res) => {
+    const { servicioId } = req.params;
 
     try {
         const connection = await database();
-        
-        // Consulta SQL para obtener aliados según el servicio
-        const [rows] = await connection.query(`
-            SELECT a.nombre, a.apellido, a.experiencia
+
+        // Consultar la información de los aliados que ofrecen el servicio
+        const [rows] = await connection.query(
+            `SELECT a.nombre, a.apellido, a.telefono, a.email 
             FROM aliado a
-            JOIN aliado_servicio as on a.id = as.id_aliado
-            JOIN servicio s ON as.id_servicio = s.id
-            WHERE s.nombre = ?
-        `, [servicio]);
+            JOIN aliado_servicio asv ON asv.id_aliado = a.id_aliado
+            JOIN servicio s ON asv.id_servicio = s.id_servicio
+            WHERE s.id_servicio = ?;
+            `, 
+            [servicioId]
+        );
 
         if (rows.length === 0) {
-            return res.status(404).json({ message: `No se encontraron aliados para el servicio de ${servicio}.` });
+            return res.status(404).json({ message: "No se encontraron aliados para este servicio." });
         }
 
-        res.status(200).json(rows);
+        return res.json(rows);
+
     } catch (error) {
-        console.error('Error obteniendo aliados:', error.message);
-        res.status(500).json({ error: 'Error al obtener los aliados' });
+        console.error("Error al obtener los aliados:", error.message);
+        res.status(500).json({ message: "Error al obtener los aliados.", error: error.message });
     }
 });
 

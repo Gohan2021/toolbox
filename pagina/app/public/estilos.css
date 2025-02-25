@@ -125,17 +125,34 @@ body {
     height: 100%;
 }
 /* Cliente */
-.btn-light {
-    transition: transform 0.2s, box-shadow 0.2s;
+.service-btn {
+    width: 100%;
+    padding: 20px;
+    margin: 10px 0;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #333;
     border-radius: 10px;
+    background-color: #f8f9fa; /* Ligero fondo claro */
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.btn-light:hover {
+.service-btn:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-.btn-light:focus {
+.service-btn:focus {
     outline: none;
     box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+}
+
+.service-icon {
+    font-size: 3rem;
+    color: #ffc107; /* Color amarillo Bootstrap */
+}
+
+.card-title {
+    font-weight: 600;
 }

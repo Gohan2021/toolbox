@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import cors from "cors";
 import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
+import servicesRoutes from "./public/routes/aliados.js";
 
 // Configuración de __dirname en ES Modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -72,8 +73,8 @@ app.post("/api/register/aliado/loadImages", upload.fields([
     const imagePathBack = req.files.idphotoback ? `/uploads/${req.files.idphotoback[0].filename}` : "";
 
     // Mapear las rutas de múltiples certificaciones (si existen)
-    const certificationsPaths = req.files.imageFileCert
-        ? req.files.imageFileCert.map(file => `/uploads/${file.filename}`)
+    const certificationsPaths = req.files.imageFilecertName
+        ? req.files.imageFilecertName.map(file => `/uploads/${file.filename}`)
         : [];
 
     console.log("Ruta de la imagen frontal:", imagePathFront);
@@ -94,6 +95,7 @@ app.use("/uploads", express.static(uploadFolder));
 // Rutas estáticas de la aplicación
 app.use(express.static(path.join(__dirname, "public")));
 
+// Rutas para las páginas principales
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "pages", "index.html")));
 app.get("/form", (req, res) => res.sendFile(path.join(__dirname, "pages", "form.html")));
 app.get("/cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "cliente.html")));
@@ -101,12 +103,28 @@ app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages"
 app.get("/myv", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv.html")));
 app.get("/politicas", (req, res) => res.sendFile(path.join(__dirname, "pages", "politicas.html")));
 app.get("/uso", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso.html")));
-app.get("/plomeria", (req, res) => res.sendFile(path.join(__dirname, "pages/servicios", "plomeria.html")));
+
+// Rutas dinámicas para las páginas de servicios
+app.get("/servicios/:servicio", (req, res) => {
+    const { servicio } = req.params;
+    const servicioFile = path.join(__dirname, "pages/servicios", `${servicio}.html`);
+
+    // Verificar si el archivo existe antes de enviarlo
+    if (fs.existsSync(servicioFile)) {
+        res.sendFile(servicioFile);
+    } else {
+        res.status(404).send("Página del servicio no encontrada");
+    }
+});
+
 
 // Rutas de autenticación
 app.post("/api/login/aliado", authentication.loginAliado);
 app.post("/api/register/aliado", authentication.registerAliado);
 app.post("/api/register/cliente", authentication.registerCliente);
+
+// Ruta para servicios y aliados
+app.use("/api", servicesRoutes);
 
 // Iniciar el servidor
 app.listen(app.get("port"), () => {
