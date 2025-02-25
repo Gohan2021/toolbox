@@ -8,11 +8,13 @@ import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
 import servicesRoutes from "./public/routes/aliados.js";
 
+const app = express();
+const router = express.Router();
+
 // Configuración de __dirname en ES Modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Inicializar la aplicación
-const app = express();
 app.set("port", 4000);
 
 // Middleware para CORS
@@ -41,7 +43,7 @@ if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
 }
 
-// Configuración de Multer para múltiples archivos
+// Configuración de Multer para múltiples archivos, incluida la foto de perfil
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadFolder); // Almacenar en la carpeta 'uploads'
@@ -54,35 +56,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ✅ **Endpoint para subir imágenes**
+// ✅ **Endpoint para subir imágenes incluyendo foto de perfil**
 app.post("/api/register/aliado/loadImages", upload.fields([
+    { name: "fotoPerfil", maxCount: 1 },
     { name: "idphotofront", maxCount: 1 },
     { name: "idphotoback", maxCount: 1 },
-    { name: "imageFilecertName", maxCount: 10 } // Permitir hasta 10 certificados
+    { name: "imageFilecertName", maxCount: 10 }
 ]), (req, res) => {
     console.log("Datos de la solicitud:", req.body);
     console.log("Archivos recibidos:", req.files);
 
-    // Verificar si se recibieron los archivos
     if (!req.files) {
         return res.status(400).json({ error: "No se han subido archivos" });
     }
 
-    // Obtener las rutas de las imágenes (si existen)
+    const fotoPerfilPath = req.files.fotoPerfil ? `/uploads/${req.files.fotoPerfil[0].filename}` : "";
     const imagePathFront = req.files.idphotofront ? `/uploads/${req.files.idphotofront[0].filename}` : "";
     const imagePathBack = req.files.idphotoback ? `/uploads/${req.files.idphotoback[0].filename}` : "";
 
-    // Mapear las rutas de múltiples certificaciones (si existen)
     const certificationsPaths = req.files.imageFilecertName
         ? req.files.imageFilecertName.map(file => `/uploads/${file.filename}`)
         : [];
 
-    console.log("Ruta de la imagen frontal:", imagePathFront);
-    console.log("Ruta de la imagen trasera:", imagePathBack);
-    console.log("Rutas de las imágenes de certificaciones:", certificationsPaths);
-
     return res.status(200).json({
         message: "Imágenes subidas con éxito",
+        fotoPerfil: fotoPerfilPath,
         idPhotoFront: imagePathFront,
         idPhotoBack: imagePathBack,
         certifications: certificationsPaths
@@ -109,14 +107,12 @@ app.get("/servicios/:servicio", (req, res) => {
     const { servicio } = req.params;
     const servicioFile = path.join(__dirname, "pages/servicios", `${servicio}.html`);
 
-    // Verificar si el archivo existe antes de enviarlo
     if (fs.existsSync(servicioFile)) {
         res.sendFile(servicioFile);
     } else {
         res.status(404).send("Página del servicio no encontrada");
     }
 });
-
 
 // Rutas de autenticación
 app.post("/api/login/aliado", authentication.loginAliado);
@@ -125,6 +121,29 @@ app.post("/api/register/cliente", authentication.registerCliente);
 
 // Ruta para servicios y aliados
 app.use("/api", servicesRoutes);
+
+// ✅ Nueva ruta para obtener la información del aliado por su ID
+app.get("/api/aliado/:id", async (req, res) => {
+    const { id } = req.params; // ✅ Cambiado a 'id' en lugar de 'id_aliado'
+    try {
+        const connection = await database();
+        const [rows] = await connection.query(
+            `SELECT nombre, apellido, telefono, email, foto
+             FROM aliado WHERE id_aliado = ?`, // ✅ Columna corregida a 'id'
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Aliado no encontrado." });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error("Error al obtener la información del aliado:", error.message);
+        res.status(500).json({ message: "Error al obtener la información del aliado." });
+    }
+});
+
 
 // Iniciar el servidor
 app.listen(app.get("port"), () => {

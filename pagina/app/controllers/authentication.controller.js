@@ -6,40 +6,87 @@ import dotenv from "dotenv";
 dotenv.config();
 // Inicio de sesión
 async function loginAliado(req, res) {
-    const { email, password } = req.body; // Retrieve email and password from request body
-    console.log(email, password);
+    const { email, password } = req.body; 
+    console.log("Intento de inicio de sesión con:", email);
+
     try {
-        if (!email || !password ) {
-            return res.status(400).send({ status: "Error", message: "Los campos están incompletos"});
+        // 🔍 1. Validar campos obligatorios
+        if (!email || !password) {
+            return res.status(400).send({ 
+                status: "Error", 
+                message: "Los campos están incompletos"
+            });
         }
-        const connection = await database(); // Get the database connection
-        const [user] = await connection.query('SELECT * FROM aliado WHERE email = ?', [email]); // Check if user exists
 
-        if (user.length === 0) {
-            return res.status(404).send({ status: "Error", message: "Usuario no encontrado" }); // User not found
+        const connection = await database(); 
+
+        // 🔍 2. Consultar si el usuario existe
+        const [rows] = await connection.query(
+            "SELECT * FROM aliado WHERE email = ?", 
+            [email]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).send({ 
+                status: "Error", 
+                message: "Correo o contraseña incorrectos" 
+            });
         }
-        const isMatch = await bcryptjs.compare(password, user[0].contraseña); // Compare passwords
+
+        const user = rows[0]; 
+
+        // 🔑 3. Verificar la contraseña
+        const isMatch = await bcryptjs.compare(password, user.contraseña);
         if (!isMatch) {
-            return res.status(401).send({ status: "Error", message: "Credenciales incorrectas" }); // Incorrect password
+            return res.status(401).send({ 
+                status: "Error", 
+                message: "Credenciales incorrectas" 
+            });
         }
-        // const token = jsonwebtoken.sign({userToken:user.email},
-        //     process.env.JWT_LOGIN,
-        //     {expiresIn:process.env.JWT_EXPIRATION})
 
-        // //COOKIE
-        // const cookieOption = {
-        //     expires: new Date (Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
-        //     path: "/",
-        // }
-        // res.cookie("jwt",token,cookieOption);
-        // res.send({status:"ok",message:"Usuario loggead", redirect:"/"})
+        // 🔐 4. Generar token JWT seguro
+        const token = jsonwebtoken.sign(
+            { userId: user.id_aliado, email: user.email }, 
+            process.env.JWT_LOGIN, 
+            { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+        );
 
-        return res.status(200).send({ status: "Success", message: "Inicio de sesión exitoso" }); // Successful login
-        } catch (err) {
-            console.error('Error during login:', err.message);
-            res.status(500).json({ error: 'Error during login', details: err.message });
-        }
+        // 🍪 5. Configuración segura de la cookie
+        const cookieOptions = {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === "production", 
+            expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES || 1) * 24 * 60 * 60 * 1000),
+            path: "/",
+            sameSite: "Strict"
+        };
+
+        res.cookie("jwt", token, cookieOptions);
+
+        // 📤 6. Enviar la información del aliado al frontend
+        return res.status(200).send({ 
+            status: "Success", 
+            message: "Inicio de sesión exitoso", 
+            redirect: "/hazteConocer",
+            aliado: {
+                id_aliado: user.id_aliado,
+                nombre: user.nombre,
+                apellido: user.apellido,
+                telefono: user.telefono,
+                email: user.email
+                
+            }
+        });
+
+    } catch (err) {
+        console.error("Error durante el inicio de sesión:", err.message);
+        return res.status(500).json({ 
+            status: "Error", 
+            message: "Error durante el inicio de sesión", 
+            details: err.message 
+        });
+    }
 }
+
 
 // REGISTRO ALIADO
 // async function registerAliado(req, res) {
@@ -115,10 +162,13 @@ async function registerAliado(req, res) {
         const salt = await bcryptjs.genSalt(5);
         const hashPassword = await bcryptjs.hash(passwordAliado, salt);
 
-        // 4️⃣ Insertar el aliado en la base de datos
+        // 4️⃣ Manejo de la Imagen (Foto de Perfil)
+        const fotoPerfil = req.file ? `/uploads/${req.file.filename}` : null;
+
+        // 5️⃣ Insertar el aliado en la base de datos (incluyendo la ruta de la foto)
         const [result] = await connection.query(
-            'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-            [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado]
+            'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion, foto_perfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+            [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado, fotoPerfil]
         );
 
         const aliadoId = result.insertId; // Obtener el ID del aliado recién insertado
@@ -139,7 +189,7 @@ async function registerAliado(req, res) {
 
         const serviciosRelacionados = []; // Para almacenar las relaciones válidas
         
-        // 5️⃣ Insertar habilidades (skills) y relacionarlas con servicios
+        // 6️⃣ Insertar habilidades (skills) y relacionarlas con servicios
         if (Array.isArray(skills) && skills.length > 0) {
             
             for (let skill of skills) {
@@ -157,20 +207,20 @@ async function registerAliado(req, res) {
                 );
 
                 // Obtener el ID del servicio desde el mapa
-                const servicioId = servicioMap[skill.skill];
+                const servicioId = servicioMap[skill.skill.toLowerCase()];
 
                 // Si el ID del servicio es válido, agregar a la relación
                 if (servicioId) {
-                    serviciosRelacionados.push([servicioId,aliadoId]);
+                    serviciosRelacionados.push([servicioId, aliadoId]);
                 } else {
                     console.warn(`El servicio "${skill.skill}" no coincide con ningún registro válido.`);
                 }
             }
 
-            // 6️⃣ Insertar las relaciones en la tabla `aliado_servicio`
+            // 7️⃣ Insertar las relaciones en la tabla `aliado_servicio`
             if (serviciosRelacionados.length > 0) {
                 await connection.query(
-                    'INSERT INTO aliado_servicio (id_servicio,id_aliado) VALUES ?',
+                    'INSERT INTO aliado_servicio (id_servicio, id_aliado) VALUES ?',
                     [serviciosRelacionados]
                 );
             }
@@ -187,8 +237,6 @@ async function registerAliado(req, res) {
         res.status(500).json({ error: 'Error registrando el aliado', details: err.message });
     }
 }
-
-
 
 // REGISTRO CLIENTE
 async function registerCliente(req, res) {

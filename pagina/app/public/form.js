@@ -315,38 +315,68 @@ async function registerCliente(e) {
         window.location.href = data.redirect;
     }
 }
-// Login ALiado
+// Login Aliado
 async function loginAliado(e) {
     e.preventDefault();
-    console.log('Iniciando sesión...'); // Debugging
-    const userEmailAliado = e.target.elements.userEmailAliado.value;
-    const userPasswordAliado = e.target.elements.userPasswordAliado.value;
+    console.log('Iniciando sesión...');
 
-    const res = await fetch("http://localhost:4000/api/login/aliado", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: userEmailAliado, // Change to 'email'
-            password: userPasswordAliado // Change to 'password'
-        })
-    });
-    const data = await res.json(); // Retrieve the response data
+    const userEmailAliado = e.target.elements.userEmailAliado.value.trim();
+    const userPasswordAliado = e.target.elements.userPasswordAliado.value.trim();
 
-    // Show or hide error message based on response
-    if (!res.ok) {
-        mensajeErrorLogin.classList.remove("hidden"); // Show error message
+    if (!userEmailAliado || !userPasswordAliado) {
+        alert("Por favor, complete todos los campos.");
         return;
-    } else {
-        mensajeErrorLogin.classList.add("hidden"); // Hide error message
     }
-    
-    // Reload the page if the response is successful and there is a redirect
-    if (data.redirect) {
-        window.location.href = data.redirect;
-    }    
+
+    try {
+        const res = await fetch("http://localhost:4000/api/login/aliado", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: userEmailAliado,
+                password: userPasswordAliado
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Credenciales incorrectas.");
+            return;
+        }
+
+        console.log("Inicio de sesión exitoso:", data.message);
+
+        // Guardar el ID y la información del aliado en el almacenamiento local
+        if (data.aliado) {
+            localStorage.setItem("aliadoId", data.aliado.id_aliado);
+            localStorage.setItem("aliadoNombre", data.aliado.nombre);
+            localStorage.setItem("aliadoApellido", data.aliado.apellido);
+            localStorage.setItem("aliadoTelefono", data.aliado.telefono);
+            localStorage.setItem("aliadoEmail", data.aliado.email);
+            // localStorage.setItem("fotoPerfil", data.aliado.foto || "/imagenes/acceso.png");
+
+            window.location.href = data.redirect;
+        } else {
+            alert("No se pudo obtener la información del usuario.");
+        }
+        if (res.ok && data.user && data.user.id) {
+            console.log("ID del aliado guardado:", data.user.id_aliado);
+            localStorage.setItem("aliadoId", data.user.id_aliado);
+        } else {
+            console.warn("No se pudo guardar el ID del aliado en localStorage.");
+        }
+        
+
+    } catch (error) {
+        console.error("Error en la solicitud de inicio de sesión:", error);
+        alert("No se pudo conectar con el servidor.");
+    }
 }
+
+
 
 // Login cliente
 async function loginCliente(e) {
