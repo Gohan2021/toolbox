@@ -32,12 +32,16 @@ function addSkill() {
     dropdownMenu.classList.add("dropdown-menu");
 
     const skillOptions = [
-        "Plomería",
+        "plomeria",
         "Electricidad",
-        "Carpintería",
-        "Pintura",
-        "Jardinería",
-        "Mantenimiento General"
+        "carpinteria",
+        "enchape",
+        "metalicas",
+        "pintura",
+        "cerrajeria",
+        "refrigeracion",
+        "jardineria",
+        "obras"
     ];
 
     // Crear opciones del dropdown
@@ -267,9 +271,6 @@ async function registerAliado(e) {
         mostrarError("Error en la conexión con el servidor.");
     }
 }
-
-
-
 // Function for registering cliente
 async function registerCliente(e) {
     e.preventDefault();

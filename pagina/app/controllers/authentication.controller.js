@@ -90,19 +90,18 @@ async function registerAliado(req, res) {
         dobAliado, 
         telAliado, 
         dirAliado, 
-        skills, // 🔹 Ahora se recibe como `skills`
-
+        skills // 🔹 Skills incluye { skill: "Plomería", experience: "5 años" }
     } = req.body;
 
     try {
-        // Validación de campos obligatorios
+        // 1️⃣ Validación de campos obligatorios
         if (!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
             return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
         }
 
-        const connection = await database(); // Obtener la conexión a la base de datos
+        const connection = await database(); // Conectar a la base de datos
 
-        // Verificar si el usuario ya existe en la base de datos
+        // 2️⃣ Verificar si el usuario ya existe en la base de datos
         const [existing] = await connection.query(
             'SELECT * FROM aliado WHERE cedula = ? OR email = ? OR telefono = ?', 
             [userIDAliado, emailAliado, telAliado]
@@ -112,25 +111,67 @@ async function registerAliado(req, res) {
             return res.status(400).send({ status: "Error", message: "Esta cédula, correo o teléfono ya están registrados" });
         }
 
-        // Hashear la contraseña
+        // 3️⃣ Hashear la contraseña
         const salt = await bcryptjs.genSalt(5);
         const hashPassword = await bcryptjs.hash(passwordAliado, salt);
 
-        // Insertar el aliado en la base de datos
+        // 4️⃣ Insertar el aliado en la base de datos
         const [result] = await connection.query(
             'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
             [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado]
         );
 
         const aliadoId = result.insertId; // Obtener el ID del aliado recién insertado
-        
 
-        // Insertar habilidades (skills debe ser un array)
+        // 🔍 **Mapeo directo de los servicios a sus IDs correspondientes**
+        const servicioMap = {
+            "plomeria": 1,
+            "Electricidad": 2,
+            "carpinteria": 3,
+            "enchape": 4,
+            "metalicas": 5,
+            "pintura": 6,
+            "cerrajeria": 7,
+            "refrigeracion": 8,
+            "jardineria": 9,
+            "obras": 10
+        };
+
+        const serviciosRelacionados = []; // Para almacenar las relaciones válidas
+        
+        // 5️⃣ Insertar habilidades (skills) y relacionarlas con servicios
         if (Array.isArray(skills) && skills.length > 0) {
+            
             for (let skill of skills) {
+
+                // Validar que el skill tenga una propiedad `skill` antes de continuar
+                if (!skill || !skill.skill) {
+                    console.warn('Skill inválido o faltante:', skill);
+                    continue; // Saltar al siguiente skill
+                }
+
+                // Insertar la habilidad en la tabla `experiencia_laboral`
                 await connection.query(
                     'INSERT INTO experiencia_laboral (id_aliado, puesto, descripcion) VALUES (?, ?, ?)', 
                     [aliadoId, skill.skill, skill.experience]
+                );
+
+                // Obtener el ID del servicio desde el mapa
+                const servicioId = servicioMap[skill.skill];
+
+                // Si el ID del servicio es válido, agregar a la relación
+                if (servicioId) {
+                    serviciosRelacionados.push([servicioId,aliadoId]);
+                } else {
+                    console.warn(`El servicio "${skill.skill}" no coincide con ningún registro válido.`);
+                }
+            }
+
+            // 6️⃣ Insertar las relaciones en la tabla `aliado_servicio`
+            if (serviciosRelacionados.length > 0) {
+                await connection.query(
+                    'INSERT INTO aliado_servicio (id_servicio,id_aliado) VALUES ?',
+                    [serviciosRelacionados]
                 );
             }
         }
@@ -142,10 +183,12 @@ async function registerAliado(req, res) {
         });
 
     } catch (err) {
-        console.error('Error registering aliado:', err.message);
-        res.status(500).json({ error: 'Error registering aliado', details: err.message });
+        console.error('Error registrando el aliado:', err.message);
+        res.status(500).json({ error: 'Error registrando el aliado', details: err.message });
     }
 }
+
+
 
 // REGISTRO CLIENTE
 async function registerCliente(req, res) {

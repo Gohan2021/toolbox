@@ -101,6 +101,7 @@ app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages"
 app.get("/myv", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv.html")));
 app.get("/politicas", (req, res) => res.sendFile(path.join(__dirname, "pages", "politicas.html")));
 app.get("/uso", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso.html")));
+app.get("/plomeria", (req, res) => res.sendFile(path.join(__dirname, "pages/servicios", "plomeria.html")));
 
 // Rutas de autenticación
 app.post("/api/login/aliado", authentication.loginAliado);
