@@ -145,7 +145,7 @@
                          <input type="text" class="form-control" name="dirAliado" id="dirAliado" placeholder="ingresa la direccion de residencia">
                         <!-- Correo -->
                         <label for="emailUserAliado" class="form-label my-2">Correo</label>
-                        <input type="email" class="form-control" name="emailUserAliado" id="emailUserAliado" placeholder="name@example.com">
+                        <input type="text" class="form-control" name="emailUserAliado" id="emailUserAliado" placeholder="name@example.com">
                         <label for="passwordAliado" class="col-form-label">Contraseña</label>
                         <div class="row g-3 align-items-center">
                             <div class="col-auto">
@@ -172,7 +172,7 @@
                                 <li><a class="dropdown-item" href="#" data-value="enchape">Enchape y acabados</a></li>
                                 <li><a class="dropdown-item" href="#" data-value="metalicas">Estructuras metálicas</a></li>
                                 <li><a class="dropdown-item" href="#" data-value="pintura">Pintura y acabados</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="cerrajeria">Cerrajeria</a>
+                                <li><a class="dropdown-item" href="#" data-value="cerrajeria">Cerrajeria</a></li>
                                 <li><a class="dropdown-item" href="#" data-value="refrigeracion">Aire acondicionado y refrigeración </a></li>
                                 <li><a class="dropdown-item" href="#" data-value="jardineria">Jardineria y paisajismo</a></li>
                                 <li><a class="dropdown-item" href="#" data-value="obras">Obras civiles</a></li>
@@ -185,7 +185,7 @@
                         <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Experiencia en meses o años en el oficio" required>
                         <!-- Foto de certificados-->
                         <label for="imageFilecert" class="form-label my-2">Agregar certificaciones (opcional)</label>
-                        <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert" accept="image/*" required>
+                        <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert" accept="image/*">
                     </div>
                     <div id="skillsContainer"></div>
                     <button type="button" class="btn btn-warning my-2" onclick="addSkill()">Agregar otra habilidad </button>                    
@@ -206,7 +206,7 @@
                         <input type="text" class="form-control" name="surnameCliente" id="surnameCliente" placeholder="Ingresa apellidos" required>
                         <!-- correo -->
                         <label for="emailUserCliente" class="form-label">Correo</label>
-                        <input type="email" class="form-control" name="emailUserCliente" id="emailUserCliente" placeholder="name@example.com">
+                        <input type="text" class="form-control" name="emailUserCliente" id="emailUserCliente" placeholder="name@example.com">
                         <!-- contraseña -->
                         <label for="passwordCliente" class="col-form-label">Contraseña</label>
                         <div class="row g-3 align-items-center">
@@ -280,5 +280,27 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function validarCorreo(email) {
+                const emailPattern = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+                return emailPattern.test(email);
+            }
+    
+            document.getElementById("register-form-aliado").addEventListener("submit", (e) => {
+                e.preventDefault();
+    
+                const emailInput = document.getElementById("emailUserAliado");
+                const email = emailInput.value.trim();
+    
+                if (!validarCorreo(email)) {
+                    alert("Por favor ingrese un correo electrónico válido.");
+                    emailInput.focus();
+                    return;
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>

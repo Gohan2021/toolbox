@@ -163,12 +163,12 @@ async function registerAliado(req, res) {
         const hashPassword = await bcryptjs.hash(passwordAliado, salt);
 
         // 4️⃣ Manejo de la Imagen (Foto de Perfil)
-        const fotoPerfil = req.file ? `/uploads/${req.file.filename}` : null;
+        // const fotoPerfil = req.file ? `/uploads/${req.file.filename}` : null;
 
         // 5️⃣ Insertar el aliado en la base de datos (incluyendo la ruta de la foto)
         const [result] = await connection.query(
-            'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion, foto_perfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-            [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado, fotoPerfil]
+            'INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+            [userNameAliado, surnameAliado, emailAliado, hashPassword, userIDAliado, dobAliado, telAliado, dirAliado]
         );
 
         const aliadoId = result.insertId; // Obtener el ID del aliado recién insertado
@@ -229,7 +229,7 @@ async function registerAliado(req, res) {
         return res.status(201).send({ 
             status: "Success", 
             message: `Nuevo aliado ${userNameAliado} registrado exitosamente`, 
-            redirect: "/form" 
+            redirect: "/hazteConocer" 
         });
 
     } catch (err) {

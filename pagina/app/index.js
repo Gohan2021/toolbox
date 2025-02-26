@@ -143,6 +143,28 @@ app.get("/api/aliado/:id", async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
+// ✅ Nueva ruta para obtener la experiencia laboral del aliado
+app.get("/api/aliado/experiencia/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const connection = await database();
+        const [rows] = await connection.query(
+            `SELECT puesto, descripcion 
+             FROM experiencia_laboral 
+             WHERE id_aliado = ?`, 
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "No se encontraron experiencias laborales para este aliado." });
+        }
+
+        res.json(rows);
+    } catch (error) {
+        console.error("Error al obtener la experiencia laboral:", error.message);
+        res.status(500).json({ message: "Error al obtener la experiencia laboral." });
+    }
+});
 
 
 // Iniciar el servidor

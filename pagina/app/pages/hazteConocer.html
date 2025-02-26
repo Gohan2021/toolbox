@@ -125,21 +125,46 @@
           </div>
         </div>
     </nav>
-    <!-- seccion perfil -->
+    <!-- Sección del Perfil -->
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Mi perfil</h2>
+        <h2 class="text-center mb-4">Mi Perfil</h2>
+    
+        <!-- Imagen de Perfil y Botón de Edición -->
         <div class="text-center mb-4">
-            <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image" id="profileImage">
-        </div>
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Datos del Usuario</h5>
-                <p><strong>Nombre:</strong> <span id="nombreAliado"></span></p>
-                <p><strong>Teléfono:</strong> <span id="telefonoAliado"></span></p>
-                <p><strong>Email:</strong> <span id="emailAliado"></span></p>
+            <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image rounded-circle" id="profileImage">
+            <div class="edit-image text-primary" onclick="document.getElementById('fotoPerfil').click();">
+                Editar Imagen
             </div>
+            <input type="file" id="fotoPerfil" style="display: none;" accept="image/*" onchange="uploadProfileImage(event)">
         </div>
-    </div>    
+    
+        <!-- Contenedores para Datos Personales y Profesionales -->
+        <div class="row">
+            <!-- Datos Personales -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Datos Personales</h5>
+                        <p><strong>Nombre:</strong> <span id="nombreAliado"></span></p>
+                        <p><strong>Teléfono:</strong> <span id="telefonoAliado"></span></p>
+                        <p><strong>Email:</strong> <span id="emailAliado"></span></p>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Datos Profesionales -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Datos Profesionales</h5>
+                        <p><strong>Habilidades:</strong> <span id="habilidadesAliado"></span></p>
+                        <p><strong>Experiencia:</strong> <span id="experienciaAliado"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+   
         <!-- Ofertas de trabajo -->
         <h3 class="text-center mb-4">Ofertas de Trabajo</h3>
         <div class="row row-cols-1 row-cols-md-3 g-4">

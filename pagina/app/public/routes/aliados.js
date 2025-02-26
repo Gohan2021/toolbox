@@ -12,7 +12,7 @@ router.get("/servicios/:servicioId", async (req, res) => {
 
         // Consultar la información de los aliados que ofrecen el servicio
         const [rows] = await connection.query(
-            `SELECT a.nombre, a.apellido, a.telefono, a.email 
+            `SELECT a.nombre, a.apellido, a.telefono, a.email
             FROM aliado a
             JOIN aliado_servicio asv ON asv.id_aliado = a.id_aliado
             JOIN servicio s ON asv.id_servicio = s.id_servicio
