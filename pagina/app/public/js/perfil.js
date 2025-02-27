@@ -1,10 +1,4 @@
 async function loadProfileData() {
-    // const aliadoId = sessionStorage.getItem("aliadoId");
-
-    // if (!aliadoId) {
-    //     alert("No se ha encontrado el ID del usuario. Por favor, inicie sesión.");
-    //     window.location.href = "/";
-    //     return;
     try {
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {
             method: "GET",
@@ -76,6 +70,13 @@ function logout() {
         alert("No se pudo cerrar la sesión correctamente.");
     });
 }
+// Asignar el evento al botón de cerrar sesión
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) {
+        logoutButton.addEventListener("click", logout);
+    }
+});
 
 // Para la foto
 async function uploadProfileImage(event) {

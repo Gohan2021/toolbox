@@ -13,7 +13,7 @@ const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
 // const router = express.Router();
 
-// Configuración de __dirname en ES Modules
+// ✅ Configuración correcta de __dirname con ESModules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Inicializar la aplicación
@@ -184,9 +184,11 @@ app.get("/api/aliado/:id", async (req, res) => {
     }
 });
 
-// export default router;
-
-// Iniciar el servidor
-app.listen(app.get("port"), () => {
-    console.log(`Servidor corriendo en puerto ${app.get("port")}`);
-});
+// Iniciar el servidor solo si no es un entorno de pruebas
+if (process.env.NODE_ENV !== "test") {
+    app.listen(4000, () => {
+        console.log("Servidor corriendo en puerto 4000");
+    });
+}
+// Exportar para pruebas
+export default app;

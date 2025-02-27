@@ -160,3 +160,18 @@ body {
 .card-title {
     font-weight: 600;
 }
+/* Estilos para el boton de cerrar sesion */
+#logoutButton {
+    border-radius: 20px; /* Bordes redondeados */
+    transition: all 0.3s ease; /* Efecto suave */
+}
+
+#logoutButton:hover {
+    background-color: #dc3545; /* Rojo de Bootstrap */
+    color: white;
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+#logoutButton i {
+    font-size: 1.2rem; /* Tamaño del ícono */
+}
