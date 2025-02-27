@@ -368,7 +368,14 @@ async function loginAliado(e) {
         } else {
             console.warn("No se pudo guardar el ID del aliado en localStorage.");
         }
-        
+        // Autenticación
+        if (data.status === "Success" && data.aliadoId) {
+            sessionStorage.setItem("aliadoId", data.aliadoId);
+            window.location.href = data.redirect;
+        } else {
+            alert("Error al iniciar sesión.");
+}
+
 
     } catch (error) {
         console.error("Error en la solicitud de inicio de sesión:", error);

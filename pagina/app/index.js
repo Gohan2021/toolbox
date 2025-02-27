@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import cookieParser from "cookie-parser";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,7 +10,8 @@ import { methods as authentication } from "./controllers/authentication.controll
 import servicesRoutes from "./public/routes/aliados.js";
 
 const app = express();
-const router = express.Router();
+app.use(cookieParser()); // Middleware para manejar cookies
+// const router = express.Router();
 
 // Configuración de __dirname en ES Modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,8 +21,10 @@ app.set("port", 4000);
 
 // Middleware para CORS
 app.use(cors({
-    origin: ["http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://127.0.0.1:4000"]
+    origin: ["http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://127.0.0.1:4000"],
+    credentials: true // Permitir el envío de cookies en las solicitudes
 }));
+
 
 // Middleware para manejar datos JSON y formularios
 app.use(express.urlencoded({ extended: true }));
@@ -62,14 +66,16 @@ app.post("/api/register/aliado/loadImages", upload.fields([
     { name: "idphotofront", maxCount: 1 },
     { name: "idphotoback", maxCount: 1 },
     { name: "imageFilecertName", maxCount: 10 }
-]), (req, res) => {
+]), async (req, res) => {
+
     console.log("Datos de la solicitud:", req.body);
     console.log("Archivos recibidos:", req.files);
 
-    if (!req.files) {
-        return res.status(400).json({ error: "No se han subido archivos" });
+    if (!req.files || !req.body.aliadoId) {
+        return res.status(400).json({ error: "No se han subido archivos o falta el ID del aliado" });
     }
 
+    // 📁 **Obtener las rutas de las imágenes**
     const fotoPerfilPath = req.files.fotoPerfil ? `/uploads/${req.files.fotoPerfil[0].filename}` : "";
     const imagePathFront = req.files.idphotofront ? `/uploads/${req.files.idphotofront[0].filename}` : "";
     const imagePathBack = req.files.idphotoback ? `/uploads/${req.files.idphotoback[0].filename}` : "";
@@ -78,14 +84,35 @@ app.post("/api/register/aliado/loadImages", upload.fields([
         ? req.files.imageFilecertName.map(file => `/uploads/${file.filename}`)
         : [];
 
-    return res.status(200).json({
-        message: "Imágenes subidas con éxito",
-        fotoPerfil: fotoPerfilPath,
-        idPhotoFront: imagePathFront,
-        idPhotoBack: imagePathBack,
-        certifications: certificationsPaths
-    });
+    // 🔗 **Conectar a la base de datos**
+    try {
+        const connection = await database();
+
+        // 📥 **Actualizar la columna 'foto' en la tabla 'aliado'**
+        const aliadoId = req.body.aliadoId; // Asegúrate de enviar el ID del aliado desde el front-end
+        const [result] = await connection.query(
+            "UPDATE aliado SET foto = ? WHERE id_aliado = ?",
+            [fotoPerfilPath, aliadoId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Aliado no encontrado" });
+        }
+
+        return res.status(200).json({
+            message: "Imágenes subidas y foto de perfil actualizada en la base de datos",
+            fotoPerfil: fotoPerfilPath,
+            idPhotoFront: imagePathFront,
+            idPhotoBack: imagePathBack,
+            certifications: certificationsPaths
+        });
+
+    } catch (error) {
+        console.error("Error al guardar la foto en la base de datos:", error.message);
+        return res.status(500).json({ error: "Error al guardar la foto en la base de datos" });
+    }
 });
+
 
 // Servir archivos estáticos desde la carpeta 'uploads'
 app.use("/uploads", express.static(uploadFolder));
@@ -122,50 +149,42 @@ app.post("/api/register/cliente", authentication.registerCliente);
 // Ruta para servicios y aliados
 app.use("/api", servicesRoutes);
 
-// ✅ Nueva ruta para obtener la información del aliado por su ID
+// ✅ Endpoint para obtener la información del aliado junto con la experiencia laboral
 app.get("/api/aliado/:id", async (req, res) => {
-    const { id } = req.params; // ✅ Cambiado a 'id' en lugar de 'id_aliado'
+    const { id } = req.params;
     try {
         const connection = await database();
-        const [rows] = await connection.query(
-            `SELECT nombre, apellido, telefono, email, foto
-             FROM aliado WHERE id_aliado = ?`, // ✅ Columna corregida a 'id'
+
+        // Consultar la información personal del aliado
+        const [aliadoData] = await connection.query(
+            `SELECT nombre, apellido, telefono, email, foto 
+             FROM aliado WHERE id_aliado = ?`, 
             [id]
         );
 
-        if (rows.length === 0) {
+        if (aliadoData.length === 0) {
             return res.status(404).json({ message: "Aliado no encontrado." });
         }
 
-        res.json(rows[0]);
+        // Consultar la experiencia laboral del aliado
+        const [experienciaData] = await connection.query(
+            `SELECT puesto, descripcion 
+             FROM experiencia_laboral WHERE id_aliado = ?`, 
+            [id]
+        );
+
+        return res.json({
+            aliado: aliadoData[0],
+            experiencia: experienciaData
+        });
+
     } catch (error) {
         console.error("Error al obtener la información del aliado:", error.message);
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
-// ✅ Nueva ruta para obtener la experiencia laboral del aliado
-app.get("/api/aliado/experiencia/:id", async (req, res) => {
-    const { id } = req.params;
-    try {
-        const connection = await database();
-        const [rows] = await connection.query(
-            `SELECT puesto, descripcion 
-             FROM experiencia_laboral 
-             WHERE id_aliado = ?`, 
-            [id]
-        );
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: "No se encontraron experiencias laborales para este aliado." });
-        }
-
-        res.json(rows);
-    } catch (error) {
-        console.error("Error al obtener la experiencia laboral:", error.message);
-        res.status(500).json({ message: "Error al obtener la experiencia laboral." });
-    }
-});
-
+// export default router;
 
 // Iniciar el servidor
 app.listen(app.get("port"), () => {

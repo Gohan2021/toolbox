@@ -54,10 +54,9 @@ async function loginAliado(req, res) {
         // 🍪 5. Configuración segura de la cookie
         const cookieOptions = {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES || 1) * 24 * 60 * 60 * 1000),
-            path: "/",
-            sameSite: "Strict"
+            secure: false, // Establecer en true solo si usas HTTPS
+            sameSite: "Lax", // "Strict" puede causar problemas con diferentes puertos
+            maxAge: 60 * 60 * 1000 // 1 hora
         };
 
         res.cookie("jwt", token, cookieOptions);
@@ -66,6 +65,7 @@ async function loginAliado(req, res) {
         return res.status(200).send({ 
             status: "Success", 
             message: "Inicio de sesión exitoso", 
+            aliadoId: user.id_aliado, // Enviar el ID del aliado
             redirect: "/hazteConocer",
             aliado: {
                 id_aliado: user.id_aliado,
@@ -87,46 +87,6 @@ async function loginAliado(req, res) {
     }
 }
 
-
-// REGISTRO ALIADO
-// async function registerAliado(req, res) {
-//     const { userNameAliado, surnameAliado, userIDAliado, emailAliado, passwordAliado, dobAliado, telAliado, dirAliado, expAliado, independentSkills } = req.body;
-//     try{
-//     if(!userNameAliado || !surnameAliado || !userIDAliado || !emailAliado || !passwordAliado) {
-//         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
-//     }
-//     const connection = await database(); // Get the database connection
-//     // Check for existing record
-//     const [existing] = await connection.query('SELECT * FROM aliado WHERE cedula = ? OR email = ? OR telefono = ?', [userIDAliado, emailAliado,telAliado]);
-//     if (existing.length > 0) {
-//         return res.status(400).send({ status: "Error", message: "Esta cédula, correo o teléfono ya están registrados" });
-//     }
-//     const salt = await bcryptjs.genSalt(5);
-//     const hashPassword = await bcryptjs.hash(passwordAliado, salt);
-//     const nuevoAliado = {
-//         user: userNameAliado,
-//         surnameAliado: surnameAliado,
-//         userIDAliado: userIDAliado,
-//         email: emailAliado, 
-//         password: hashPassword,
-//         dob: dobAliado,
-//         tel: telAliado,
-//         dir: dirAliado
-//     };
-
-//     // Insert into the database
-//     await connection.query('INSERT INTO aliado (nombre, apellido, email, contraseña, cedula, fecha_nacimiento, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-//         [nuevoAliado.user, nuevoAliado.surnameAliado, nuevoAliado.email, nuevoAliado.password, nuevoAliado.userIDAliado, nuevoAliado.dob, nuevoAliado.tel, nuevoAliado.dir]);
-//     // insert experience    
-//     await connection.query('INSERT INTO experiencia_laboral (puesto, descripcion) VALUES (?, ?)', [expAliado, skillsAliado]);
-
-//     return res.status(201).send({ status: "Success", message: `Nuevo aliado ${nuevoAliado.user} registrado exitosamente`, redirect: "/form" });
-//     }
-//     catch (err) {
-//         console.error('Error registering aliado:', err.message);
-//         res.status(500).json({ error: 'Error registering aliado', details: err.message });
-//     }
-// }
 async function registerAliado(req, res) {
     const { 
         userNameAliado, 
@@ -295,8 +255,27 @@ async function registerCliente(req, res) {
     }
 }
 
+// authMiddleware.js
+export function verifyToken(req, res, next) {
+    const token = req.cookies.jwt; // Asegúrate de que la cookie se lea correctamente
+
+    if (!token) {
+        return res.status(401).json({ message: "Acceso no autorizado, inicie sesión." });
+    }
+
+    try {
+        const decoded = jsonwebtoken.verify(token, process.env.JWT_LOGIN);
+        req.user = decoded; // Almacenar la info del usuario decodificado en la solicitud
+        next(); // Continuar al siguiente middleware o controlador
+    } catch (error) {
+        console.error("Token inválido:", error.message);
+        res.status(403).json({ message: "Token inválido o expirado." });
+    }
+}
+
 export const methods = {
     loginAliado,
     registerAliado,
     registerCliente
+    
 };
