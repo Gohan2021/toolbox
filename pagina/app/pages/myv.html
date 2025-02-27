@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>ToolBox</title>
     <link rel="icon" href="/imagenes/Logo.svg">
+    <script src="../js/navbar.js" defer></script>
+    <script src="form.js" defer></script>
     <style>
         .card {
             border: none;
@@ -34,87 +36,6 @@
 </head>
 
 <body>
-    <!-- header -->
-    <nav class="navbar navbar-expand-lg header bg-light shadow sticky-top">
-        <div class="container-fluid mx-5">
-        <!-- Logo -->
-            <a class="navbar-brand d-flex" href="#"><img src="./imagenes/Logo.svg" height="35" class="mx-2" alt="...">
-            <h5 class="fw-bold mt-2 text-warning">TOOLBOX</h5></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item dropdown mx-2">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Inicio
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item btn btn-warning" href="/cliente">Soy cliente</a></li>
-                            <li><a class="dropdown-item btn btn-warning" href="/">Soy aliado</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown mx-2">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Nosotros
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item btn btn-warning" href="#servicios">Nuestros servicios</a></li>
-                            <li><a class="dropdown-item btn btn-warning" href="/myv">Misión y visión</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown mx-2">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Comunidad
-                            </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item btn btn-warning" href="/hazteConocer">Mi perfil</a></li>
-                            <li><a class="dropdown-item btn btn-warning" href="/uso">Términos y condiciones de uso</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link btn btn-warning" aria-current="page" href="#footer">Contáctanos</a>
-                    </li>
-                </ul>
-                <!-- Login -->
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="dropdown dropstart">
-                        <button type="button" class="btn btn-warning px-3 py-1 rounded-4 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"><span class="mx-2 ">Mi cuenta</span><img src="/imagenes/login_1000997.png" class="mb-1" height="16" alt=".."></button>
-                        <div class="dropdown-menu">
-                            <form class="px-4 py-3">
-                              <div class="mb-3">
-                                <label for="exampleDropdownFormEmail1" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@ejemplo.com">
-                              </div>
-                              <div class="mb-3">
-                                <label for="exampleDropdownFormPassword1" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Contraseña">
-                              </div>
-                              <div class="mb-3">
-                                <div class="form-check">
-                                  <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                                  <label class="form-check-label" for="dropdownCheck">
-                                    Recordarme
-                                  </label>
-                                </div>
-                              </div>
-                              <button type="submit" class="btn btn-outline-dark">ingresar</button>
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item btn btn-warning" href="/form">Registrarme</a>
-                            <a class="dropdown-item btn btn-warning" href="#">olvidé mi contraseña</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </div>
-        </div>
-    </nav>
     <!-- Misión y Visión -->
     <section id="mision-vision" class="container my-5" style="height: 25rem;">
         <div class="row text-center">
