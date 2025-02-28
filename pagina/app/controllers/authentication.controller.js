@@ -1,6 +1,7 @@
 import bcryptjs from "bcryptjs";
 import database from '../database.js'; // Import database connection
 import jsonwebtoken from "jsonwebtoken";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -272,10 +273,68 @@ export function verifyToken(req, res, next) {
         res.status(403).json({ message: "Token inválido o expirado." });
     }
 }
+// Configurar el transporte de Nodemailer
+const transporter = nodemailer.createTransport({
+    service: "gmail", // O usa tu servicio de correo SMTP (Mailgun, SendGrid, SMTP personal, etc.)
+    auth: {
+        user: process.env.EMAIL_USER, // Tu correo electrónico
+        pass: process.env.EMAIL_PASS // Tu contraseña o App Password
+    }
+});
 
+// ✅ Endpoint para solicitar la recuperación de contraseña
+async function requestPasswordReset(req, res) {
+    const { email } = req.body;
+
+    try {
+        const connection = await database();
+
+        // Verificar si el correo existe en la base de datos
+        const [user] = await connection.query(
+            "SELECT id_aliado FROM aliado WHERE email = ?",
+            [email]
+        );
+
+        if (user.length === 0) {
+            return res.status(404).json({ message: "Correo no encontrado." });
+        }
+
+        const userId = user[0].id_aliado;
+
+        // 🔑 Generar un token de recuperación (puede ser más seguro usando JWT o un hash)
+        const resetToken = Math.random().toString(36).substring(2);
+
+        // Guardar el token en la base de datos (puede ser una tabla específica para tokens de recuperación)
+        await connection.query(
+            "UPDATE aliado SET reset_token = ? WHERE id_aliado = ?",
+            [resetToken, userId]
+        );
+
+        // Enviar el correo electrónico con el enlace de recuperación
+        const resetLink = `http://localhost:4000/reset-password?token=${resetToken}`;
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Recuperación de Contraseña - TOOLBOX",
+            html: `
+                <h2>Recuperación de Contraseña</h2>
+                <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                <a href="${resetLink}">Restablecer Contraseña</a>
+                <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+            `
+        });
+
+        return res.status(200).json({ message: "Correo de recuperación enviado." });
+
+    } catch (error) {
+        console.error("Error al solicitar la recuperación de contraseña:", error.message);
+        return res.status(500).json({ message: "Error al enviar el correo de recuperación." });
+    }
+}
 export const methods = {
     loginAliado,
     registerAliado,
-    registerCliente
-    
+    registerCliente,
+    requestPasswordReset
 };

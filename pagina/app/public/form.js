@@ -126,7 +126,6 @@ function addSkill() {
 
     skillsContainer.appendChild(skillDiv);
 }
-
 // Function for registering aliado
 async function registerAliado(e) {
     e.preventDefault();
@@ -271,50 +270,6 @@ async function registerAliado(e) {
         mostrarError("Error en la conexión con el servidor.");
     }
 }
-// Function for registering cliente
-async function registerCliente(e) {
-    e.preventDefault();
-    console.log('Registrando cliente...'); // Debugging
-    const userNameCliente = e.target.elements.userNameCliente.value;
-    const surnameCliente = e.target.elements.surnameCliente.value;
-    const emailCliente = e.target.elements.emailUserCliente.value;
-    const passwordCliente = e.target.elements.passwordCliente.value;
-    const telCliente = e.target.elements.telCliente.value;
-    const serviciosCliente = e.target.elements.serviciosCliente.value;
-
-    const res = await fetch("http://localhost:4000/api/register/cliente", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            userNameCliente: userNameCliente,
-            surnameCliente: surnameCliente,
-            emailCliente: emailCliente,
-            passwordCliente: passwordCliente,
-            telCliente: telCliente,
-            serviciosCliente: serviciosCliente
-        })
-    });
-    
-    // Handle server response
-    const data = await res.json();
-    console.log('Respuesta del servidor:', data);
-    
-    // Show or hide error message based on response
-    if (!res.ok) {
-        // mensajeError.textContent = data.message || 'Error al realizar el registro'; // Display specific error message
-        mensajeError.classList.remove("hidden"); // Show error message
-        return;
-    } else {
-        mensajeError.classList.add("hidden"); // Hide error message
-    }
-    
-    // Reload the page if the response is successful and there is a redirect
-    if (data.redirect) {
-        window.location.href = data.redirect;
-    }
-}
 // Login Aliado
 async function loginAliado(e) {
     e.preventDefault();
@@ -382,19 +337,138 @@ async function loginAliado(e) {
         alert("No se pudo conectar con el servidor.");
     }
 }
+// 🚦 Registro de Cliente
+async function registerCliente(e) {
+    e.preventDefault();
+    console.log('Registrando cliente...');
 
+    const form = e.target;
+    const userNameCliente = form.elements.userNameCliente?.value.trim();
+    const surnameCliente = form.elements.surnameCliente?.value.trim();
+    const emailCliente = form.elements.emailUserCliente?.value.trim();
+    const passwordCliente = form.elements.passwordCliente?.value.trim();
+    const telCliente = form.elements.telCliente?.value.trim();
+    const serviciosCliente = form.elements.serviciosCliente?.value.trim();
 
+    if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
+        alert("Por favor, complete todos los campos del formulario.");
+        return;
+    }
 
-// Login cliente
-async function loginCliente(e) {
-    
+    try {
+        const res = await fetch("http://localhost:4000/api/register/cliente", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userNameCliente,
+                surnameCliente,
+                emailCliente,
+                passwordCliente,
+                telCliente,
+                serviciosCliente
+            })
+        });
+
+        const data = await res.json();
+        console.log('Respuesta del servidor:', data);
+
+        if (!res.ok) {
+            alert(data.message || 'Error al realizar el registro');
+            return;
+        }
+
+        alert("Registro exitoso. Redirigiendo...");
+        window.location.href = data.redirect || "/";
+
+    } catch (error) {
+        console.error("Error en el registro de cliente:", error);
+        alert("Error al conectar con el servidor.");
+    }
+}
+// 🚪 Inicio de Sesión Aliado
+async function loginAliado(e) {
+    e.preventDefault();
+    console.log('Iniciando sesión...');
+
+    const form = e.target;
+    const email = form.elements.userEmailAliado?.value.trim();
+    const password = form.elements.userPasswordAliado?.value.trim();
+
+    if (!email || !password) {
+        alert("Por favor, complete todos los campos.");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:4000/api/login/aliado", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password }),
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Credenciales incorrectas.");
+            return;
+        }
+
+        console.log("Inicio de sesión exitoso:", data.message);
+
+        // ✅ Guardar la información del aliado en sessionStorage
+        if (data.aliado) {
+            sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+            sessionStorage.setItem("aliadoNombre", data.aliado.nombre);
+            sessionStorage.setItem("aliadoApellido", data.aliado.apellido);
+            sessionStorage.setItem("aliadoTelefono", data.aliado.telefono);
+            sessionStorage.setItem("aliadoEmail", data.aliado.email);
+        } else {
+            alert("No se pudo obtener la información del usuario.");
+            return;
+        }
+
+        window.location.href = data.redirect || "/hazteConocer";
+
+    } catch (error) {
+        console.error("Error en la solicitud de inicio de sesión:", error);
+        alert("No se pudo conectar con el servidor.");
+    }
+}
+// 🚪 Cerrar Sesión
+async function logout() {
+    try {
+        const res = await fetch("http://localhost:4000/api/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            sessionStorage.clear(); // ❌ Limpiar todos los datos de la sesión
+            alert("Sesión cerrada correctamente.");
+            window.location.href = "/";
+        } else {
+            alert(data.message || "Error al cerrar la sesión.");
+        }
+
+    } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+        alert("No se pudo cerrar la sesión correctamente.");
+    }
 }
 
-// Assign events to forms
-document.getElementById("register-form-aliado").addEventListener("submit", registerAliado);
-document.getElementById("register-form-cliente").addEventListener("submit", registerCliente);
-document.getElementById("login-form-aliado").addEventListener("submit", loginAliado);
-// document.getElementById("login-form-cliente").addEventListener("submit", loginCliente);
+// ⏭️ Asignar eventos a los formularios (Validar si existen)
+document.getElementById("register-form-aliado")?.addEventListener("submit", registerAliado);
+document.getElementById("register-form-cliente")?.addEventListener("submit", registerCliente);
+document.getElementById("login-form-aliado")?.addEventListener("submit", loginAliado);
+document.getElementById("logoutButton")?.addEventListener("click", logout);
+
 
 // Function that shows the form depending on the user's choice
 function showFields() {

@@ -7,6 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const loginContainer = document.getElementById("loginContainer");
             const logoutContainer = document.getElementById("logoutContainer");
 
+            // ✅ Comprobar si hay un email guardado en Local Storage
+            const savedEmail = localStorage.getItem("savedEmail");
+            if (savedEmail) {
+                document.getElementById("userEmailAliado").value = savedEmail;
+                document.getElementById("rememberMe").checked = true;
+            }
+
             // ✅ Verificar si el usuario está autenticado
             fetch("http://localhost:4000/api/aliado/perfil", {
                 method: "GET",
@@ -14,11 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(response => {
                 if (response.status === 200) {
-                    // Usuario autenticado
                     loginContainer.classList.add("d-none");
                     logoutContainer.classList.remove("d-none");
                 } else {
-                    // Usuario no autenticado
                     loginContainer.classList.remove("d-none");
                     logoutContainer.classList.add("d-none");
                 }
@@ -33,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const email = document.getElementById("userEmailAliado").value;
                     const password = document.getElementById("userPasswordAliado").value;
+                    const rememberMe = document.getElementById("rememberMe").checked;
 
                     try {
                         const response = await fetch("http://localhost:4000/api/login/aliado", {
@@ -45,6 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
 
                         if (response.ok) {
+                            // 🔑 Guardar el email si se seleccionó "Recordarme"
+                            if (rememberMe) {
+                                localStorage.setItem("savedEmail", email);
+                            } else {
+                                localStorage.removeItem("savedEmail");
+                            }
+
                             window.location.href = "/hazteConocer";
                         } else {
                             document.getElementById("mensajeErrorLogin").classList.remove("hidden");
@@ -78,6 +91,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
+            // 💡 Lógica para "Olvidé mi contraseña"
+            const forgotPasswordButton = document.getElementById("forgotPasswordButton");
+            if (forgotPasswordButton) {
+                forgotPasswordButton.addEventListener("click", async () => {
+                    const email = prompt("Por favor ingresa tu correo electrónico para recuperar tu contraseña:");
+                    if (email) {
+                        try {
+                            const response = await fetch("http://localhost:4000/api/request-password-reset", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ email })
+                            });
+                        
+                            const data = await response.json();
+                        
+                            if (response.ok) {
+                                alert(data.message);
+                            } else {
+                                alert(data.message || "Error al solicitar la recuperación de contraseña.");
+                            }
+                        } catch (error) {
+                            console.error("Error al solicitar la recuperación de contraseña:", error);
+                            alert("No se pudo enviar el correo de recuperación. Intenta de nuevo.");
+                        }
+                    }
+                });
+            }
         })
         .catch(error => console.error("Error al cargar el navbar:", error));
 });

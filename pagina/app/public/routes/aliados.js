@@ -1,6 +1,7 @@
 import express from "express";
 import database from "../../database.js";
 import { verifyToken } from "../../controllers/authentication.controller.js";
+import { methods as authentication } from "../../controllers/authentication.controller.js";
 
 const router = express.Router();
 
@@ -79,5 +80,7 @@ router.post("/logout", (req, res) => {
     return res.status(200).json({ message: "Sesión cerrada correctamente", redirect: "/" });
 });
 
+// Ruta para solicitar la recuperación de contraseña
+router.post("/request-password-reset", authentication.requestPasswordReset);
 
 export default router;

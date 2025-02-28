@@ -1,6 +1,5 @@
-// iconos de los servicios en la pagina del CLiente
-document.addEventListener('DOMContentLoaded', () => {
-    // Mapeo de servicios a iconos y rutas
+document.addEventListener('DOMContentLoaded', async () => {
+    // 💡 Lógica para los iconos de los servicios en la página del Cliente
     const services = [
         { name: "Plomería", icon: "fa-solid fa-shower", link: "/servicios/plomeria?servicioId=1&servicioNombre=Plomería" },
         { name: "Electricidad", icon: "fa-solid fa-bolt", link: "/servicios/electricidad?servicioId=2&servicioNombre=Electricidad" },
@@ -15,68 +14,68 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const container = document.getElementById('servicesContainer');
+    if (container) {
+        services.forEach(service => {
+            const col = document.createElement('div');
+            col.classList.add('col-md-4', 'mb-4');
 
-    services.forEach(service => {
-        const col = document.createElement('div');
-        col.classList.add('col-md-4', 'mb-4');
+            col.innerHTML = `
+                <a href="${service.link}" class="text-decoration-none">
+                    <button class="service-btn btn-light w-100 h-100">
+                        <div class="text-center py-3">
+                            <i class="${service.icon} service-icon mb-3"></i>
+                            <h5 class="card-title">${service.name}</h5>
+                        </div>
+                    </button>
+                </a>
+            `;
+            container.appendChild(col);
+        });
+    }
 
-        col.innerHTML = `
-            <a href="${service.link}" class="text-decoration-none">
-                <button class="service-btn btn-light w-100 h-100">
-                    <div class="text-center py-3">
-                        <i class="${service.icon} service-icon mb-3"></i>
-                        <h5 class="card-title">${service.name}</h5>
-                    </div>
-                </button>
-            </a>
-        `;
-        container.appendChild(col);
-    });
-});
-// Codigo para cada pagina de servicio
-document.addEventListener("DOMContentLoaded", async () => {
-    // Obtener el ID del servicio desde la URL
+    // 💡 Lógica para cargar los aliados en la página específica del servicio
     const urlParams = new URLSearchParams(window.location.search);
     const servicioId = urlParams.get("servicioId");
     const servicioNombre = urlParams.get("servicioNombre");
 
-    // Mostrar el nombre del servicio en la página
     const serviceTitle = document.getElementById("serviceTitle");
-    serviceTitle.textContent = `Aliados que ofrecen el servicio de ${servicioNombre}`;
-
-    if (!servicioId) {
-        serviceTitle.textContent = "Servicio no especificado.";
-        return;
+    if (serviceTitle) {
+        serviceTitle.textContent = servicioId 
+            ? `Aliados que ofrecen el servicio de ${servicioNombre}` 
+            : "Servicio no especificado.";
     }
 
+    if (!servicioId) return;
+
     try {
-        // Hacer la petición al backend para obtener los aliados
         const response = await fetch(`http://localhost:4000/api/servicios/${servicioId}`);
-        if (!response.ok) {
-            throw new Error("No se encontraron aliados para este servicio.");
-        }
+        if (!response.ok) throw new Error("No se encontraron aliados para este servicio.");
 
         const aliados = await response.json();
         const aliadosContainer = document.getElementById("aliadosContainer");
 
-        aliadosContainer.innerHTML = aliados.map(aliado => `
-            <div class="row mb-3">
-                <div class="card shadow-sm">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h5 class="card-title">${aliado.nombre} ${aliado.apellido}</h5>
-                            <p class="card-text">
-                                <strong>Teléfono:</strong> ${aliado.telefono}<br>
-                                <strong>Email:</strong> ${aliado.email}
-                            </p>
+        if (aliadosContainer) {
+            aliadosContainer.innerHTML = aliados.map(aliado => `
+                <div class="row mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">${aliado.nombre} ${aliado.apellido}</h5>
+                                <p class="card-text">
+                                    <strong>Teléfono:</strong> ${aliado.telefono}<br>
+                                    <strong>Email:</strong> ${aliado.email}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
 
     } catch (error) {
         console.error("Error al obtener los aliados:", error);
-        serviceTitle.textContent = "Error al cargar los aliados.";
+        if (serviceTitle) {
+            serviceTitle.textContent = "Error al cargar los aliados.";
+        }
     }
 });

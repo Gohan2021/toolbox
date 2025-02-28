@@ -2,8 +2,10 @@ async function loadProfileData() {
     try {
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {
             method: "GET",
-            credentials: "include" // Incluir las cookies en la solicitud
-            
+            credentials: "include",// Incluir las cookies en la solicitud
+            headers: {
+                "Content-Type": "application/json"
+            } 
         });
 
         if (!response.ok) {
