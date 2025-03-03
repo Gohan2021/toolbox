@@ -24,6 +24,10 @@ async function loadProfileData() {
             throw new Error("Datos del aliado no encontrados.");
         }
 
+        // 🛠 **Almacenar el ID del aliado en sessionStorage y localStorage**
+        sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+        localStorage.setItem("aliadoId", data.aliado.id_aliado);
+
         // ✅ Actualiza la información personal
         document.getElementById("nombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
         document.getElementById("telefonoAliado").textContent = data.aliado.telefono;
@@ -63,6 +67,7 @@ async function loadProfileData() {
         window.location.href = "/";
     }
 }
+
 
 
 
