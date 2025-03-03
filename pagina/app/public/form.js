@@ -143,10 +143,8 @@ async function registerAliado(e) {
     const telAliado = e.target.elements.telAliado.value;
     const dirAliado = e.target.elements.dirAliado.value;
     
-    // **Array para almacenar todas las habilidades**
     let skills = [];
 
-    // **1️⃣ Capturar la primera habilidad que ya está en el HTML**
     const firstSkillInput = document.getElementById("skillsAliado");
     const firstExpInput = document.getElementById("expAliado");
 
@@ -157,7 +155,6 @@ async function registerAliado(e) {
         });
     }
 
-    // **2️⃣ Capturar todas las habilidades dinámicas agregadas con la función `addSkill()`**
     document.querySelectorAll(".skill-entry").forEach(entry => {
         const skill = entry.querySelector(".skill-input").value;
         const experience = entry.querySelector(".exp-input").value;
@@ -166,67 +163,13 @@ async function registerAliado(e) {
         }
     });
 
-    // **3️⃣ Validar que haya al menos una habilidad ingresada**
     if (skills.length === 0) {
-        mostrarError("Debe agregar al menos una habilidad.");
+        alert("Debe agregar al menos una habilidad.");
         return;
     }
 
-    // **Obtener las imágenes de los inputs**
-    const imageFileFront = document.getElementById("imageInputFront").files[0];
-    const imageFileBack = document.getElementById("imageInputBack").files[0];
-    // const certFiles = document.getElementById("imageFilecert").files; // Certificaciones (Múltiples)
-
-    let imagePathFront = "";
-    let imagePathBack = "";
-    let certificationsPaths = []; // Para almacenar las rutas de las certificaciones
-
-    // **Función para subir imágenes**
-    async function uploadImage(imageFile, fieldName) {
-        if (!imageFile) return "";
-
-        const formData = new FormData();
-        formData.append(fieldName, imageFile);
-
-        try {
-            const response = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error al subir la imagen: ${response.statusText}`);
-            }
-
-            const imageData = await response.json();
-            console.log(`Imagen ${fieldName} subida con éxito:`, imageData);
-            return imageData.imagePath;
-
-        } catch (error) {
-            console.error(`Error al subir la imagen ${fieldName}:`, error);
-            // mostrarError(`Error al subir la imagen ${fieldName}. Inténtalo de nuevo.`);
-            return "";
-        }
-    }
-
-    // **Subir imágenes si están disponibles**
-    imagePathFront = await uploadImage(imageFileFront, "idphotofront");
-    imagePathBack = await uploadImage(imageFileBack, "idphotoback");
-
-    // **Subir todas las certificaciones, incluyendo las dinámicas**
-    document.querySelectorAll(".cert-input").forEach(async (input) => {
-        if (input.files.length > 0) {
-            for (let certFile of input.files) {
-                let certPath = await uploadImage(certFile, "imageFilecertName");
-                if (certPath) {
-                    certificationsPaths.push(certPath);
-                }
-            }
-        }
-    });
-
-    // **4️⃣ Enviar los datos al backend**
     try {
+        // 🔹 1️⃣ REGISTRAR AL USUARIO
         const res = await fetch("http://localhost:4000/api/register/aliado", {
             method: "POST",
             headers: {
@@ -241,17 +184,13 @@ async function registerAliado(e) {
                 passwordAliado,
                 telAliado, 
                 dirAliado,
-                skills,  // 🔹 Se envía el array con TODAS las habilidades
-                idPhotoFront: imagePathFront,
-                idPhotoBack: imagePathBack,
-                certifications: certificationsPaths // 🔹 Se envía el array con todas las certificaciones subidas
+                skills
             })
         });
 
         const data = await res.json();
         console.log('Respuesta del servidor:', data);
         
-        // **Mostrar error si la respuesta del servidor no es exitosa**
         if (!res.ok) {
             mensajeError.textContent = data.message || 'Error al realizar el registro';
             mensajeError.classList.remove("hidden");
@@ -260,16 +199,41 @@ async function registerAliado(e) {
             mensajeError.classList.add("hidden");
         }
 
-        // **Redirigir si la respuesta contiene una URL de redirección**
-        if (data.redirect) {
-            window.location.href = data.redirect;
+        // 🔹 2️⃣ INICIAR SESIÓN AUTOMÁTICAMENTE
+        const loginRes = await fetch("http://localhost:4000/api/login/aliado", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: emailAliado,
+                password: passwordAliado
+            }),
+            credentials: "include" // 🔹 Asegurar que la cookie `jwt` se almacena
+        });
+
+        const loginData = await loginRes.json();
+
+        if (!loginRes.ok) {
+            console.error("Error al iniciar sesión automáticamente:", loginData.message);
+            alert("Registro exitoso, pero hubo un problema iniciando sesión. Inicie sesión manualmente.");
+            return;
         }
+
+        console.log("✅ Inicio de sesión automático exitoso:", loginData);
+        // **Guardar el ID del aliado en sessionStorage**
+        if (loginData.aliadoId) {
+            sessionStorage.setItem("aliadoId", loginData.aliadoId);
+        }
+
+
+        // 🔹 3️⃣ REDIRIGIR A `hazteConocer.html`
+        window.location.href = "/hazteConocer";
 
     } catch (error) {
         console.error("Error al registrar el aliado:", error);
-        mostrarError("Error en la conexión con el servidor.");
+        alert("Error en la conexión con el servidor.");
     }
 }
+
 // Login Aliado
 async function loginAliado(e) {
     e.preventDefault();
@@ -292,7 +256,8 @@ async function loginAliado(e) {
             body: JSON.stringify({
                 email: userEmailAliado,
                 password: userPasswordAliado
-            })
+            }),
+            credentials: "include" // ✅ Permite que el navegador almacene la cookie JWT
         });
 
         const data = await res.json();
@@ -304,39 +269,28 @@ async function loginAliado(e) {
 
         console.log("Inicio de sesión exitoso:", data.message);
 
-        // Guardar el ID y la información del aliado en el almacenamiento local
-        if (data.aliado) {
-            localStorage.setItem("aliadoId", data.aliado.id_aliado);
+        // ✅ Guardar el ID del aliado en `sessionStorage` y `localStorage`
+        if (data.aliadoId) {
+            sessionStorage.setItem("aliadoId", data.aliadoId);
+            localStorage.setItem("aliadoId", data.aliadoId);
             localStorage.setItem("aliadoNombre", data.aliado.nombre);
             localStorage.setItem("aliadoApellido", data.aliado.apellido);
             localStorage.setItem("aliadoTelefono", data.aliado.telefono);
             localStorage.setItem("aliadoEmail", data.aliado.email);
-            // localStorage.setItem("fotoPerfil", data.aliado.foto || "/imagenes/acceso.png");
 
-            window.location.href = data.redirect;
+            // ✅ Redirigir a `hazteConocer.html`
+            window.location.href = "/hazteConocer.html";
         } else {
             alert("No se pudo obtener la información del usuario.");
+            return;
         }
-        if (res.ok && data.user && data.user.id) {
-            console.log("ID del aliado guardado:", data.user.id_aliado);
-            localStorage.setItem("aliadoId", data.user.id_aliado);
-        } else {
-            console.warn("No se pudo guardar el ID del aliado en localStorage.");
-        }
-        // Autenticación
-        if (data.status === "Success" && data.aliadoId) {
-            sessionStorage.setItem("aliadoId", data.aliadoId);
-            window.location.href = data.redirect;
-        } else {
-            alert("Error al iniciar sesión.");
-}
-
 
     } catch (error) {
         console.error("Error en la solicitud de inicio de sesión:", error);
         alert("No se pudo conectar con el servidor.");
     }
 }
+
 // 🚦 Registro de Cliente
 async function registerCliente(e) {
     e.preventDefault();

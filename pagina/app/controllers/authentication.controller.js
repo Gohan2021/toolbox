@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import database from '../database.js'; // Import database connection
-import jsonwebtoken from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
@@ -44,23 +44,24 @@ async function loginAliado(req, res) {
                 message: "Credenciales incorrectas" 
             });
         }
-
-        // 🔐 4. Generar token JWT seguro
-        const token = jsonwebtoken.sign(
+        // 🔐 Generar token JWT
+        const token = jwt.sign(
             { userId: user.id_aliado, email: user.email }, 
             process.env.JWT_LOGIN, 
-            { expiresIn: process.env.JWT_EXPIRATION || "1h" }
+            { expiresIn: "1h" }
         );
-
-        // 🍪 5. Configuración segura de la cookie
+        
+        // 🍪 Configuración segura de la cookie
         const cookieOptions = {
             httpOnly: true, 
-            secure: false, // Establecer en true solo si usas HTTPS
-            sameSite: "Lax", // "Strict" puede causar problemas con diferentes puertos
+            secure: false, // Cambiar a `true` si usas HTTPS
+            sameSite: "Lax", 
             maxAge: 60 * 60 * 1000 // 1 hora
         };
+        
+        res.cookie("jwt", token, cookieOptions); // ✅ Guardar la cookie
 
-        res.cookie("jwt", token, cookieOptions);
+
 
         // 📤 6. Enviar la información del aliado al frontend
         return res.status(200).send({ 
@@ -258,21 +259,27 @@ async function registerCliente(req, res) {
 
 // authMiddleware.js
 export function verifyToken(req, res, next) {
-    const token = req.cookies.jwt; // Asegúrate de que la cookie se lea correctamente
+    const token = req.cookies?.jwt; // 🔍 Extraer token de la cookie
+
+    console.log("🔍 Token recibido en verifyToken:", token);
 
     if (!token) {
-        return res.status(401).json({ message: "Acceso no autorizado, inicie sesión." });
+        console.warn("⚠️ No se recibió ningún token.");
+        return res.status(401).json({ message: "Acceso no autorizado, token no encontrado." });
     }
 
     try {
-        const decoded = jsonwebtoken.verify(token, process.env.JWT_LOGIN);
-        req.user = decoded; // Almacenar la info del usuario decodificado en la solicitud
-        next(); // Continuar al siguiente middleware o controlador
+        const decoded = jwt.verify(token, process.env.JWT_LOGIN);
+        console.log("✅ Token decodificado:", decoded);
+        req.user = decoded;
+        next();
     } catch (error) {
-        console.error("Token inválido:", error.message);
-        res.status(403).json({ message: "Token inválido o expirado." });
+        console.error("❌ Error al verificar el token:", error.message);
+        return res.status(403).json({ message: "Token inválido o expirado." });
     }
 }
+
+
 // Configurar el transporte de Nodemailer
 const transporter = nodemailer.createTransport({
     service: "gmail", // O usa tu servicio de correo SMTP (Mailgun, SendGrid, SMTP personal, etc.)

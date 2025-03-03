@@ -7,39 +7,45 @@ const router = express.Router();
 
 // ✅ Ruta protegida para obtener la información del aliado autenticado
 router.get("/aliado/perfil", verifyToken, async (req, res) => {
-    console.log("Solicitud autenticada. ID del usuario:", req.user?.userId);
+    console.log("📡 Solicitud autenticada. ID del usuario:", req.user?.userId);
     
-    const { userId } = req.user; // Obtener el ID del aliado desde el token
+    if (!req.user || !req.user.userId) {
+        return res.status(401).json({ message: "No autorizado, token inválido." });
+    }
 
     try {
         const connection = await database();
 
+        // 🔍 Obtener información del aliado
         const [aliadoData] = await connection.query(
-            `SELECT nombre, apellido, telefono, email, foto 
+            `SELECT id_aliado, nombre, apellido, telefono, email, foto 
              FROM aliado WHERE id_aliado = ?`, 
-            [userId]
+            [req.user.userId]
         );
 
         if (aliadoData.length === 0) {
             return res.status(404).json({ message: "Aliado no encontrado." });
         }
 
+        // 🔍 Obtener experiencia laboral
         const [experienciaData] = await connection.query(
             `SELECT puesto, descripcion 
              FROM experiencia_laboral WHERE id_aliado = ?`, 
-            [userId]
+            [req.user.userId]
         );
 
         return res.json({
             aliado: aliadoData[0],
-            experiencia: experienciaData
+            experiencia: experienciaData // ✅ Ahora la experiencia se envía correctamente
         });
 
     } catch (error) {
-        console.error("Error al obtener la información del aliado:", error.message);
+        console.error("❌ Error al obtener la información del aliado:", error.message);
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
+
+
 
 
 // Ruta existente para obtener los aliados de un servicio específico

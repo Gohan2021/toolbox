@@ -29,6 +29,11 @@ app.use(cors({
 // Middleware para manejar datos JSON y formularios
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser()); // 🔹 Middleware para manejar cookies correctamente
+app.use(cors({
+    origin: "http://localhost:4000",
+    credentials: true // 🔥 Asegurar que se envían cookies en las solicitudes
+}));
 
 // Intentar conectar a la base de datos antes de iniciar el servidor
 (async () => {
@@ -59,6 +64,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
 
 // ✅ **Endpoint para subir imágenes incluyendo foto de perfil**
 app.post("/api/register/aliado/loadImages", upload.fields([
@@ -190,5 +196,3 @@ if (process.env.NODE_ENV !== "test") {
         console.log("Servidor corriendo en puerto 4000");
     });
 }
-// Exportar para pruebas
-export default app;
