@@ -175,3 +175,169 @@ body {
 #logoutButton i {
     font-size: 1.2rem; /* Tamaño del ícono */
 }
+
+
+/* Tarjeta de perfil */
+/* Estilos Generales */
+/* Contenedor Principal */
+/* Contenedor principal que divide el perfil y las ofertas */
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* 📌 Sección del perfil (izquierda) */
+.profile-section {
+    width: 30%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Imagen de perfil */
+.profile-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid black;
+    object-fit: cover;
+}
+
+/* Botón para cambiar la imagen */
+.edit-image {
+    background: black;
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 80%;
+    text-align: center;
+    font-weight: 600; /* Hace que el texto resalte más */
+}
+
+/* ✅ Efecto hover para mejorar la interacción */
+.edit-image:hover {
+    background: white;
+    color: black;
+    border-color: black;
+    border: 2px solid black;
+}
+
+
+/* 📌 Tarjetas de datos personales y profesionales */
+.profile-info {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.info-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #ffc108;
+    margin-bottom: 15px;
+}
+
+.info-card h4 {
+    color: #ffc108;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    font-size: 0.95rem;
+    color: black;
+}
+
+/* 📌 Sección de ofertas de trabajo (derecha) */
+.jobs-section {
+    width: 70%;
+}
+
+/* Títulos */
+.jobs-section h3 {
+    font-size: 1.6rem;
+    font-weight:bold;
+    color: black;
+}
+/* Tarjetas de ofertas */
+.job-card {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.job-card:hover {
+    transform: scale(1.02);
+}
+
+/* Imagen en la oferta */
+.job-card img {
+    width: 120px;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Contenido de la oferta */
+.job-details {
+    padding: 15px;
+    flex: 1;
+}
+
+.job-details h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+}
+
+.job-details p {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Botones */
+.job-details .btn {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}
+
+.job-details .btn-warning {
+    background: #ffc108;
+    border: none;
+}
+
+.job-details .btn-success {
+    background: #25D366;
+    border: none;
+}
+
+/* Responsividad */
+@media (max-width: 992px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .profile-section, .jobs-section {
+        width: 100%;
+    }
+}
+
+
+
+

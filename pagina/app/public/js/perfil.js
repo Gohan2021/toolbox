@@ -4,7 +4,7 @@ async function loadProfileData() {
     try {
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {
             method: "GET",
-            credentials: "include", // ✅ Enviar cookies de autenticación
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -23,54 +23,35 @@ async function loadProfileData() {
         if (!data.aliado || !data.aliado.id_aliado) {
             throw new Error("Datos del aliado no encontrados.");
         }
-
-        // 🛠 **Almacenar el ID del aliado en sessionStorage y localStorage**
-        sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
-        localStorage.setItem("aliadoId", data.aliado.id_aliado);
-
-        // ✅ Actualiza la información personal
+        // 🔥 **Asegurar que el ID se guarde en sessionStorage y localStorage**
+        if (!sessionStorage.getItem("aliadoId")) {
+            sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+        }
+        if (!localStorage.getItem("aliadoId")) {
+            localStorage.setItem("aliadoId", data.aliado.id_aliado);
+        }
+        // Cargar datos personales
         document.getElementById("nombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
         document.getElementById("telefonoAliado").textContent = data.aliado.telefono;
         document.getElementById("emailAliado").textContent = data.aliado.email;
+        document.getElementById("profileImage").src = data.aliado.foto || "/imagenes/acceso.png";
 
-        // ✅ Cargar foto de perfil si existe
-        const profileImage = document.getElementById("profileImage");
-        profileImage.src = data.aliado.foto ? data.aliado.foto : "/imagenes/acceso.png";
-
-        // ✅ Renderizar experiencia laboral
-        const habilidadesContainer = document.getElementById("habilidadesAliado");
-        const experienciaContainer = document.getElementById("experienciaAliado");
-
+        // Cargar habilidades y experiencia combinadas
+        const habilidadesContainer = document.getElementById("habilidadesYExperiencia");
         habilidadesContainer.innerHTML = "";
-        experienciaContainer.innerHTML = "";
 
         if (data.experiencia && data.experiencia.length > 0) {
             data.experiencia.forEach(exp => {
-                // 🔥 Agregar puesto a habilidades
-                const puestoElement = document.createElement("li");
-                puestoElement.innerHTML = `<strong>${exp.puesto}</strong>`;
-                habilidadesContainer.appendChild(puestoElement);
-
-                // 🔥 Agregar descripción a experiencia
-                const descripcionElement = document.createElement("p");
-                descripcionElement.textContent = exp.descripcion;
-                experienciaContainer.appendChild(descripcionElement);
+                habilidadesContainer.innerHTML += `<p>🛠 <strong>${exp.puesto}</strong> – ${exp.descripcion}</p>`;
             });
         } else {
-            habilidadesContainer.innerHTML = "<p>No se encontraron habilidades registradas.</p>";
-            experienciaContainer.innerHTML = "<p>No se encontró experiencia laboral registrada.</p>";
+            habilidadesContainer.innerHTML = "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
         }
 
     } catch (error) {
-        console.error("❌ Error al cargar la información del perfil:", error);
-        alert("Error al cargar la información del perfil. Inicia sesión nuevamente.");
-        window.location.href = "/";
+        console.error("❌ Error al cargar el perfil:", error);
     }
 }
-
-
-
-
 
 // 🚪 **Lógica para cerrar sesión**
 function logout() {
@@ -104,7 +85,16 @@ document.addEventListener("DOMContentLoaded", () => {
 async function uploadProfileImage(event) {
     const fileInput = document.getElementById("fotoPerfil");
     const file = fileInput.files[0];
-    const aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+
+    // 🛠 Intentar obtener el ID del aliado
+    let aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+
+    // 🚀 Si no existe, intentar recargar el perfil antes de fallar
+    if (!aliadoId) {
+        console.warn("⚠️ ID del aliado no encontrado. Intentando recargar perfil...");
+        await loadProfileData();  
+        aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+    }
 
     if (!file) {
         alert("Por favor selecciona una imagen.");
@@ -113,12 +103,13 @@ async function uploadProfileImage(event) {
 
     if (!aliadoId) {
         alert("No se encontró el ID del aliado. Inicia sesión nuevamente.");
+        window.location.href = "/"; 
         return;
     }
 
     const formData = new FormData();
     formData.append("fotoPerfil", file);
-    formData.append("aliadoId", aliadoId); // Enviar el ID del aliado
+    formData.append("aliadoId", aliadoId); 
 
     try {
         const response = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
@@ -136,7 +127,8 @@ async function uploadProfileImage(event) {
         }
 
     } catch (error) {
-        console.error("Error al subir la imagen:", error);
+        console.error("❌ Error al subir la imagen:", error);
         alert("Error al subir la imagen. Intenta de nuevo.");
     }
 }
+

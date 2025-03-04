@@ -270,9 +270,9 @@ async function loginAliado(e) {
         console.log("Inicio de sesión exitoso:", data.message);
 
         // ✅ Guardar el ID del aliado en `sessionStorage` y `localStorage`
-        if (data.aliadoId) {
-            sessionStorage.setItem("aliadoId", data.aliadoId);
-            localStorage.setItem("aliadoId", data.aliadoId);
+        if (data.aliado && data.aliado.id_aliado) {
+            sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+            localStorage.setItem("aliadoId", data.aliado.id_aliado);
             localStorage.setItem("aliadoNombre", data.aliado.nombre);
             localStorage.setItem("aliadoApellido", data.aliado.apellido);
             localStorage.setItem("aliadoTelefono", data.aliado.telefono);
