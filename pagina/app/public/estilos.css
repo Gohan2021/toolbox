@@ -338,6 +338,38 @@ body {
     }
 }
 
+/* pagina de la informacion de los aliados de los servicios  */
+
+.aliado-card {
+    border-radius: 12px;
+    background: #ffffff;
+    transition: 0.3s;
+    border: 1px solid #ddd;
+}
+
+.aliado-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.aliado-image-container {
+    flex-shrink: 0;
+}
+
+.aliado-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffc108;
+}
+
+.aliado-contact .btn {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+
 
 
 

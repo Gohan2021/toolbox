@@ -56,7 +56,7 @@ router.get("/servicios/:servicioId", async (req, res) => {
         const connection = await database();
 
         const [rows] = await connection.query(
-            `SELECT a.nombre, a.apellido, a.telefono, a.email
+            `SELECT a.nombre, a.apellido, a.telefono, a.email, a.foto
             FROM aliado a
             JOIN aliado_servicio asv ON asv.id_aliado = a.id_aliado
             JOIN servicio s ON asv.id_servicio = s.id_servicio

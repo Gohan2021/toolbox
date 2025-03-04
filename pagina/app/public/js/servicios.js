@@ -57,20 +57,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (aliadosContainer) {
             aliadosContainer.innerHTML = aliados.map(aliado => `
                 <div class="row mb-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h5 class="card-title">${aliado.nombre} ${aliado.apellido}</h5>
-                                <p class="card-text">
-                                    <strong>Teléfono:</strong> ${aliado.telefono}<br>
-                                    <strong>Email:</strong> ${aliado.email}
-                                </p>
+                    <div class="col-md-12">
+                        <div class="card aliado-card shadow-sm p-3">
+                            <div class="card-body d-flex align-items-center">
+                                <!-- Imagen del aliado -->
+                                <div class="aliado-image-container me-3">
+                                    <img src="${aliado.foto || '../imagenes/acceso.png'}" class="aliado-image" alt="Foto de ${aliado.nombre}">
+                                </div>
+                                
+                                <!-- Información del aliado -->
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">${aliado.nombre} ${aliado.apellido}</h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-phone"></i> <strong>Teléfono:</strong> ${aliado.telefono}<br>
+                                        <i class="fas fa-envelope"></i> <strong>Email:</strong> ${aliado.email}
+                                    </p>
+                                </div>
+        
+                                <!-- Botones de contacto -->
+                                <div class="aliado-contact">
+                                    <a href="tel:${aliado.telefono}" class="btn btn-warning me-2">
+                                        <i class="fas fa-phone-alt"></i> Llamar
+                                    </a>
+                                    <a href="mailto:${aliado.email}" class="btn btn-dark">
+                                        <i class="fas fa-envelope"></i> Email
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
+        
 
     } catch (error) {
         console.error("Error al obtener los aliados:", error);
