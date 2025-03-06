@@ -406,7 +406,7 @@ async function logout() {
         if (res.ok) {
             sessionStorage.clear(); // ❌ Limpiar todos los datos de la sesión
             alert("Sesión cerrada correctamente.");
-            window.location.href = "/";
+            window.location.href = "/aliado";
         } else {
             alert(data.message || "Error al cerrar la sesión.");
         }

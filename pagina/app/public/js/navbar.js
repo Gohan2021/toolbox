@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("/components/navbar.html")
-        .then(response => response.text())
+// 🔍 Detectar en qué página estamos
+        const isClientePage = window.location.pathname.includes("/cliente");
+        const navbarFile = isClientePage ? "/components/navbar_cliente.html" : "/components/navbar.html";
+        fetch(navbarFile).then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML("afterbegin", data);
 

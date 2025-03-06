@@ -13,7 +13,7 @@ async function loadProfileData() {
         if (response.status === 401 || response.status === 403) {
             console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
             alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-            window.location.href = "/";
+            window.location.href = "/aliado";
             return;
         }
 

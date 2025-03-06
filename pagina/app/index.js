@@ -127,7 +127,8 @@ app.use("/uploads", express.static(uploadFolder));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas para las páginas principales
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "pages", "index.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "pages", "usuario.html")));
+app.get("/aliado", (req, res) => res.sendFile(path.join(__dirname, "pages", "index.html")));
 app.get("/form", (req, res) => res.sendFile(path.join(__dirname, "pages", "form.html")));
 app.get("/cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "cliente.html")));
 app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages", "hazteConocer.html")));

@@ -115,7 +115,7 @@ router.post("/logout", (req, res) => {
         sameSite: "Strict",
         path: "/"
     });
-    return res.status(200).json({ message: "Sesión cerrada correctamente", redirect: "/" });
+    return res.status(200).json({ message: "Sesión cerrada correctamente", redirect: "/aliado" });
 });
 
 // Ruta para solicitar la recuperación de contraseña

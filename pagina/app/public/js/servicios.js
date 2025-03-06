@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                                         <h5 class="card-title">${aliado.nombre} ${aliado.apellido}</h5>
                                         <p class="card-text">
                                             <i class="fas fa-phone"></i> <strong>Teléfono:</strong> ${aliado.telefono}<br>
-                                            <i class="fas fa-phone"></i> <strong>ID:</strong> ${aliado.id_aliado}<br>
                                             <i class="fas fa-envelope"></i> <strong>Email:</strong> ${aliado.email}
                                         </p>
                                     </div>
