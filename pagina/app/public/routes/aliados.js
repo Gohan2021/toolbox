@@ -44,10 +44,6 @@ router.get("/aliado/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
-
-
-
-
 // Ruta existente para obtener los aliados de un servicio específico
 router.get("/servicios/:servicioId", async (req, res) => {
     const { servicioId } = req.params;
@@ -56,7 +52,7 @@ router.get("/servicios/:servicioId", async (req, res) => {
         const connection = await database();
 
         const [rows] = await connection.query(
-            `SELECT a.nombre, a.apellido, a.telefono, a.email, a.foto
+            `SELECT a.id_aliado, a.nombre, a.apellido, a.telefono, a.email, a.foto
             FROM aliado a
             JOIN aliado_servicio asv ON asv.id_aliado = a.id_aliado
             JOIN servicio s ON asv.id_servicio = s.id_servicio
@@ -75,6 +71,42 @@ router.get("/servicios/:servicioId", async (req, res) => {
         res.status(500).json({ message: "Error al obtener los aliados.", error: error.message });
     }
 });
+// ✅ Nueva ruta para obtener la información de un aliado por su ID
+router.get("/aliado/:id_aliado", async (req, res) => {
+    const { id_aliado } = req.params;
+
+    try {
+        const connection = await database();
+
+        // 🔍 Obtener información del aliado
+        const [aliadoData] = await connection.query(
+            `SELECT id_aliado, nombre, apellido, telefono, email, foto 
+             FROM aliado WHERE id_aliado = ?`, 
+            [id_aliado]
+        );
+
+        if (aliadoData.length === 0) {
+            return res.status(404).json({ message: "Aliado no encontrado." });
+        }
+
+        // 🔍 Obtener experiencia laboral
+        const [experienciaData] = await connection.query(
+            `SELECT puesto, descripcion 
+             FROM experiencia_laboral WHERE id_aliado = ?`, 
+            [id_aliado]
+        );
+
+        return res.json({
+            aliado: aliadoData[0],
+            experiencia: experienciaData
+        });
+
+    } catch (error) {
+        console.error("❌ Error al obtener la información del aliado:", error.message);
+        res.status(500).json({ message: "Error al obtener la información del aliado." });
+    }
+});
+
 // 🚪 Endpoint para cerrar sesión
 router.post("/logout", (req, res) => {
     res.clearCookie("jwt", {

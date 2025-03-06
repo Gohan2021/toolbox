@@ -368,6 +368,59 @@ body {
     font-size: 0.9rem;
     padding: 8px 12px;
 }
+.aliado-buttons .btn {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.aliado-buttons .btn-outline-dark {
+    border: 2px solid #000;
+    color: #000;
+}
+
+.aliado-buttons .btn-outline-dark:hover {
+    background: #000;
+    color: #fff;
+}
+
+.aliado-buttons .btn-warning {
+    background: #ffc108;
+    border: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.aliado-buttons .btn-warning:hover {
+    background: #ff9800;
+}
+.modal-header {
+    background: #ffc108;
+    color: black;
+    font-weight: bold;
+}
+
+.modal-title {
+    font-size: 1.4rem;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.aliado-image-container img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ffc108;
+}
+
+.modal-footer {
+    background: #f8f9fa;
+}
+
 
 
 
