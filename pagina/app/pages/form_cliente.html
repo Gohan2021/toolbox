@@ -26,56 +26,41 @@
     <!-- formulario -->
     <div class="form-container">
         <h2 class="text-center text-warning mb-4">Empecemos creando tu perfil</h2>
-            <!-- Campos para Aliado -->
-            <form id="register-form-aliado">
-                <div id="independentFields" class="">
+            <!-- Campos para Cliente -->
+            <form id="register-form-cliente">
+                <div id="client" class="">
                     <div class="mb-2">
                         <!-- Nombre -->
-                        <label for="userNameAliado" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" name="userNameAliado" id="userNameAliado" placeholder="Ingresa nombre" required>
-                        <!-- Apellidos -->
-                        <label for="surnameAliado" class="form-label my-2">Apellidos</label>
-                        <input type="text" class="form-control" name="surnameAliado" id="surnameAliado" placeholder="Ingresa apellidos" required>
-                        <!-- Cedula -->
-                        <label for="userIDAliado" class="form-label my-2">Número de identificación</label>
-                        <input type="number" class="form-control" name="userIDAliado" id="userIDAliado" placeholder="Ingresa identificación" required>
-                        <!-- Foto de cedula frontal-->
-                        <label for="idphotofront" class="form-label my-2">Foto de la cédula lado frontal</label>
-                        <input class="form-control" type="file" name="idphotofront" id="imageInputFront" accept="image/*" required>
-                        <!-- Foto de cedula trasera-->
-                        <label for="idphotoback" class="form-label my-2">Foto de la cédula lado trasera</label>
-                        <input class="form-control" type="file" name="idphotoback" id="imageInputBack" accept="image/*" required>
-                        <!-- Date of Birth -->
-                        <label for="dobAliado" class="form-label my-2">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" id="dobAliado" name="dobAliado" required>
-                        <!-- telefono -->
-                        <label for="telAliado" class="form-label my-2">Teléfono</label>
-                        <input type="number" class="form-control" name="telAliado" id="telAliado" placeholder="Ingresa teléfono" required>
-                        <!-- direccion -->
-                         <label for="dirAliado" class="form-label my-2">Dirección</label>
-                         <input type="text" class="form-control" name="dirAliado" id="dirAliado" placeholder="ingresa la direccion de residencia">
-                        <!-- Correo -->
-                        <label for="emailUserAliado" class="form-label my-2">Correo</label>
-                        <input type="text" class="form-control" name="emailUserAliado" id="emailUserAliado" placeholder="name@example.com">
-                        <label for="passwordAliado" class="col-form-label">Contraseña</label>
+                        <label for="userNameCliente" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" name="userNameCliente" id="userNameCliente" placeholder="Ingresa nombres" required>
+                        <!-- Apellido -->
+                        <label for="surnameCliente" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" name="surnameCliente" id="surnameCliente" placeholder="Ingresa apellidos" required>
+                        <!-- correo -->
+                        <label for="emailUserCliente" class="form-label">Correo</label>
+                        <input type="text" class="form-control" name="emailUserCliente" id="emailUserCliente" placeholder="name@example.com">
+                        <!-- contraseña -->
+                        <label for="passwordCliente" class="col-form-label">Contraseña</label>
                         <div class="row g-3 align-items-center">
                             <div class="col-auto">
-                              <input type="password" name="passwordAliado" id="passwordAliado" class="form-control" aria-describedby="passwordHelpInline">
+                              <input type="password" name="passwordCliente" id="passwordCliente" class="form-control" aria-describedby="passwordHelpInline">
                             </div>
                             <div class="col-auto">
                               <span id="passwordHelpInline" class="form-text">
                                 Debe tener entre 8-20 caracteres.
                               </span>
-                            </div>
-                          </div>
+                            </div>  
+                        </div>
+                        <!-- telefono -->
+                        <label for="telCliente" class="form-label my-2">Teléfono</label>
+                        <input type="number" class="form-control" name="telCliente" id="telCliente" placeholder="Ingresa teléfono" required>
                     </div>
-                    <!-- Servicios -->
-                    <div class="my-2">
-                        <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
+                    <!-- servicios -->
+                    <h5 class="semi-bold">¿Qué servicios requieres?</h5>
                         <!-- Servicios que ofrece con Dropdown -->
-                        <label for="skillsAliado" class="form-label">Servicio que ofreces</label>
+                        <label for="skillsAliado" class="form-label">Servicio que requieres</label>
                         <div class="dropdown skillsDropdown mb-2">
-                            <button class="btn btn-secondary dropdown-toggle form-control text-start" type="button" id="skillsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Selecciona un servicio</button>
+                            <button class="btn btn-secondary dropdown-toggle form-control text-start" type="button" id="skillsDropdownCliente" data-bs-toggle="dropdown" aria-expanded="false">Selecciona un servicio</button>
                             <ul class="dropdown-menu" aria-labelledby="skillsDropdown">
                                 <li><a class="dropdown-item" href="#" data-value="plomeria">Plomería</a></li>
                                 <li><a class="dropdown-item" href="#" data-value="electricidad">Electricidad</a></li>
@@ -89,23 +74,15 @@
                                 <li><a class="dropdown-item" href="#" data-value="obras">Obras civiles</a></li>
                             </ul>
                             <!-- Input oculto para almacenar el valor seleccionado -->
-                            <input type="hidden" id="skillsAliado" name="skillsAliado" required>
+                            <input type="hidden" id="skillsAliadoClliente" name="skillsAliadoCliente" required>
                         </div>
-                        <!-- experiencia en meses del servicio -->
-                        <label for="expAliado" class="form-label my-2">Experiencia</label>
-                        <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Experiencia en meses o años en el oficio" required>
-                        <!-- Foto de certificados-->
-                        <label for="imageFilecert" class="form-label my-2">Agregar certificaciones (opcional)</label>
-                        <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert" accept="image/*">
-                    </div>
-                    <div id="skillsContainer"></div>
-                    <button type="button" class="btn btn-warning my-2" onclick="addSkill()">Agregar otra habilidad </button>
-                                        
-                    <p id="error" class="text-danger hidden">Error al realizar el registro, la cédula, el correo o el teléfono ya están registrados</p>
-
-                    <button type="submit" class="btn btn-warning mt-3 w-100">Crear Perfil</button>
+                        <div id="servicesContainer"></div>
+                        <button type="button" class="btn btn-warning my-2" onclick="addServiceCliente()">Agregar otro servicio </button>
+                    <p id="error" class="text-danger hidden">Error en el registro, el correo ya existe</p>
+                    <button type="submit" class="btn btn-warning w-100">Crear Perfil</button>
                 </div>
             </form>
+        
     </div>
     <!-- Botón de Chatea con nosotros -->
     <a href="#" class="chat-button fw-semibold pb-2" target="_blank">
@@ -160,10 +137,10 @@
                 return emailPattern.test(email);
             }
     
-            document.getElementById("register-form-aliado").addEventListener("submit", (e) => {
+            document.getElementById("register-form-cliente").addEventListener("submit", (e) => {
                 e.preventDefault();
     
-                const emailInput = document.getElementById("emailUserAliado");
+                const emailInput = document.getElementById("emailUserCliente");
                 const email = emailInput.value.trim();
     
                 if (!validarCorreo(email)) {

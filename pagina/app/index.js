@@ -8,6 +8,7 @@ import cors from "cors";
 import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
 import servicesRoutes from "./public/routes/aliados.js";
+import clientesRoutes from "./public/routes/clientes.js";
 
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
@@ -130,8 +131,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "pages", "usuario.html")));
 app.get("/aliado", (req, res) => res.sendFile(path.join(__dirname, "pages", "index.html")));
 app.get("/form", (req, res) => res.sendFile(path.join(__dirname, "pages", "form.html")));
+app.get("/form-cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "form_cliente.html")));
 app.get("/cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "cliente.html")));
 app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages", "hazteConocer.html")));
+app.get("/perfilCliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "perfilCliente.html")));
 app.get("/myv", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv.html")));
 app.get("/politicas", (req, res) => res.sendFile(path.join(__dirname, "pages", "politicas.html")));
 app.get("/uso", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso.html")));
@@ -150,11 +153,14 @@ app.get("/servicios/:servicio", (req, res) => {
 
 // Rutas de autenticación
 app.post("/api/login/aliado", authentication.loginAliado);
+app.post("/api/login/cliente", authentication.loginCliente);
 app.post("/api/register/aliado", authentication.registerAliado);
 app.post("/api/register/cliente", authentication.registerCliente);
 
 // Ruta para servicios y aliados
 app.use("/api", servicesRoutes);
+//Ruta para clientes
+app.use("/api", clientesRoutes); 
 
 // ✅ Endpoint para obtener la información del aliado junto con la experiencia laboral
 app.get("/api/aliado/:id", async (req, res) => {

@@ -7,67 +7,49 @@ import dotenv from "dotenv";
 dotenv.config();
 // Inicio de sesión
 async function loginAliado(req, res) {
-    const { email, password } = req.body; 
-    console.log("Intento de inicio de sesión con:", email);
+    const { email, password } = req.body;
+    console.log("🔑 Intento de inicio de sesión ALIADO con:", email);
 
     try {
-        // 🔍 1. Validar campos obligatorios
         if (!email || !password) {
-            return res.status(400).send({ 
-                status: "Error", 
-                message: "Los campos están incompletos"
-            });
+            return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
         }
 
-        const connection = await database(); 
-
-        // 🔍 2. Consultar si el usuario existe
-        const [rows] = await connection.query(
-            "SELECT * FROM aliado WHERE email = ?", 
-            [email]
-        );
+        const connection = await database();
+        const [rows] = await connection.query("SELECT * FROM aliado WHERE email = ?", [email]);
 
         if (rows.length === 0) {
-            return res.status(404).send({ 
-                status: "Error", 
-                message: "Correo o contraseña incorrectos" 
-            });
+            return res.status(404).send({ status: "Error", message: "Correo o contraseña incorrectos" });
         }
 
-        const user = rows[0]; 
-
-        // 🔑 3. Verificar la contraseña
+        const user = rows[0];
         const isMatch = await bcryptjs.compare(password, user.contraseña);
+
         if (!isMatch) {
-            return res.status(401).send({ 
-                status: "Error", 
-                message: "Credenciales incorrectas" 
-            });
+            return res.status(401).send({ status: "Error", message: "Credenciales incorrectas" });
         }
+
         // 🔐 Generar token JWT
         const token = jwt.sign(
-            { userId: user.id_aliado, email: user.email }, 
-            process.env.JWT_LOGIN, 
+            { userId: user.id_aliado, email: user.email, role: "aliado" }, // Agregamos `role`
+            process.env.JWT_LOGIN,
             { expiresIn: "1h" }
         );
-        
-        // 🍪 Configuración segura de la cookie
-        const cookieOptions = {
+
+        // 🍪 Configurar la cookie con un nombre específico para Aliado
+        res.cookie("jwt_aliado", token, { 
             httpOnly: true, 
-            secure: false, // Cambiar a `true` si usas HTTPS
+            secure: false, 
             sameSite: "Lax", 
-            maxAge: 60 * 60 * 1000 // 1 hora
-        };
-        
-        res.cookie("jwt", token, cookieOptions); // ✅ Guardar la cookie
+            maxAge: 60 * 60 * 1000 
+        });
 
+        console.log("✅ Cookie JWT de ALIADO configurada correctamente:", token);
 
-
-        // 📤 6. Enviar la información del aliado al frontend
-        return res.status(200).send({ 
-            status: "Success", 
-            message: "Inicio de sesión exitoso", 
-            aliadoId: user.id_aliado, // Enviar el ID del aliado
+        return res.status(200).send({
+            status: "Success",
+            message: "Inicio de sesión exitoso",
+            aliadoId: user.id_aliado,
             redirect: "/hazteConocer",
             aliado: {
                 id_aliado: user.id_aliado,
@@ -75,19 +57,15 @@ async function loginAliado(req, res) {
                 apellido: user.apellido,
                 telefono: user.telefono,
                 email: user.email
-                
             }
         });
 
     } catch (err) {
-        console.error("Error durante el inicio de sesión:", err.message);
-        return res.status(500).json({ 
-            status: "Error", 
-            message: "Error durante el inicio de sesión", 
-            details: err.message 
-        });
+        console.error("❌ Error en el login ALIADO:", err.message);
+        return res.status(500).json({ status: "Error", message: "Error en el inicio de sesión", details: err.message });
     }
 }
+
 
 async function registerAliado(req, res) {
     const { 
@@ -200,66 +178,175 @@ async function registerAliado(req, res) {
     }
 }
 
-// REGISTRO CLIENTE
+// 🚀 REGISTRO CLIENTE
 async function registerCliente(req, res) {
-    const { userNameCliente, surnameCliente, emailCliente, passwordCliente, telCliente, serviciosCliente } = req.body;
-    try{
-    if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente || !serviciosCliente) {
+    const { 
+        userNameCliente, 
+        surnameCliente, 
+        emailCliente, 
+        passwordCliente, 
+        telCliente, 
+        serviciosCliente // 🔹 Lista de servicios que requiere el cliente
+    } = req.body;
+
+    try {
+        // ✅ 1️⃣ Validación de campos obligatorios
+        if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
+            return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios." });
+        }
+
+        const connection = await database(); // Conectar a la base de datos
+
+        // ✅ 2️⃣ Verificar si el usuario ya está registrado
+        const [existing] = await connection.query(
+            "SELECT * FROM cliente WHERE email = ? OR telefono = ?", 
+            [emailCliente, telCliente]
+        );
+
+        if (existing.length > 0) {
+            return res.status(400).send({ status: "Error", message: "Este correo o teléfono ya están registrados." });
+        }
+
+        // ✅ 3️⃣ Hashear la contraseña
+        const salt = await bcryptjs.genSalt(5);
+        const hashPassword = await bcryptjs.hash(passwordCliente, salt);
+
+        // ✅ 4️⃣ Insertar Cliente en la Base de Datos
+        const [result] = await connection.query(
+            "INSERT INTO cliente (nombre, apellido, email, contraseña, telefono) VALUES (?, ?, ?, ?, ?)", 
+            [userNameCliente, surnameCliente, emailCliente, hashPassword, telCliente]
+        );
+
+        const clientId = result.insertId; // Obtener el ID del nuevo cliente
+
+        // 🔍 **Mapeo directo de los servicios a sus IDs correspondientes**
+        const servicioMap = {
+            "plomeria": 1,
+            "Electricidad": 2,
+            "carpinteria": 3,
+            "enchape": 4,
+            "metalicas": 5,
+            "pintura": 6,
+            "cerrajeria": 7,
+            "refrigeracion": 8,
+            "jardineria": 9,
+            "obras": 10
+        };
+
+        const serviciosRelacionados = []; // Para almacenar las relaciones válidas
+
+        // ✅ 5️⃣ Insertar servicios solicitados por el cliente
+        if (Array.isArray(serviciosCliente) && serviciosCliente.length > 0) {
+            
+            for (let servicio of serviciosCliente) {
+                // Validar que el servicio sea válido
+                if (!servicio) {
+                    console.warn("⚠️ Servicio inválido o faltante:", servicio);
+                    continue; // Saltar al siguiente servicio
+                }
+
+                // Obtener el ID del servicio desde el mapa
+                const servicioId = servicioMap[servicio.toLowerCase()];
+
+                // Si el ID del servicio es válido, agregar a la relación
+                if (servicioId) {
+                    serviciosRelacionados.push([servicioId, clientId]);
+                } else {
+                    console.warn(`El servicio "${servicio}" no coincide con ningún registro válido.`);
+                }
+            }
+
+            // ✅ 6️⃣ Insertar las relaciones en la tabla `cliente_servicio`
+            if (serviciosRelacionados.length > 0) {
+                await connection.query(
+                    "INSERT INTO cliente_servicio (id_servicio, id_cliente) VALUES ?",
+                    [serviciosRelacionados]
+                );
+            }
+        }
+
+        return res.status(201).send({ 
+            status: "Success", 
+            message: `Nuevo cliente ${userNameCliente} registrado exitosamente`, 
+            redirect: "/perfilCliente" 
+        });
+
+    } catch (err) {
+        console.error("❌ Error registrando cliente:", err.message);
+        res.status(500).json({ error: "Error registrando cliente", details: err.message });
+    }
+}
+// 🚪 Inicio de Sesión Cliente
+async function loginCliente(req, res) {
+    console.log("📡 Intento de login CLIENTE:", req.body); // 🛠️ Ver qué datos recibe
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        console.log("❌ Campos incompletos:", { email, password });
         return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
     }
-    const connection = await database(); // Get the database connection
-    // Check for existing record
-    const [existing] = await connection.query('SELECT * FROM cliente WHERE email = ?', [emailCliente]);
-    if (existing.length > 0) {
-        return res.status(400).send({ error: 'Este correo ya existe.' });
-    }
-    const salt = await bcryptjs.genSalt(5);
-    const hashPassword = await bcryptjs.hash(passwordCliente, salt);
-    const nuevoCliente = {
-        user: userNameCliente,
-        surnameCliente: surnameCliente,
-        emailCliente: emailCliente,
-        passwordCliente: hashPassword,
-        telCliente: telCliente,
-        serviciosCliente: serviciosCliente
-    };
-    const [result] = await connection.query('INSERT INTO cliente (nombre, apellido, email, contraseña, telefono) VALUES (?, ?, ?, ?, ?)', 
-            [nuevoCliente.user, nuevoCliente.surnameCliente, nuevoCliente.emailCliente, nuevoCliente.passwordCliente, nuevoCliente.telCliente]);
-    const clientId = result.insertId; // Get the ID of the newly created client
 
-    // Initialize an array to hold new service IDs
-    const newServiceIds = [];
-    // Insert into cliente_servicio based on the selected services
-    for (const servicio of serviciosCliente) {
-        // Check if the service already exists
-        const [serviceResult] = await connection.query('SELECT id_servicio FROM servicio WHERE nombre_servicio = ?', [servicio]);
-        let servicioId;
-        if (serviceResult.length > 0) {
-            // Service exists, get the id_servicio
-            servicioId = serviceResult[0].id_servicio;
-        } else {
-            // Service does not exist, insert it
-            const [insertServiceResult] = await connection.query('INSERT INTO servicio (nombre_servicio) VALUES (?)', [servicio]);
-            servicioId = insertServiceResult.insertId; // Get the new id_servicio
+    try {
+        const connection = await database();
+
+        const [rows] = await connection.query(
+            "SELECT * FROM cliente WHERE email = ?",
+            [email]
+        );
+
+        if (rows.length === 0) {
+            console.log("❌ Cliente no encontrado:", email);
+            return res.status(404).send({ status: "Error", message: "Correo o contraseña incorrectos" });
         }
-        // Add the servicioId to the newServiceIds array
-        newServiceIds.push(servicioId);
-        // Insert into cliente_servicio
-        await connection.query('INSERT INTO cliente_servicio (id_cliente, id_servicio) VALUES (?, ?)', 
-            [clientId, servicioId]);
-    }
-    
-    return res.status(201).send({ status: "Success", message: `Nuevo cliente ${nuevoCliente.user} registrado exitosamente`, redirect: "/form" });
-    }
-    catch (err) {
-        console.error('Error registering cliente:', err.message);
-        res.status(500).json({ error: 'Error registering cliente', details: err.message });
+
+        const user = rows[0];
+        console.log("✅ Cliente encontrado:", user);
+
+        const isMatch = await bcryptjs.compare(password, user.contraseña);
+        if (!isMatch) {
+            console.log("❌ Contraseña incorrecta.");
+            return res.status(401).send({ status: "Error", message: "Credenciales incorrectas" });
+        }
+
+        const token = jwt.sign(
+            { userId: user.id_cliente, email: user.email },
+            process.env.JWT_LOGIN,
+            { expiresIn: "1h" }
+        );
+
+        res.cookie("jwt_cliente", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "Lax",
+            maxAge: 60 * 60 * 1000
+        });
+
+        console.log("✅ Cookie `jwt_cliente` generada correctamente:", token);
+
+        return res.status(200).send({
+            status: "Success",
+            message: "Inicio de sesión exitoso",
+            clienteId: user.id_cliente,
+            redirect: "/perfilCliente",
+            cliente: {
+                id_cliente: user.id_cliente,
+                nombre: user.nombre,
+                apellido: user.apellido,
+                telefono: user.telefono,
+                email: user.email
+            }
+        });
+
+    } catch (err) {
+        console.error("❌ Error en loginCliente:", err.message);
+        return res.status(500).json({ status: "Error", message: "Error en el login", details: err.message });
     }
 }
 
 // authMiddleware.js
 export function verifyToken(req, res, next) {
-    const token = req.cookies?.jwt; // 🔍 Extraer token de la cookie
+    const token = req.cookies?.jwt_aliado || req.cookies?.jwt_cliente; // 🔍 Buscar ambas cookies
 
     console.log("🔍 Token recibido en verifyToken:", token);
 
@@ -278,7 +365,6 @@ export function verifyToken(req, res, next) {
         return res.status(403).json({ message: "Token inválido o expirado." });
     }
 }
-
 
 // Configurar el transporte de Nodemailer
 const transporter = nodemailer.createTransport({
@@ -341,6 +427,7 @@ async function requestPasswordReset(req, res) {
 }
 export const methods = {
     loginAliado,
+    loginCliente,
     registerAliado,
     registerCliente,
     requestPasswordReset

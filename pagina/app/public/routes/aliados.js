@@ -109,15 +109,17 @@ router.get("/aliado/:id_aliado", async (req, res) => {
 
 // 🚪 Endpoint para cerrar sesión
 router.post("/logout", (req, res) => {
-    res.clearCookie("jwt", {
+    res.clearCookie("jwt_aliado", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "Strict",
         path: "/"
     });
-    return res.status(200).json({ message: "Sesión cerrada correctamente", redirect: "/aliado" });
+    return res.status(200).json({ 
+        message: "Sesión cerrada correctamente", 
+        redirect: "/aliado" 
+    });
 });
-
 // Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
 

@@ -39,37 +39,44 @@
                     <a class="nav-link btn btn-warning" aria-current="page" href="#footer">Contáctanos</a>
                 </li>
             </ul>
-            <!-- Login -->
+             <!-- Login Cliente -->
             <div class="d-flex justify-content-center align-items-center" id="loginContainer">
                 <div class="dropdown dropstart">
-                    <button type="button" class="btn btn-warning px-3 py-1 rounded-4 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"><span class="mx-2 ">Mi cuenta</span><img src="/imagenes/login_1000997.png" class="mb-1" height="16" alt=".."></button>
+                    <button type="button" class="btn btn-warning px-3 py-1 rounded-4 dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" data-bs-auto-close="outside">
+                        <span class="mx-2">Mi cuenta</span>
+                        <img src="/imagenes/login_1000997.png" class="mb-1" height="16" alt="..">
+                    </button>
                     <div class="dropdown-menu">
-                        <form id="login-form-aliado" class="px-4 py-3">
-                          <div class="mb-3">
-                            <label for="userEmailAliado" class="form-label">Email</label>
-                            <input type="text" class="form-control" name="userEmailAliado" id="userEmailAliado" placeholder="email@ejemplo.com">
-                          </div>
-                          <div class="mb-3">
-                            <label for="userPasswordAliado" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" name="userPasswordAliado" id="userPasswordAliado" placeholder="Contraseña">
-                          </div>
-                          <div class="mb-3">
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="rememberMe">
-                              <label class="form-check-label" for="rememberMe">
-                                Recordarme
-                              </label>
+                        <form id="login-form-cliente" class="px-4 py-3">
+                            <div class="mb-3">
+                                <label for="userEmailCliente" class="form-label">Email</label>
+                                <input type="text" class="form-control" name="userEmailCliente" id="userEmailCliente"
+                                    placeholder="email@ejemplo.com">
                             </div>
-                          </div>
-                          <p id="mensajeErrorLogin" class="hidden text-danger">Error durante el login</p>
-                          <button type="submit" class="btn btn-outline-dark">ingresar</button>
+                            <div class="mb-3">
+                                <label for="userPasswordCliente" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="userPasswordCliente" id="userPasswordCliente"
+                                    placeholder="Contraseña">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMeCliente">
+                                    <label class="form-check-label" for="rememberMeCliente">
+                                        Recordarme
+                                    </label>
+                                </div>
+                            </div>
+                            <p id="mensajeErrorLoginCliente" class="hidden text-danger">Error durante el login</p>
+                            <button type="submit" class="btn btn-outline-dark">Ingresar</button>
                         </form>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item btn btn-warning" href="/form">Registrarme</a>
-                        <a class="dropdown-item btn btn-warning" href="#" id="forgotPasswordButton">olvidé mi contraseña</a>
+                        <a class="dropdown-item btn btn-warning" href="/form-cliente">Registrarme</a>
+                        <a class="dropdown-item btn btn-warning" href="#" id="forgotPasswordButtonCliente">Olvidé mi contraseña</a>
                     </div>
                 </div>
             </div>
+
             <!-- Botón de Cerrar Sesión con Icono -->
             <div id="logoutContainer" class="d-none">
                 <button id="logoutButton" class="btn btn-outline-danger d-flex align-items-center">

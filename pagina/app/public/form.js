@@ -1,7 +1,7 @@
 const mensajeError = document.getElementById('error');
 const mensajeErrorLogin = document.getElementById('mensajeErrorLogin');
 
-// Function to add another skill input
+// Function to add another skill input Aliado
 function addSkill() {
     const skillsContainer = document.getElementById("skillsContainer");
 
@@ -126,6 +126,101 @@ function addSkill() {
 
     skillsContainer.appendChild(skillDiv);
 }
+// 🚀 Función para agregar un servicio en el formulario del cliente
+function addServiceCliente() {
+    const servicesContainer = document.getElementById("servicesContainer");
+
+    const serviceDiv = document.createElement("div");
+    serviceDiv.classList.add("mb-3", "service-entry");
+
+    // 📌 Título
+    const serviceTitle = document.createElement("h5");
+    serviceTitle.textContent = "Servicio requerido";
+    serviceTitle.classList.add("semi-bold", "mt-3");
+
+    // 📌 Label del dropdown
+    const serviceLabel = document.createElement("label");
+    serviceLabel.textContent = "Seleccione un servicio";
+    serviceLabel.classList.add("form-label");
+
+    // 📌 Dropdown para seleccionar el servicio
+    const serviceDropdown = document.createElement("div");
+    serviceDropdown.classList.add("dropdown", "mb-2");
+
+    const dropdownToggle = document.createElement("button");
+    dropdownToggle.type = "button";
+    dropdownToggle.classList.add("btn", "btn-secondary", "dropdown-toggle", "form-control", "text-start");
+    dropdownToggle.setAttribute("data-bs-toggle", "dropdown");
+    dropdownToggle.setAttribute("aria-expanded", "false");
+    dropdownToggle.textContent = "Selecciona un servicio";
+
+    const dropdownMenu = document.createElement("ul");
+    dropdownMenu.classList.add("dropdown-menu");
+
+    // 📌 Opciones de servicios disponibles
+    const serviceOptions = [
+        "Plomería",
+        "Electricidad",
+        "Carpintería",
+        "Enchape y Acabados",
+        "Estructuras Metálicas",
+        "Pintura y Acabados",
+        "Cerrajería",
+        "Refrigeración y Aire Acondicionado",
+        "Jardinería y Paisajismo",
+        "Obras Civiles"
+    ];
+
+    // 📌 Crear opciones dentro del dropdown
+    serviceOptions.forEach(option => {
+        const listItem = document.createElement("li");
+        const linkItem = document.createElement("a");
+        linkItem.classList.add("dropdown-item");
+        linkItem.href = "#";
+        linkItem.textContent = option;
+        linkItem.setAttribute("data-value", option);
+
+        // 📌 Manejo de selección en el dropdown
+        linkItem.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            dropdownToggle.textContent = option; // Mostrar el servicio seleccionado en el botón
+            serviceInput.value = option; // Asignar el valor al input oculto
+        });
+
+        listItem.appendChild(linkItem);
+        dropdownMenu.appendChild(listItem);
+    });
+
+    // 📌 Input oculto para almacenar el valor seleccionado
+    const serviceInput = document.createElement("input");
+    serviceInput.type = "hidden";
+    serviceInput.classList.add("service-input");
+    serviceInput.required = true;
+
+    serviceDropdown.appendChild(dropdownToggle);
+    serviceDropdown.appendChild(dropdownMenu);
+
+    // 📌 Botón para eliminar servicio agregado
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.classList.add("btn", "btn-danger", "mt-2");
+    removeButton.textContent = "Eliminar";
+    removeButton.onclick = function() {
+        serviceDiv.remove();
+    };
+
+    // 📌 Agregar elementos al contenedor
+    serviceDiv.appendChild(serviceTitle);
+    serviceDiv.appendChild(serviceLabel);
+    serviceDiv.appendChild(serviceDropdown);
+    serviceDiv.appendChild(serviceInput);
+    serviceDiv.appendChild(removeButton);
+
+    servicesContainer.appendChild(serviceDiv);
+}
+
 // Function for registering aliado
 async function registerAliado(e) {
     e.preventDefault();
@@ -294,7 +389,7 @@ async function loginAliado(e) {
 // 🚦 Registro de Cliente
 async function registerCliente(e) {
     e.preventDefault();
-    console.log('Registrando cliente...');
+    console.log("Registrando cliente...");
 
     const form = e.target;
     const userNameCliente = form.elements.userNameCliente?.value.trim();
@@ -302,7 +397,11 @@ async function registerCliente(e) {
     const emailCliente = form.elements.emailUserCliente?.value.trim();
     const passwordCliente = form.elements.passwordCliente?.value.trim();
     const telCliente = form.elements.telCliente?.value.trim();
-    const serviciosCliente = form.elements.serviciosCliente?.value.trim();
+    
+    // Convertir la selección de servicios en un array
+    const serviciosCliente = [...document.querySelectorAll(".servicio-input")]
+        .map(input => input.value.trim())
+        .filter(value => value !== "");
 
     if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
         alert("Por favor, complete todos los campos del formulario.");
@@ -326,73 +425,74 @@ async function registerCliente(e) {
         });
 
         const data = await res.json();
-        console.log('Respuesta del servidor:', data);
+        console.log("Respuesta del servidor:", data);
 
         if (!res.ok) {
-            alert(data.message || 'Error al realizar el registro');
+            alert(data.message || "Error al realizar el registro");
             return;
         }
 
         alert("Registro exitoso. Redirigiendo...");
-        window.location.href = data.redirect || "/";
+        window.location.href = data.redirect || "/perfilCliente";
 
     } catch (error) {
         console.error("Error en el registro de cliente:", error);
         alert("Error al conectar con el servidor.");
     }
 }
-// 🚪 Inicio de Sesión Aliado
-async function loginAliado(e) {
+
+// 🚪 Inicio de Sesión Cliente
+async function loginCliente(e) {
     e.preventDefault();
-    console.log('Iniciando sesión...');
+    console.log("📡 Enviando solicitud de login...");
 
     const form = e.target;
-    const email = form.elements.userEmailAliado?.value.trim();
-    const password = form.elements.userPasswordAliado?.value.trim();
+    const email = form.elements.userEmailCliente?.value.trim();
+    const password = form.elements.userPasswordCliente?.value.trim();
+
+    console.log("📨 Datos enviados:", { email, password });
 
     if (!email || !password) {
-        alert("Por favor, complete todos los campos.");
+        alert("⚠️ Por favor, complete todos los campos.");
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:4000/api/login/aliado", {
+        const res = await fetch("http://localhost:4000/api/login/cliente", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password }),
-            credentials: "include"
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
+        console.log("🔍 Respuesta del servidor:", data);
 
         if (!res.ok) {
-            alert(data.message || "Credenciales incorrectas.");
+            alert(data.message || "❌ Credenciales incorrectas.");
             return;
         }
 
-        console.log("Inicio de sesión exitoso:", data.message);
-
-        // ✅ Guardar la información del aliado en sessionStorage
-        if (data.aliado) {
-            sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
-            sessionStorage.setItem("aliadoNombre", data.aliado.nombre);
-            sessionStorage.setItem("aliadoApellido", data.aliado.apellido);
-            sessionStorage.setItem("aliadoTelefono", data.aliado.telefono);
-            sessionStorage.setItem("aliadoEmail", data.aliado.email);
-        } else {
-            alert("No se pudo obtener la información del usuario.");
-            return;
-        }
-
-        window.location.href = data.redirect || "/hazteConocer";
+        console.log("✅ Inicio de sesión exitoso:", data);
+        sessionStorage.setItem("clienteId", data.cliente.id_cliente);
+        window.location.href = "/perfilCliente";
 
     } catch (error) {
-        console.error("Error en la solicitud de inicio de sesión:", error);
-        alert("No se pudo conectar con el servidor.");
+        console.error("❌ Error en la solicitud de inicio de sesión:", error);
+        alert("Error en la conexión con el servidor.");
     }
 }
+
+
+// ⏭️ **Prellenar email si "Recordarme" estaba activado**
+document.addEventListener("DOMContentLoaded", () => {
+    const savedEmail = localStorage.getItem("savedEmailCliente");
+    if (savedEmail) {
+        document.getElementById("userEmailCliente").value = savedEmail;
+        document.getElementById("rememberMeCliente").checked = true;
+    }
+});
+
 // 🚪 Cerrar Sesión
 async function logout() {
     try {
@@ -420,26 +520,11 @@ async function logout() {
 // ⏭️ Asignar eventos a los formularios (Validar si existen)
 document.getElementById("register-form-aliado")?.addEventListener("submit", registerAliado);
 document.getElementById("register-form-cliente")?.addEventListener("submit", registerCliente);
+document.getElementById("login-form-cliente")?.addEventListener("submit", loginCliente);
 document.getElementById("login-form-aliado")?.addEventListener("submit", loginAliado);
 document.getElementById("logoutButton")?.addEventListener("click", logout);
 
 
-// Function that shows the form depending on the user's choice
-function showFields() {
-    const userType = document.getElementById('userType').value;
-    const independentFields = document.getElementById('independentFields');
-    const clientFields = document.getElementById('client');
-
-    if (userType === 'independent') {
-        independentFields.classList.remove('hidden');
-        clientFields.classList.add('hidden');
-        // document.getElementById('independentSkills').setAttribute('required', true);
-    } else if (userType === 'client') {
-        clientFields.classList.remove('hidden');
-        independentFields.classList.add('hidden');
-        // document.getElementById('independentSkills').removeAttribute('required');
-    }
-}
 document.addEventListener("DOMContentLoaded", () => {
     // Seleccionar solo los dropdowns con la clase "skillsDropdown"
     document.querySelectorAll(".skillsDropdown").forEach(dropdown => {
