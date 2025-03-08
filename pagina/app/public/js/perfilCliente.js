@@ -37,10 +37,43 @@ async function loadClientProfile() {
         document.getElementById("direccionCliente").textContent = data.cliente.direccion;
         document.getElementById("profileImage").src = data.cliente.foto || "/imagenes/acceso.png";
 
+        // 📌 Mostrar los servicios tomados por el cliente
+        const serviciosTomadosContainer = document.getElementById("serviciosTomados");
+        serviciosTomadosContainer.innerHTML = ""; // Limpiar contenido previo
+
+        if (data.serviciosTomados.length > 0) {
+            data.serviciosTomados.forEach(servicio => {
+                const col = document.createElement("div");
+                col.classList.add("col-md-6", "mb-3");
+
+                col.innerHTML = `
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${servicio.nombre_servicio}</h5>
+                            <p class="card-text">
+                                <i class="fas fa-user"></i> Atendido por: 
+                                <strong>${servicio.aliado_nombre} ${servicio.aliado_apellido}</strong>
+                            </p>
+                            <div class="text-center">
+                                <img src="${servicio.aliado_foto || '../imagenes/acceso.png'}" 
+                                     class="rounded-circle aliado-img" 
+                                     alt="Aliado que prestó el servicio" height="100">
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                serviciosTomadosContainer.appendChild(col);
+            });
+        } else {
+            serviciosTomadosContainer.innerHTML = "<p class='text-muted'>No has solicitado servicios aún.</p>";
+        }
+
     } catch (error) {
         console.error("❌ Error al cargar el perfil del cliente:", error);
     }
 }
+
 
 // 🚪 **Lógica para cerrar sesión**
 function logout() {

@@ -8,10 +8,10 @@ import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de inde
 
 const router = express.Router();
 
-// ✅ Ruta protegida para obtener la información del cliente autenticado
+// ✅ Ruta protegida para obtener la información del cliente autenticado junto con los servicios tomados
 router.get("/cliente/perfil", verifyToken, async (req, res) => {
     console.log("📡 Solicitud autenticada. ID del usuario:", req.user?.userId);
-    
+
     if (!req.user || !req.user.userId) {
         return res.status(401).json({ message: "No autorizado, token inválido." });
     }
@@ -21,7 +21,9 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
 
         // 🔍 Obtener información del cliente
         const [clienteData] = await connection.query(
-            `SELECT id_cliente, nombre, apellido, telefono, email, direccion, foto FROM cliente WHERE id_cliente = ?`, 
+            `SELECT id_cliente, nombre, apellido, telefono, email, direccion, foto 
+             FROM cliente 
+             WHERE id_cliente = ?`, 
             [req.user.userId]
         );
 
@@ -29,13 +31,27 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
             return res.status(404).json({ message: "Cliente no encontrado." });
         }
 
-        return res.json({ cliente: clienteData[0] });
+        // 🔍 Obtener servicios tomados por el cliente
+        const [serviciosTomados] = await connection.query(
+            `SELECT s.id_servicio, s.nombre_servicio, a.nombre AS aliado_nombre, a.apellido AS aliado_apellido, a.foto AS aliado_foto 
+             FROM cliente_aliado ca
+             JOIN servicio s ON ca.id_servicio = s.id_servicio
+             JOIN aliado a ON ca.id_aliado = a.id_aliado
+             WHERE ca.id_cliente = ?`, 
+            [req.user.userId]
+        );
+
+        return res.json({ 
+            cliente: clienteData[0], 
+            serviciosTomados 
+        });
 
     } catch (error) {
         console.error("❌ Error al obtener la información del cliente:", error.message);
         res.status(500).json({ message: "Error al obtener la información del cliente." });
     }
 });
+
 
 // ✅ **Endpoint para subir la imagen de perfil del cliente**
 router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
