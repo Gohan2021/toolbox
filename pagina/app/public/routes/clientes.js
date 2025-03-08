@@ -66,6 +66,41 @@ router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res
         return res.status(500).json({ error: "Error al actualizar imagen." });
     }
 });
+// ✅ Endpoint para registrar qué aliado fue seleccionado por el cliente
+router.post("/cliente/obtenerServicio", async (req, res) => {
+    const { clienteId, aliadoId, servicioId } = req.body;
+
+    if (!clienteId || !aliadoId || !servicioId) {
+        return res.status(400).json({ message: "Faltan datos: clienteId, aliadoId y servicioId son obligatorios." });
+    }
+
+    try {
+        const connection = await database();
+
+        // Verificar si ya existe la relación
+        const [existing] = await connection.query(
+            "SELECT * FROM cliente_aliado WHERE id_cliente = ? AND id_aliado = ? AND id_servicio = ?", 
+            [clienteId, aliadoId, servicioId]
+        );
+
+        if (existing.length > 0) {
+            return res.status(400).json({ message: "Ya has solicitado este servicio con este aliado anteriormente." });
+        }
+
+        // Insertar la relación en cliente_aliado
+        await connection.query(
+            "INSERT INTO cliente_aliado (id_cliente, id_aliado, id_servicio) VALUES (?, ?, ?)", 
+            [clienteId, aliadoId, servicioId]
+        );
+
+        return res.status(201).json({ message: "Servicio registrado correctamente con el aliado." });
+
+    } catch (error) {
+        console.error("❌ Error al registrar el servicio con el aliado:", error);
+        return res.status(500).json({ message: "Error interno al registrar el servicio." });
+    }
+});
+
 
 // ✅ Endpoint de Login para clientes
 router.post("/login/cliente", authentication.loginCliente);

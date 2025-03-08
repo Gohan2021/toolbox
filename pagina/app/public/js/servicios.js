@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                             data-bs-target="#aliadoModal">
                                             <i class="fas fa-info-circle"></i> Ver más detalle
                                         </button>
-                                        <button class="btn btn-warning" onclick="obtenerServicio(${aliado.id_aliado})">
+                                        <button class="btn btn-warning" onclick="obtenerServicio(${aliado.id_aliado}, ${servicioId})">
                                             <i class="fas fa-handshake"></i> Obtener servicio
                                         </button>
                                     </div>
@@ -146,3 +146,40 @@ async function mostrarDetalleAliado(id_aliado) {
         alert("No se pudo cargar la información del aliado.");
     }
 }
+// obtener servicio
+async function obtenerServicio(aliadoId, servicioId) {
+    console.log("🟡 Intentando obtener servicio con ID:", servicioId, " y aliado ID:", aliadoId);
+
+    let clienteId = sessionStorage.getItem("clienteId") || localStorage.getItem("clienteId");
+
+    if (!clienteId) {
+        console.warn("⚠️ Cliente no autenticado. Redirigiendo al login.");
+        alert("Debes iniciar sesión para solicitar un servicio.");
+        window.location.href = "/cliente";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:4000/api/cliente/obtenerServicio", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ clienteId, aliadoId, servicioId })
+        });
+
+        const data = await response.json();
+        console.log("📡 Respuesta del servidor:", data);
+
+        if (response.ok) {
+            alert("✅ Servicio solicitado correctamente con el aliado.");
+        } else {
+            alert(`❌ Error al solicitar el servicio: ${data.message}`);
+        }
+    } catch (error) {
+        console.error("❌ Error al solicitar el servicio:", error);
+        alert("Ocurrió un error al procesar la solicitud.");
+    }
+}
+

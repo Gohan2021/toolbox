@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             window.location.href = "/perfilCliente";
                         } else {
-                            document.getElementById("mensajeErrorLogin").classList.remove("hidden");
+                            document.getElementById("mensajeErrorLoginCliente").classList.remove("hidden");
                         }
                     } catch (error) {
                         console.error("Error durante el inicio de sesión del cliente:", error);
