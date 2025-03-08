@@ -1,7 +1,10 @@
 import express from "express";
 import database from "../../database.js";
+import multer from "multer";
+import path from "path";
 import { verifyToken } from "../../controllers/authentication.controller.js";
 import { methods as authentication } from "../../controllers/authentication.controller.js";
+import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
 
 const router = express.Router();
 
@@ -18,7 +21,7 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
 
         // 🔍 Obtener información del cliente
         const [clienteData] = await connection.query(
-            `SELECT id_cliente, nombre, apellido, telefono, email, direccion FROM cliente WHERE id_cliente = ?`, 
+            `SELECT id_cliente, nombre, apellido, telefono, email, direccion, foto FROM cliente WHERE id_cliente = ?`, 
             [req.user.userId]
         );
 
@@ -33,6 +36,37 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del cliente." });
     }
 });
+
+// ✅ **Endpoint para subir la imagen de perfil del cliente**
+router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
+    console.log("📡 Recibiendo imagen de perfil del cliente...");
+    console.log("🔍 Archivo recibido:", req.file);
+    console.log("🔍 ID del cliente:", req.body.clienteId);
+
+    const { clienteId } = req.body;
+    const fotoPerfilPath = req.file ? `/uploads/${req.file.filename}` : "";
+
+    if (!clienteId || !fotoPerfilPath) {
+        console.error("⚠️ Faltan datos: clienteId o imagen no válida.");
+        return res.status(400).json({ error: "Faltan datos o imagen inválida." });
+    }
+
+    try {
+        const connection = await database();
+        await connection.query("UPDATE cliente SET foto = ? WHERE id_cliente = ?", [fotoPerfilPath, clienteId]);
+
+        console.log("✅ Imagen de perfil actualizada correctamente:", fotoPerfilPath);
+        return res.status(200).json({
+            message: "Imagen de perfil actualizada en la base de datos",
+            fotoPerfil: fotoPerfilPath
+        });
+
+    } catch (error) {
+        console.error("❌ Error al actualizar imagen en la base de datos:", error.message);
+        return res.status(500).json({ error: "Error al actualizar imagen." });
+    }
+});
+
 // ✅ Endpoint de Login para clientes
 router.post("/login/cliente", authentication.loginCliente);
 

@@ -222,112 +222,112 @@ function addServiceCliente() {
 }
 
 // Function for registering aliado
-// async function registerAliado(e) {
-//     e.preventDefault();
-//     console.log('Registrando aliado...');
+async function registerAliado(e) {
+    e.preventDefault();
+    console.log('Registrando aliado...');
 
-//     const mensajeError = document.getElementById('error');
+    const mensajeError = document.getElementById('error');
     
-//     // Obtener los datos del formulario
-//     const userNameAliado = e.target.elements.userNameAliado.value;
-//     const surnameAliado = e.target.elements.surnameAliado.value;
-//     const userIDAliado = e.target.elements.userIDAliado.value;
-//     const emailAliado = e.target.elements.emailUserAliado.value;
-//     const passwordAliado = e.target.elements.passwordAliado.value;
-//     const dobAliado = e.target.elements.dobAliado.value;
-//     const telAliado = e.target.elements.telAliado.value;
-//     const dirAliado = e.target.elements.dirAliado.value;
+    // Obtener los datos del formulario
+    const userNameAliado = e.target.elements.userNameAliado.value;
+    const surnameAliado = e.target.elements.surnameAliado.value;
+    const userIDAliado = e.target.elements.userIDAliado.value;
+    const emailAliado = e.target.elements.emailUserAliado.value;
+    const passwordAliado = e.target.elements.passwordAliado.value;
+    const dobAliado = e.target.elements.dobAliado.value;
+    const telAliado = e.target.elements.telAliado.value;
+    const dirAliado = e.target.elements.dirAliado.value;
     
-//     let skills = [];
+    let skills = [];
 
-//     const firstSkillInput = document.getElementById("skillsAliado");
-//     const firstExpInput = document.getElementById("expAliado");
+    const firstSkillInput = document.getElementById("skillsAliado");
+    const firstExpInput = document.getElementById("expAliado");
 
-//     if (firstSkillInput && firstExpInput && firstSkillInput.value && firstExpInput.value) {
-//         skills.push({
-//             skill: firstSkillInput.value,
-//             experience: firstExpInput.value
-//         });
-//     }
+    if (firstSkillInput && firstExpInput && firstSkillInput.value && firstExpInput.value) {
+        skills.push({
+            skill: firstSkillInput.value,
+            experience: firstExpInput.value
+        });
+    }
 
-//     document.querySelectorAll(".skill-entry").forEach(entry => {
-//         const skill = entry.querySelector(".skill-input").value;
-//         const experience = entry.querySelector(".exp-input").value;
-//         if (skill && experience) {
-//             skills.push({ skill, experience });
-//         }
-//     });
+    document.querySelectorAll(".skill-entry").forEach(entry => {
+        const skill = entry.querySelector(".skill-input").value;
+        const experience = entry.querySelector(".exp-input").value;
+        if (skill && experience) {
+            skills.push({ skill, experience });
+        }
+    });
 
-//     if (skills.length === 0) {
-//         alert("Debe agregar al menos una habilidad.");
-//         return;
-//     }
+    if (skills.length === 0) {
+        alert("Debe agregar al menos una habilidad.");
+        return;
+    }
 
-//     try {
-//         // 🔹 1️⃣ REGISTRAR AL USUARIO
-//         const res = await fetch("http://localhost:4000/api/register/aliado", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({
-//                 userNameAliado,
-//                 surnameAliado,
-//                 userIDAliado,
-//                 dobAliado,
-//                 emailAliado,
-//                 passwordAliado,
-//                 telAliado, 
-//                 dirAliado,
-//                 skills
-//             })
-//         });
+    try {
+        // 🔹 1️⃣ REGISTRAR AL USUARIO
+        const res = await fetch("http://localhost:4000/api/register/aliado", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userNameAliado,
+                surnameAliado,
+                userIDAliado,
+                dobAliado,
+                emailAliado,
+                passwordAliado,
+                telAliado, 
+                dirAliado,
+                skills
+            })
+        });
 
-//         const data = await res.json();
-//         console.log('Respuesta del servidor:', data);
+        const data = await res.json();
+        console.log('Respuesta del servidor:', data);
         
-//         if (!res.ok) {
-//             mensajeError.textContent = data.message || 'Error al realizar el registro';
-//             mensajeError.classList.remove("hidden");
-//             return;
-//         } else {
-//             mensajeError.classList.add("hidden");
-//         }
+        if (!res.ok) {
+            mensajeError.textContent = data.message || 'Error al realizar el registro';
+            mensajeError.classList.remove("hidden");
+            return;
+        } else {
+            mensajeError.classList.add("hidden");
+        }
 
-//         // 🔹 2️⃣ INICIAR SESIÓN AUTOMÁTICAMENTE
-//         const loginRes = await fetch("http://localhost:4000/api/login/aliado", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({
-//                 email: emailAliado,
-//                 password: passwordAliado
-//             }),
-//             credentials: "include" // 🔹 Asegurar que la cookie `jwt` se almacena
-//         });
+        // 🔹 2️⃣ INICIAR SESIÓN AUTOMÁTICAMENTE
+        const loginRes = await fetch("http://localhost:4000/api/login/aliado", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: emailAliado,
+                password: passwordAliado
+            }),
+            credentials: "include" // 🔹 Asegurar que la cookie `jwt` se almacena
+        });
 
-//         const loginData = await loginRes.json();
+        const loginData = await loginRes.json();
 
-//         if (!loginRes.ok) {
-//             console.error("Error al iniciar sesión automáticamente:", loginData.message);
-//             alert("Registro exitoso, pero hubo un problema iniciando sesión. Inicie sesión manualmente.");
-//             return;
-//         }
+        if (!loginRes.ok) {
+            console.error("Error al iniciar sesión automáticamente:", loginData.message);
+            alert("Registro exitoso, pero hubo un problema iniciando sesión. Inicie sesión manualmente.");
+            return;
+        }
 
-//         console.log("✅ Inicio de sesión automático exitoso:", loginData);
-//         // **Guardar el ID del aliado en sessionStorage**
-//         if (loginData.aliadoId) {
-//             sessionStorage.setItem("aliadoId", loginData.aliadoId);
-//         }
+        console.log("✅ Inicio de sesión automático exitoso:", loginData);
+        // **Guardar el ID del aliado en sessionStorage**
+        if (loginData.aliadoId) {
+            sessionStorage.setItem("aliadoId", loginData.aliadoId);
+        }
 
 
-//         // 🔹 3️⃣ REDIRIGIR A `hazteConocer.html`
-//         window.location.href = "/hazteConocer";
+        // 🔹 3️⃣ REDIRIGIR A `hazteConocer.html`
+        window.location.href = "/hazteConocer";
 
-//     } catch (error) {
-//         console.error("Error al registrar el aliado:", error);
-//         alert("Error en la conexión con el servidor.");
-//     }
-// }
+    } catch (error) {
+        console.error("Error al registrar el aliado:", error);
+        alert("Error en la conexión con el servidor.");
+    }
+}
 
 // Login Aliado
 async function loginAliado(e) {
@@ -484,6 +484,7 @@ async function loginCliente(e) {
         alert("Error en la conexión con el servidor.");
     }
 }
+
 
 // ⏭️ **Prellenar email si "Recordarme" estaba activado**
 document.addEventListener("DOMContentLoaded", () => {

@@ -9,6 +9,8 @@ import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
 import servicesRoutes from "./public/routes/aliados.js";
 import clientesRoutes from "./public/routes/clientes.js";
+import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
+
 
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
@@ -48,24 +50,28 @@ app.use(cors({
 })();
 
 // Crear la carpeta 'uploads/' si no existe
-const uploadFolder = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadFolder)) {
-    fs.mkdirSync(uploadFolder, { recursive: true });
-}
+// const uploadFolder = path.join(__dirname, "uploads");
+// if (!fs.existsSync(uploadFolder)) {
+//     fs.mkdirSync(uploadFolder, { recursive: true });
+// }
 
 // Configuración de Multer para múltiples archivos, incluida la foto de perfil
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadFolder); // Almacenar en la carpeta 'uploads'
-    },
-    filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, uploadFolder); // Almacenar en la carpeta 'uploads'
+//     },
+//     filename: (req, file, cb) => {
+//         const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+//         cb(null, uniqueName);
+//     }
+// });
 
-const upload = multer({ storage });
-
+// const upload = multer({ storage });
+// ✅ Exportar `upload` para reutilizarlo en `clientes.js`
+// export { upload };
+// Servir archivos estáticos desde la carpeta 'uploads'
+// app.use("/uploads", express.static(uploadFolder));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ **Endpoint para subir imágenes incluyendo foto de perfil**
 app.post("/api/register/aliado/loadImages", upload.fields([
@@ -119,11 +125,6 @@ app.post("/api/register/aliado/loadImages", upload.fields([
         return res.status(500).json({ error: "Error al guardar la foto en la base de datos" });
     }
 });
-
-
-// Servir archivos estáticos desde la carpeta 'uploads'
-app.use("/uploads", express.static(uploadFolder));
-
 // Rutas estáticas de la aplicación
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -162,6 +163,7 @@ app.post("/api/register/cliente", authentication.registerCliente);
 app.use("/api", servicesRoutes);
 //Ruta para clientes
 app.use("/api", clientesRoutes); 
+app.use("/api/cliente", clientesRoutes);
 
 // ✅ Endpoint para obtener la información del aliado junto con la experiencia laboral
 app.get("/api/aliado/:id", async (req, res) => {
