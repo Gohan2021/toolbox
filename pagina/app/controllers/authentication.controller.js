@@ -66,7 +66,6 @@ async function loginAliado(req, res) {
     }
 }
 
-
 async function registerAliado(req, res) {
     const { 
         userNameAliado, 
@@ -186,18 +185,18 @@ async function registerCliente(req, res) {
         emailCliente, 
         passwordCliente, 
         telCliente, 
-        serviciosCliente // 🔹 Lista de servicios que requiere el cliente
+        serviciosCliente 
     } = req.body;
 
     try {
-        // ✅ 1️⃣ Validación de campos obligatorios
+        // ✅ 1️⃣ Validar campos obligatorios
         if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
             return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios." });
         }
 
-        const connection = await database(); // Conectar a la base de datos
+        const connection = await database();
 
-        // ✅ 2️⃣ Verificar si el usuario ya está registrado
+        // ✅ 2️⃣ Verificar si ya existe el cliente
         const [existing] = await connection.query(
             "SELECT * FROM cliente WHERE email = ? OR telefono = ?", 
             [emailCliente, telCliente]
@@ -217,46 +216,20 @@ async function registerCliente(req, res) {
             [userNameCliente, surnameCliente, emailCliente, hashPassword, telCliente]
         );
 
-        const clientId = result.insertId; // Obtener el ID del nuevo cliente
+        const clientId = result.insertId; 
 
-        // 🔍 **Mapeo directo de los servicios a sus IDs correspondientes**
-        const servicioMap = {
-            "plomeria": 1,
-            "Electricidad": 2,
-            "carpinteria": 3,
-            "enchape": 4,
-            "metalicas": 5,
-            "pintura": 6,
-            "cerrajeria": 7,
-            "refrigeracion": 8,
-            "jardineria": 9,
-            "obras": 10
-        };
-
-        const serviciosRelacionados = []; // Para almacenar las relaciones válidas
-
-        // ✅ 5️⃣ Insertar servicios solicitados por el cliente
+        // ✅ 5️⃣ Insertar servicios del cliente (si los hay)
         if (Array.isArray(serviciosCliente) && serviciosCliente.length > 0) {
-            
-            for (let servicio of serviciosCliente) {
-                // Validar que el servicio sea válido
-                if (!servicio) {
-                    console.warn("⚠️ Servicio inválido o faltante:", servicio);
-                    continue; // Saltar al siguiente servicio
-                }
+            const servicioMap = {
+                "plomeria": 1, "Electricidad": 2, "carpinteria": 3, "enchape": 4, 
+                "metalicas": 5, "pintura": 6, "cerrajeria": 7, "refrigeracion": 8, 
+                "jardineria": 9, "obras": 10
+            };
 
-                // Obtener el ID del servicio desde el mapa
-                const servicioId = servicioMap[servicio.toLowerCase()];
+            const serviciosRelacionados = serviciosCliente
+                .map(servicio => [servicioMap[servicio.toLowerCase()], clientId])
+                .filter(([servicioId]) => servicioId !== undefined);
 
-                // Si el ID del servicio es válido, agregar a la relación
-                if (servicioId) {
-                    serviciosRelacionados.push([servicioId, clientId]);
-                } else {
-                    console.warn(`El servicio "${servicio}" no coincide con ningún registro válido.`);
-                }
-            }
-
-            // ✅ 6️⃣ Insertar las relaciones en la tabla `cliente_servicio`
             if (serviciosRelacionados.length > 0) {
                 await connection.query(
                     "INSERT INTO cliente_servicio (id_servicio, id_cliente) VALUES ?",
@@ -265,10 +238,27 @@ async function registerCliente(req, res) {
             }
         }
 
+        // ✅ 6️⃣ Generar token JWT para el nuevo cliente
+        const token = jwt.sign(
+            { userId: clientId, email: emailCliente }, 
+            process.env.JWT_LOGIN, 
+            { expiresIn: "1h" }
+        );
+
+        // ✅ 7️⃣ Guardar la cookie `jwt_cliente`
+        res.cookie("jwt_cliente", token, {
+            httpOnly: true,
+            secure: false, // Pon `true` si usas HTTPS
+            sameSite: "Lax",
+            maxAge: 60 * 60 * 1000 
+        });
+
+        console.log("✅ Registro exitoso. Token generado y enviado en cookie.");
+
         return res.status(201).send({ 
             status: "Success", 
             message: `Nuevo cliente ${userNameCliente} registrado exitosamente`, 
-            redirect: "/perfilCliente" 
+            redirect: "/perfilCliente"
         });
 
     } catch (err) {
@@ -276,6 +266,7 @@ async function registerCliente(req, res) {
         res.status(500).json({ error: "Error registrando cliente", details: err.message });
     }
 }
+
 // 🚪 Inicio de Sesión Cliente
 async function loginCliente(req, res) {
     console.log("📡 Intento de login CLIENTE:", req.body); // 🛠️ Ver qué datos recibe

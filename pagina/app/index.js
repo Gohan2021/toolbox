@@ -136,8 +136,9 @@ app.get("/cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "cl
 app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages", "hazteConocer.html")));
 app.get("/perfilCliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "perfilCliente.html")));
 app.get("/myv", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv.html")));
-app.get("/politicas", (req, res) => res.sendFile(path.join(__dirname, "pages", "politicas.html")));
+app.get("/myv_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv_cliente.html")));
 app.get("/uso", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso.html")));
+app.get("/uso_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso_cliente.html")));
 
 // Rutas dinámicas para las páginas de servicios
 app.get("/servicios/:servicio", (req, res) => {

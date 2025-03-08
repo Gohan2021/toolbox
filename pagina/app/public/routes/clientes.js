@@ -33,8 +33,6 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del cliente." });
     }
 });
-
-
 // ✅ Endpoint de Login para clientes
 router.post("/login/cliente", authentication.loginCliente);
 
@@ -42,7 +40,6 @@ router.post("/login/cliente", authentication.loginCliente);
 router.post("/register/cliente", authentication.registerCliente);
 
 // 🚪 Endpoint para cerrar sesión
-// 🚪 Cerrar sesión Cliente
 router.post("/logout/cliente", (req, res) => {
     res.clearCookie("jwt_cliente", {
         httpOnly: true,
@@ -52,9 +49,6 @@ router.post("/logout/cliente", (req, res) => {
     });
     return res.status(200).json({ message: "Sesión de cliente cerrada correctamente", redirect: "/cliente" });
 });
-
-
-
 // ✅ Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
 

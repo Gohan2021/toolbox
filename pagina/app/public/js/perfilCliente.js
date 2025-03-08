@@ -2,6 +2,9 @@ async function loadClientProfile() {
     console.log("🔄 Cargando perfil del cliente...");
 
     try {
+        // 💡 Depurar cookies en el navegador
+        console.log("🍪 Verificando cookies del cliente:", document.cookie);
+
         const response = await fetch("http://localhost:4000/api/cliente/perfil", {
             method: "GET",
             credentials: "include",
@@ -10,10 +13,12 @@ async function loadClientProfile() {
             }
         });
 
+        console.log("📡 Respuesta del servidor:", response);
+
         if (response.status === 401 || response.status === 403) {
             console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
             alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-            window.location.href = "/";
+            window.location.href = "/cliente";
             return;
         }
 
