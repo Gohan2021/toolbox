@@ -40,20 +40,6 @@ async function loadClientProfile() {
         document.getElementById("direccionCliente").textContent = data.cliente.direccion;
         document.getElementById("profileImage").src = data.cliente.foto || "/imagenes/acceso.png";
 
-        // Cargar servicios solicitados
-        const serviciosContainer = document.getElementById("serviciosSolicitados");
-        serviciosContainer.innerHTML = "";
-
-        if (data.servicios && data.servicios.length > 0) {
-            data.servicios.forEach(servicio => {
-                const li = document.createElement("li");
-                li.textContent = `🛠 ${servicio.nombre_servicio}`;
-                serviciosContainer.appendChild(li);
-            });
-        } else {
-            serviciosContainer.innerHTML = "<p class='text-muted'>No se encontraron servicios registrados.</p>";
-        }
-
     } catch (error) {
         console.error("❌ Error al cargar el perfil del cliente:", error);
     }

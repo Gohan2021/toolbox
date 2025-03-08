@@ -186,7 +186,7 @@ async function registerCliente(req, res) {
         passwordCliente, 
         telCliente,
         dirCliente,
-        serviciosCliente 
+        // serviciosCliente
     } = req.body;
 
     try {
@@ -220,24 +220,24 @@ async function registerCliente(req, res) {
         const clientId = result.insertId; 
 
         // ✅ 5️⃣ Insertar servicios del cliente (si los hay)
-        if (Array.isArray(serviciosCliente) && serviciosCliente.length > 0) {
-            const servicioMap = {
-                "plomeria": 1, "Electricidad": 2, "carpinteria": 3, "enchape": 4, 
-                "metalicas": 5, "pintura": 6, "cerrajeria": 7, "refrigeracion": 8, 
-                "jardineria": 9, "obras": 10
-            };
+        // if (Array.isArray(serviciosCliente) && serviciosCliente.length > 0) {
+        //     const servicioMap = {
+        //         "plomeria": 1, "Electricidad": 2, "carpinteria": 3, "enchape": 4, 
+        //         "metalicas": 5, "pintura": 6, "cerrajeria": 7, "refrigeracion": 8, 
+        //         "jardineria": 9, "obras": 10
+        //     };
 
-            const serviciosRelacionados = serviciosCliente
-                .map(servicio => [servicioMap[servicio.toLowerCase()], clientId])
-                .filter(([servicioId]) => servicioId !== undefined);
+        //     const serviciosRelacionados = serviciosCliente
+        //         .map(servicio => [servicioMap[servicio.toLowerCase()], clientId])
+        //         .filter(([servicioId]) => servicioId !== undefined);
 
-            if (serviciosRelacionados.length > 0) {
-                await connection.query(
-                    "INSERT INTO cliente_servicio (id_servicio, id_cliente) VALUES ?",
-                    [serviciosRelacionados]
-                );
-            }
-        }
+        //     if (serviciosRelacionados.length > 0) {
+        //         await connection.query(
+        //             "INSERT INTO cliente_servicio (id_servicio, id_cliente) VALUES ?",
+        //             [serviciosRelacionados]
+        //         );
+        //     }
+        // }
 
         // ✅ 6️⃣ Generar token JWT para el nuevo cliente
         const token = jwt.sign(

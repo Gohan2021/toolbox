@@ -8,87 +8,187 @@
     <meta name="robots" content="index, follow">
     <link rel="stylesheet" href="../estilos.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="/imagenes/Logo.svg">
     <script src="../js/navbar_cliente.js" defer></script>
     <title>Perfil del Cliente - TOOLBOX</title>
+
     <style>
         body {
             background-color: #f8f9fa;
         }
 
+        .container-perfil {
+            /* max-width: 900px; */
+            /* min-height: 100vh; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 193, 8, 0.3);
+            text-align: center;
+            color: black;
+            width: 100%;
+            max-width: 500px;
+        }
+
         .profile-image {
-            width: 10rem;
-            height: 10rem;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
             border-radius: 50%;
+            border: 4px solid #ffc108;
+            display: block;
+            margin: 0 auto;
         }
 
         .edit-image {
             cursor: pointer;
-            background: none;
+            background: #ffc108;
             border: none;
-            color: #007bff;
+            color: black;
             font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: block;
+            width: 80%;
+            margin: 15px auto 0;
+            transition: 0.3s;
+        }
+
+        .edit-image:hover {
+            background-color: black;
+            color: #ffc108;
+            border: 2px solid #ffc108;
         }
 
         .info-card {
-            background: #fff;
+            background: white;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(255, 193, 8, 0.3);
             margin-bottom: 15px;
+            color: black;
+        }
+
+        .info-card h5 {
+            color: #ffc108;
+        }
+
+        .service-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(255, 193, 8, 0.3);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .service-card:hover {
+            transform: scale(1.02);
+        }
+
+        .explore-btn {
+            background-color: #ffc108;
+            color: black;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: block;
+            width: 80%;
+            text-align: center;
+            margin: 15px auto;
+            transition: 0.3s;
+        }
+
+        .explore-btn:hover {
+            background-color: black;
+            color: #ffc108;
+            border: 2px solid #ffc108;
         }
     </style>
 </head>
 
 <body>
-    <div class="container mt-4">
-        <div class="row">
-            <!-- 📌 Sección de Perfil - Lado Izquierdo -->
-            <div class="col-md-4">
-                <h4 class="text-center">Mi Cuenta</h4>
-                <div class="text-center">
-                    <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image" id="profileImage">
-                    <button class="edit-image" onclick="document.getElementById('fotoPerfil').click();">
-                        <i class="fas fa-camera"></i> Cambiar Imagen
-                    </button>
-                    <input type="file" id="fotoPerfil" style="display: none;" accept="image/*"
-                        onchange="uploadProfileImage(event)">
-                </div>
-                
-                <!-- Datos Personales -->
-                <div class="info-card">
-                    <h5><i class="fas fa-user"></i> Datos Personales</h5>
-                    <p><strong>Nombre:</strong> <span id="nombreCliente"></span></p>
-                    <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> <span id="telefonoCliente"></span></p>
-                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="emailCliente"></span></p>
-                    <p><i class="fas fa-adress"></i> <strong>Direccion:</strong> <span id="direccionCliente"></span></p>
-                </div>
+    <div class="container-perfil mt-5">
+        <div class="profile-container">
+            <h3>Mi Cuenta</h3>
+            <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image" id="profileImage">
+            <button class="edit-image" onclick="document.getElementById('fotoPerfil').click();">
+                <i class="fas fa-camera"></i> Cambiar Imagen
+            </button>
+            <input type="file" id="fotoPerfil" style="display: none;" accept="image/*"
+                onchange="uploadProfileImage(event)">
 
-                <!-- Servicios Solicitados -->
-                <div class="info-card">
-                    <h5><i class="fas fa-tools"></i> Servicios Solicitados</h5>
-                    <ul id="serviciosSolicitados"></ul>
+            <!-- Datos Personales -->
+            <div class="info-card mt-4">
+                <h5><i class="fas fa-user"></i> Datos Personales</h5>
+                <p><strong>Nombre:</strong> <span id="nombreCliente"></span></p>
+                <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> <span id="telefonoCliente"></span></p>
+                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="emailCliente"></span></p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> <span id="direccionCliente"></span></p>
+            </div>
+
+            <!-- Servicios que ha tomado el cliente -->
+            <div class="info-card mt-4">
+                <h5><i class="fas fa-tools"></i> Servicios que has tomado con Toolbox</h5>
+                <div id="serviciosTomados" class="row">
+                    <p class="text-muted">Cargando servicios...</p>
                 </div>
             </div>
 
-            <!-- 📌 Sección de Trabajos Disponibles - Lado Derecho -->
-            <div class="col-md-8">
-                <h3>Ofertas Disponibles</h3>
-                <div id="listaOfertas">
-                    <p class="text-muted">Cargando ofertas de trabajo...</p>
-                </div>
-            </div>
+            <!-- Botón para explorar servicios -->
+            <a href="/cliente" class="explore-btn">Explorar más servicios</a>
         </div>
     </div>
+    <!-- Footer -->
+    <footer id="footer" class="contact-container mt-5 text-white bg-black">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <h4>CONTACTANOS</h4>
+                    <p>Número Telefónico:</p>
+                    <p>Correo:</p>
+                    <p>Oficina:</p>
+                    <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h4>SIGUENOS EN</h4>
+                    <div class="d-flex justify-content-center">
+                        <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
+                            <i class="fab fa-facebook fa-2x"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
+                            <i class="fab fa-instagram fa-2x"></i>
+                        </a>
+                        <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
+                            <i class="fab fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h4>ACERCA DE NOSOTROS</h4>
+                    <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción.</p>
+                    <a class="text-white" href="#">Politicas de privacidad y uso</a>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- 📜 Cargar el script del perfil del cliente -->
     <script src="../js/perfilCliente.js"></script>
