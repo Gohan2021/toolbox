@@ -37,6 +37,7 @@ async function loadClientProfile() {
         document.getElementById("nombreCliente").textContent = `${data.cliente.nombre} ${data.cliente.apellido}`;
         document.getElementById("telefonoCliente").textContent = data.cliente.telefono;
         document.getElementById("emailCliente").textContent = data.cliente.email;
+        document.getElementById("direccionCliente").textContent = data.cliente.direccion;
         document.getElementById("profileImage").src = data.cliente.foto || "/imagenes/acceso.png";
 
         // Cargar servicios solicitados

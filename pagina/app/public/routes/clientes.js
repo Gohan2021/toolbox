@@ -18,7 +18,7 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
 
         // 🔍 Obtener información del cliente
         const [clienteData] = await connection.query(
-            `SELECT id_cliente, nombre, apellido, telefono, email FROM cliente WHERE id_cliente = ?`, 
+            `SELECT id_cliente, nombre, apellido, telefono, email, direccion FROM cliente WHERE id_cliente = ?`, 
             [req.user.userId]
         );
 

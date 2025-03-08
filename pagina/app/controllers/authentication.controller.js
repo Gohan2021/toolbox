@@ -184,13 +184,14 @@ async function registerCliente(req, res) {
         surnameCliente, 
         emailCliente, 
         passwordCliente, 
-        telCliente, 
+        telCliente,
+        dirCliente,
         serviciosCliente 
     } = req.body;
 
     try {
         // ✅ 1️⃣ Validar campos obligatorios
-        if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
+        if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente || !dirCliente) {
             return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios." });
         }
 
@@ -212,8 +213,8 @@ async function registerCliente(req, res) {
 
         // ✅ 4️⃣ Insertar Cliente en la Base de Datos
         const [result] = await connection.query(
-            "INSERT INTO cliente (nombre, apellido, email, contraseña, telefono) VALUES (?, ?, ?, ?, ?)", 
-            [userNameCliente, surnameCliente, emailCliente, hashPassword, telCliente]
+            "INSERT INTO cliente (nombre, apellido, email, contraseña, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)", 
+            [userNameCliente, surnameCliente, emailCliente, hashPassword, telCliente, dirCliente]
         );
 
         const clientId = result.insertId; 
@@ -325,7 +326,8 @@ async function loginCliente(req, res) {
                 nombre: user.nombre,
                 apellido: user.apellido,
                 telefono: user.telefono,
-                email: user.email
+                direccion: user.direccion,
+                email: user.email,
             }
         });
 

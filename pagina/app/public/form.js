@@ -397,13 +397,14 @@ async function registerCliente(e) {
     const emailCliente = form.elements.emailUserCliente?.value.trim();
     const passwordCliente = form.elements.passwordCliente?.value.trim();
     const telCliente = form.elements.telCliente?.value.trim();
+    const dirCliente = form.elements.dirCliente?.value.trim();
     
     // Convertir la selección de servicios en un array
     const serviciosCliente = [...document.querySelectorAll(".servicio-input")]
         .map(input => input.value.trim())
         .filter(value => value !== "");
 
-    if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente) {
+    if (!userNameCliente || !surnameCliente || !emailCliente || !passwordCliente || !telCliente || !dirCliente) {
         alert("Por favor, complete todos los campos del formulario.");
         return;
     }
@@ -420,6 +421,7 @@ async function registerCliente(e) {
                 emailCliente,
                 passwordCliente,
                 telCliente,
+                dirCliente,
                 serviciosCliente
             })
         });
