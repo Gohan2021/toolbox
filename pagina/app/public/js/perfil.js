@@ -1,5 +1,5 @@
 async function loadProfileData() {
-    console.log("🔄 Cargando perfil...");
+    console.log("🔄 Cargando perfil del aliado...");
 
     try {
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {
@@ -48,11 +48,67 @@ async function loadProfileData() {
             habilidadesContainer.innerHTML = "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
         }
 
+        // 📌 Cargar servicios solicitados
+        loadServiciosSolicitados();
+
     } catch (error) {
         console.error("❌ Error al cargar el perfil:", error);
     }
 }
+// 📌 **Cargar los servicios solicitados al aliado**
+async function loadServiciosSolicitados() {
+    console.log("🔄 Cargando servicios solicitados...");
 
+    try {
+        const response = await fetch("http://localhost:4000/api/aliado/perfil", {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error("❌ No se pudieron cargar los servicios solicitados.");
+        }
+
+        const data = await response.json();
+        console.log("✅ Servicios solicitados:", data.serviciosSolicitados);
+
+        const servicesContainer = document.getElementById("servicesContainer");
+        servicesContainer.innerHTML = ""; // Limpiar contenido previo
+
+        if (data.serviciosSolicitados.length > 0) {
+            data.serviciosSolicitados.forEach(servicio => {
+                const col = document.createElement("div");
+                col.classList.add("col-md-6", "mb-3");
+
+                col.innerHTML = `
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <img src="${servicio.cliente_foto || '../imagenes/acceso.png'}" 
+                                     class="rounded-circle aliado-img" 
+                                     alt="Cliente que solicitó el servicio" height="100">
+                            </div>
+                            <h5 class="card-title">${servicio.nombre_servicio}</h5>
+                            <p class="card-text">
+                                <i class="fas fa-user"></i> Cliente: <strong>${servicio.cliente_nombre} ${servicio.cliente_apellido}</strong><br>
+                                <i class="fas fa-phone"></i> Teléfono: ${servicio.cliente_telefono}<br>
+                                <i class="fas fa-envelope"></i> Email: ${servicio.cliente_email}
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                servicesContainer.appendChild(col);
+            });
+        } else {
+            servicesContainer.innerHTML = "<p class='text-muted'>No tienes solicitudes de servicios aún.</p>";
+        }
+
+    } catch (error) {
+        console.error("❌ Error al cargar los servicios solicitados:", error);
+    }
+}
 // 🚪 **Lógica para cerrar sesión**
 function logout() {
     fetch("http://localhost:4000/api/logout", {

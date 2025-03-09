@@ -11,7 +11,6 @@ import servicesRoutes from "./public/routes/aliados.js";
 import clientesRoutes from "./public/routes/clientes.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
 
-
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
 // const router = express.Router();
@@ -161,6 +160,7 @@ app.post("/api/register/cliente", authentication.registerCliente);
 
 // Ruta para servicios y aliados
 app.use("/api", servicesRoutes);
+app.use("/api/aliado", servicesRoutes);
 //Ruta para clientes
 app.use("/api", clientesRoutes); 
 app.use("/api/cliente", clientesRoutes);

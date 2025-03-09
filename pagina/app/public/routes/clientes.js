@@ -52,7 +52,6 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
     }
 });
 
-
 // ✅ **Endpoint para subir la imagen de perfil del cliente**
 router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
     console.log("📡 Recibiendo imagen de perfil del cliente...");
