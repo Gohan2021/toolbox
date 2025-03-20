@@ -1,4 +1,39 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    const searchForm = document.getElementById("serviceSearchForm");
+    const searchInput = document.getElementById("searchServiceInput");
+
+    // Lista de servicios con sus enlaces
+    const servicesSearch = {
+        "plomería": "/servicios/plomeria?servicioId=1&servicioNombre=Plomería",
+        "electricidad": "/servicios/electricidad?servicioId=2&servicioNombre=Electricidad",
+        "carpintería": "/servicios/carpinteria?servicioId=3&servicioNombre=Carpintería",
+        "enchape y acabados": "/servicios/enchape?servicioId=4&servicioNombre=Enchape",
+        "estructuras metálicas": "/servicios/metalicas?servicioId=5&servicioNombre=Estructuras Metálicas",
+        "pintura y acabados": "/servicios/pintura?servicioId=6&servicioNombre=Pintura y acabados",
+        "cerrajería": "/servicios/cerrajeria?servicioId=7&servicioNombre=Cerrajería",
+        "refrigeración y aire acondicionado": "/servicios/refrigeracion?servicioId=8&servicioNombre=Refrigeración y aire acondicionado",
+        "jardinería y paisajismo": "/servicios/jardineria?servicioId=9&servicioNombre=Jardinería y paisajismo",
+        "obras civiles": "/servicios/obras?servicioId=10&servicioNombre=Obras Civiles"
+    };
+
+    if (searchForm) {
+        searchForm.addEventListener("submit", (event) => {
+            event.preventDefault(); // Evita el comportamiento por defecto del formulario
+            
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query) {
+                alert("Por favor, ingresa el nombre de un servicio.");
+                return;
+            }
+
+            if (servicesSearch[query]) {
+                window.location.href = servicesSearch[query];
+            } else {
+                alert("No se encontró el servicio solicitado.");
+            }
+        });
+    }
     // 💡 Carga de los servicios en la página del Cliente
     const services = [
         { name: "Plomería", icon: "fa-solid fa-shower", link: "/servicios/plomeria?servicioId=1&servicioNombre=Plomería" },

@@ -82,23 +82,27 @@ async function loadServiciosSolicitados() {
                 col.classList.add("col-md-6", "mb-3");
 
                 col.innerHTML = `
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <div class="text-center">
-                                <img src="${servicio.cliente_foto || '../imagenes/acceso.png'}" 
-                                     class="rounded-circle aliado-img" 
-                                     alt="Cliente que solicitó el servicio" height="100">
-                            </div>
-                            <h5 class="card-title">${servicio.nombre_servicio}</h5>
-                            <p class="card-text">
-                                <i class="fas fa-user"></i> Cliente: <strong>${servicio.cliente_nombre} ${servicio.cliente_apellido}</strong><br>
-                                <i class="fas fa-phone"></i> Teléfono: ${servicio.cliente_telefono}<br>
-                                <i class="fas fa-envelope"></i> Email: ${servicio.cliente_email}
-                            </p>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <img src="${servicio.cliente_foto || '../imagenes/acceso.png'}" 
+                                 class="rounded-circle aliado-img" 
+                                 alt="Cliente que solicitó el servicio" height="100">
+                        </div>
+                        <h5 class="card-title">${servicio.nombre_servicio}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-user"></i> Cliente: <strong>${servicio.cliente_nombre} ${servicio.cliente_apellido}</strong><br>
+                            <i class="fas fa-phone"></i> Teléfono: ${servicio.cliente_telefono}<br>
+                            <i class="fas fa-envelope"></i> Email: ${servicio.cliente_email}
+                        </p>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-warning iniciar-chat-btn" data-cliente-id="${servicio.id_cliente}" data-cliente-nombre="${servicio.cliente_nombre}">
+                                <i class="fas fa-comments"></i> Chatear
+                            </button>
                         </div>
                     </div>
-                `;
-
+                </div>
+            `;            
                 servicesContainer.appendChild(col);
             });
         } else {
@@ -187,4 +191,22 @@ async function uploadProfileImage(event) {
         alert("Error al subir la imagen. Intenta de nuevo.");
     }
 }
+// Logica para el chat
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("iniciar-chat-btn")) {
+        const clienteId = event.target.getAttribute("data-cliente-id");
+        const clienteNombre = event.target.getAttribute("data-cliente-nombre");
+
+        // Abrir el chat con el cliente
+        iniciarChat(clienteId, clienteNombre);
+    }
+});
+
+function iniciarChat(clienteId, clienteNombre) {
+    console.log(`💬 Iniciando chat con ${clienteNombre} (ID: ${clienteId})`);
+
+    // Aquí podrías redirigir a una página específica de chat o abrir un modal
+    window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
+}
+
 
