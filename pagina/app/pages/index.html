@@ -15,6 +15,49 @@
     <link rel="icon" href="../imagenes/Logo.svg">
     <script src="../js/navbar.js" defer></script>
     <script src="form.js" defer></script>
+    <style>
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+    
+        .card img {
+            height: 200px; /* Ajusta según necesidad */
+            object-fit: cover;
+        }
+    
+        .card-body {
+            flex-grow: 1; /* Permite que el contenido se expanda uniformemente */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    
+        .btn {
+            width: 100%;
+        }
+        /* Estilo del botón */
+    .btn-e {
+        display: inline-block;
+        background-color: #ffc107;
+        color: #000;
+        /* font-size: 1.2rem; */
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 30px;
+        /* text-transform: uppercase; */
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        border: none;
+    }
+
+    .btn-e:hover {
+        background-color: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    </style>
 </head>
 <body>
     <!-- hero -->
@@ -24,15 +67,10 @@
             <div class="justify-content-center align-items-center px-5" id="container-text-hero">
                 <div class="title-hero mt-5">
                     <h1>SERVICIOS EN REPARACIONES Y CONSTRUCCIÓN, CON <span class="text-warning">TOOLBOX</span> PODRÁS...</h1>
-                    <form class="d-flex w-75 me-5 my-5 text-center">
-                        <input class="form-control text-center" list="datalistOptions" id="exampleDataList" type="search" placeholder="¿Qué servicio solicitas?" aria-label="¿Qué servicio solicitas?">
-                        <datalist id="datalistOptions">
-                          <option value="Hacerte conocer como independiente">
-                          <option value="Promover tu empresa">
-                          <option value="Generar con nosotros">
-                        </datalist>
-                        <button class="btn btn-warning" type="submit"><img src="/imagenes/buscar.png" alt="..." class="" height="20"></button>
-                    </form>
+                    <div class="d-flex my-5 text-center">
+                        <!-- Nuevo botón que redirige a los servicios -->
+                        <button class="btn-e mt-4" onclick="scrollToServices()">Explorar servicios <i class="fas fa-chevron-down ms-2"></i></button>
+                    </div>
                 </div>
                 <div class="text-hero ps-5">
                     <div class="d-flex">
@@ -41,13 +79,13 @@
                     </div>
                     <div class="d-flex my-3">
                         <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center" style="align-self: center;" height="30" alt="">
-                        <h5 class="fw-semibold mx-3 my-0">Promover tu empresa</h5>
+                        <h5 class="fw-semibold mx-3 my-0">Acceder a un marketplace</h5>
                     </div>
                     <div class="d-flex my-3">
                         <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center" style="align-self: center;" height="30" alt="">
-                        <h5 class="fw-semibold mx-3 my-0">Acceder a un marketplace</h5>
+                        <h5 class="fw-semibold mx-3 my-0">Promover tu empresa</h5>
                     </div>
-                    <a href="/form"><button type="button" class="btn-empezar ms-5 mt-4 px-5 py-2 fw-semibold">Empezar</button></a>
+                    <a href="/form"><button type="button" class="btn-e ms-5 mt-4 px-5 py-2 fw-semibold">Empezar</button></a>
                     
                 </div>
             </div>
@@ -57,37 +95,42 @@
     <div class="container mt-2 mb-5" id="servicios">
         <h4 class="text-start mb-4 card-title">Nuestros Servicios</h4>
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col col-card">
-                <div class="card shadow-sm border-light" id="hazteConocer">
-                    <img src="/imagenes/electricidad.jpg" class="card-img-top" alt="Electricidad">
-                    <div class="card-body">
-                        <h4 class="card-title">Hazte conocer</h4>
-                        <p class="card-text">Ofrece tus habilidades como profesional o técnico independiente y consigue contratos directamente con los clientes, <br>
-                        también podras conectar con empresas...
-                        </p>
-                        <a href="/form" class="btn btn-warning">Más información</a>
+            <!-- Hazte Conocer -->
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <img src="/imagenes/electricidad.jpg" class="card-img-top object-fit-cover" alt="Hazte conocer">
+                    <div class="card-body text-center">
+                        <h4 class="card-title fw-bold">Hazte Conocer</h4>
+                        <p class="text-muted">📢 Expande tu red y consigue clientes directos.</p>
+                        <p class="card-text">Ofrece tus servicios como <span class="fw-semibold">técnico o profesional independiente</span> y conecta con clientes y empresas que buscan tu experiencia.</p>
+                        <a href="/form" class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Únete ahora</a>
                     </div>
                 </div>
             </div>
-            <div class="col col-card">
-                <div class="card shadow-sm border-light">
-                    <img src="/imagenes/generar.jpg" class="card-img-top opacity-25" alt="promueve tu empresa">
-                    <div class="card-body">
-                        <h4 class="card-title">Promueve tu empresa</h4>
-                        <p class="card-text">Próximamente...</p>
-                        <p class="card-text">Estamos trabajando para ofrecerte este excelente servicio</p>
-                        <a href="#" class="btn btn-warning">Más información</a>
+        
+            <!-- Marketplace -->
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <img src="/imagenes/dropshipping.jpg" class="card-img-top object-fit-cover opacity-75" alt="Marketplace">
+                    <div class="card-body text-center">
+                        <h4 class="card-title fw-bold">Marketplace</h4>
+                        <p class="text-muted">🛠️ Compra y vende productos de segunda vida.</p>
+                        <p class="card-text">Accede a un <span class="fw-semibold">marketplace exclusivo</span> para herramientas, materiales y más, promoviendo un consumo sostenible. ♻️</p>
+                        <a href="#" class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Explorar</a>
                     </div>
                 </div>
             </div>
-            <div class="col col-card">
-                <div class="card shadow-sm border-light">
-                    <img src="/imagenes/dropshipping.jpg" class="card-img-top opacity-25" height="238px" alt="Genera con nosotros">
-                    <div class="card-body">
-                        <h4 class="card-title">Genera con nosotros</h4>
-                        <p class="card-text">Próximamente...</p>
-                        <p class="card-text">Estamos trabajando para ofrecerte este excelente servicio</p>
-                        <a href="#" class="btn btn-warning">Más información</a>
+        
+            <!-- Promueve tu negocio -->
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <img src="/imagenes/generar.jpg" class="card-img-top object-fit-cover opacity-75" alt="Promueve tu negocio">
+                    <div class="card-body text-center">
+                        <h4 class="card-title fw-bold">Impulsa tu negocio</h4>
+                        <p class="text-muted">🚀 Llega a más clientes con nuestra plataforma.</p>
+                        <p class="card-text">Estamos desarrollando un servicio exclusivo para que <span class="fw-semibold">empresas y profesionales </span>promocionen sus servicios de manera efectiva.</p>
+                        <p class="fw-bold text-warning">📢 ¡Próximamente!</p>
+                        <a href="#" class="btn btn-dark text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Más información</a>
                     </div>
                 </div>
             </div>
@@ -139,5 +182,11 @@
             </div>
         </div>
     </footer>
+    <!-- Script para el desplazamiento suave -->
+    <script>
+        function scrollToServices() {
+            document.getElementById("servicios").scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
 </body>
 </html>
