@@ -9,8 +9,8 @@ import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
 import servicesRoutes from "./public/routes/aliados.js";
 import clientesRoutes from "./public/routes/clientes.js";
+import marketplaceRoutes from "./public/routes/marketplace.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
-
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
 // const router = express.Router();
@@ -140,6 +140,9 @@ app.get("/myv_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages",
 app.get("/uso", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso.html")));
 app.get("/uso_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "uso_cliente.html")));
 
+app.get("/marketplace", (req, res) => res.sendFile(path.join(__dirname, "pages", "marketplace.html")));
+app.get("/publicar", (req, res) => res.sendFile(path.join(__dirname, "pages", "publicar.html")));
+
 // Rutas dinámicas para las páginas de servicios
 app.get("/servicios/:servicio", (req, res) => {
     const { servicio } = req.params;
@@ -164,7 +167,8 @@ app.use("/api/aliado", servicesRoutes);
 //Ruta para clientes
 app.use("/api", clientesRoutes); 
 app.use("/api/cliente", clientesRoutes);
-
+// Ruta para Marketplace
+app.use("/api", marketplaceRoutes);
 // ✅ Endpoint para obtener la información del aliado junto con la experiencia laboral
 app.get("/api/aliado/:id", async (req, res) => {
     const { id } = req.params;
