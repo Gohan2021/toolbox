@@ -139,4 +139,5 @@ router.post("/logout", (req, res) => {
 // Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
 
+
 export default router;

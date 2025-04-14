@@ -11,7 +11,7 @@ router.get("/marketplace/publicaciones", async (req, res) => {
 
     const [publicaciones] = await connection.query(`
       SELECT 
-        pm.id_publicacion, pm.titulo, pm.descripcion, pm.precio, pm.ubicacion, 
+        pm.id_publicacion, pm.titulo, pm.descripcion, pm.precio, pm.zona, 
         pm.fecha_publicacion, pm.destacado, pm.tipo_usuario,
         img.ruta_imagen
       FROM publicacion_marketplace pm
@@ -42,7 +42,7 @@ router.post("/marketplace/publicar", upload.array("imagenes", 5), async (req, re
     try {
       const conn = await database();
       const [result] = await conn.query(
-        "INSERT INTO publicacion_marketplace (titulo, descripcion, precio, ubicacion, estado, fecha_publicacion, tipo_usuario) VALUES (?, ?, ?, ?, 'activo', NOW(), 'cliente')",
+        "INSERT INTO publicacion_marketplace (titulo, descripcion, precio, zona, estado, fecha_publicacion, tipo_usuario) VALUES (?, ?, ?, ?, 'activo', NOW(), 'cliente')",
         [titulo, descripcion, precio, zona]
       );
       const idPublicacion = result.insertId;
@@ -60,6 +60,46 @@ router.post("/marketplace/publicar", upload.array("imagenes", 5), async (req, re
       res.status(500).json({ message: "Error del servidor." });
     }
   });
-  
+// Ruta para el buscador
+router.get("/marketplace/buscar", async (req, res) => {
+  const { q, zona } = req.query;
+
+  try {
+    const connection = await database();
+
+    let query = `
+      SELECT p.*, i.ruta_imagen 
+      FROM publicacion_marketplace p
+      LEFT JOIN (
+        SELECT id_publicacion, MIN(ruta_imagen) AS ruta_imagen
+        FROM imagenes_marketplace
+        GROUP BY id_publicacion
+      ) i ON p.id_publicacion = i.id_publicacion
+      WHERE 1=1
+    `;
+
+    const params = [];
+
+    if (q) {
+      query += " AND (p.titulo LIKE ? OR p.descripcion LIKE ?)";
+      params.push(`%${q}%`, `%${q}%`);
+    }
+
+    if (zona) {
+      query += " AND p.zona LIKE ?";
+      params.push(`%${zona}%`);
+    }
+
+    query += " ORDER BY p.fecha_publicacion DESC";
+
+    const [result] = await connection.query(query, params);
+    return res.json({ publicaciones: result });
+
+  } catch (error) {
+    console.error("❌ Error en la búsqueda del marketplace:", error.message);
+    res.status(500).json({ message: "Error al buscar publicaciones." });
+  }
+});
 
 export default router;
+
