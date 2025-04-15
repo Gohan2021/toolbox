@@ -1,6 +1,6 @@
 import express from "express";
 import database from "../../database.js";
-import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
+import { uploadMarketplace } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ router.get("/marketplace/publicaciones", async (req, res) => {
 });
 
 
-router.post("/marketplace/publicar", upload.array("imagenes", 5), async (req, res) => {
+router.post("/marketplace/publicar", uploadMarketplace.array("imagenes", 5), async (req, res) => {
   console.log("🟡 Files recibidos:", req.files);
   console.log("🟡 Body recibido:", req.body);  
   const { titulo, descripcion, precio, zona } = req.body;
