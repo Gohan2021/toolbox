@@ -71,7 +71,7 @@ app.use(cors({
 // Servir archivos estáticos desde la carpeta 'uploads'
 // app.use("/uploads", express.static(uploadFolder));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.use("/uploads_marketplace", express.static(path.join(__dirname, "public/uploads_marketplace")));
 // ✅ **Endpoint para subir imágenes incluyendo foto de perfil**
 app.post("/api/register/aliado/loadImages", upload.fields([
     { name: "fotoPerfil", maxCount: 1 },
