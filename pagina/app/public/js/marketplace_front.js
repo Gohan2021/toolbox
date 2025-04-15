@@ -75,7 +75,7 @@ function renderCard(pub) {
   card.innerHTML = `
     <div class="card marketplace-card position-relative">
       ${pub.destacado ? `<span class="premium-badge bg-warning">PREMIUM</span>` : ""}
-      ${esReciente(pub.fecha_publicacion) ? `<span class="badge bg-info text-dark position-absolute top-0 end-0 m-2">Nuevo</span>` : ""}
+      ${esReciente(pub.fecha_publicacion) ? `<span class="badge bg-info text-dark position-absolute top-0 end-0 m-2" style="z-index: 10;">Nuevo</span>` : ""}
       ${renderCarrusel(pub)}
       <div class="card-body">
         <h5 class="card-title">${pub.titulo}</h5>
