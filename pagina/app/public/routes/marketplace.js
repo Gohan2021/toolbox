@@ -33,27 +33,81 @@ router.get("/marketplace/publicaciones", async (req, res) => {
     res.status(500).json({ message: "Error al cargar publicaciones." });
   }
 });
+// router.get("/marketplace/publicaciones/mis-publicaciones", async (req, res) => {
+//   const id_aliado = req.session?.user?.id_aliado; // Ajusta según tu sesión
 
+//   if (!id_aliado) {
+//     return res.status(401).json({ message: "No autenticado" });
+//   }
 
+//   try {
+//     const conn = await database();
+//     const [publicaciones] = await conn.query(`
+//       SELECT 
+//         pm.id_publicacion, pm.titulo, pm.descripcion, pm.precio, pm.zona, 
+//         pm.fecha_publicacion, pm.destacado, pm.tipo_usuario
+//       FROM publicacion_marketplace pm
+//       WHERE pm.estado = 'activo' AND pm.id_aliado = ?
+//       ORDER BY pm.fecha_publicacion DESC
+//     `, [id_aliado]);
+
+//     for (const pub of publicaciones) {
+//       const [imagenes] = await conn.query(
+//         "SELECT ruta_imagen FROM imagenes_marketplace WHERE id_publicacion = ?",
+//         [pub.id_publicacion]
+//       );
+//       pub.imagenes = imagenes.map(img => img.ruta_imagen);
+//     }
+
+//     res.json({ publicaciones });
+
+//   } catch (error) {
+//     console.error("❌ Error al obtener publicaciones del aliado:", error.message);
+//     res.status(500).json({ message: "Error al cargar tus publicaciones." });
+//   }
+// });
+
+// POST /marketplace/publicar
 router.post("/marketplace/publicar", uploadMarketplace.array("imagenes", 5), async (req, res) => {
-  console.log("🟡 Files recibidos:", req.files);
-  console.log("🟡 Body recibido:", req.body);  
-  const { titulo, descripcion, precio, zona } = req.body;
+  const { titulo, descripcion, precio, zona, id_aliado, destacado } = req.body;
   const files = req.files;
 
-  if (!titulo || !descripcion || !precio || !zona || files.length === 0) {
-    return res.status(400).json({ message: "Todos los campos son requeridos y se debe subir al menos 1 imagen." });
+  if (!titulo || !descripcion || !precio || !zona || !id_aliado || files.length === 0) {
+    return res.status(400).json({ message: "Faltan campos requeridos." });
   }
 
   try {
     const conn = await database();
-    console.log("📸 Archivos recibidos:", req.files);
 
-    const [result] = await conn.query(
-      `INSERT INTO publicacion_marketplace (titulo, descripcion, precio, zona, estado, fecha_publicacion, tipo_usuario)
-       VALUES (?, ?, ?, ?, 'activo', NOW(), 'cliente')`,
-      [titulo, descripcion, precio, zona]
-    );
+    // 🟡 Validar beneficios de suscripción
+    const [subs] = await conn.query(`
+      SELECT s.limite_publicaciones_destacadas, s.puede_destacar_publicaciones
+      FROM aliado a
+      JOIN suscripcion s ON a.id_suscripcion = s.id_suscripcion
+      WHERE a.id_aliado = ?
+    `, [id_aliado]);
+
+    if (!subs.length) return res.status(400).json({ message: "Aliado inválido" });
+
+    let destacar = destacado === "true";
+
+    if (destacar && !subs[0].puede_destacar_publicaciones) {
+      destacar = false;
+    }
+
+    const [countDestacadas] = await conn.query(`
+      SELECT COUNT(*) AS total FROM publicacion_marketplace
+      WHERE id_aliado = ? AND destacado = 1
+    `, [id_aliado]);
+
+    if (destacar && countDestacadas[0].total >= subs[0].limite_publicaciones_destacadas) {
+      destacar = false;
+    }
+
+    const [result] = await conn.query(`
+      INSERT INTO publicacion_marketplace (titulo, descripcion, precio, zona, estado, fecha_publicacion, tipo_usuario, destacado, id_aliado)
+      VALUES (?, ?, ?, ?, 'activo', NOW(), 'cliente', ?, ?)
+    `, [titulo, descripcion, precio, zona, destacar, id_aliado]);
 
     const idPublicacion = result.insertId;
 
@@ -65,12 +119,13 @@ router.post("/marketplace/publicar", uploadMarketplace.array("imagenes", 5), asy
       );
     }
 
-    res.status(201).json({ message: "✅ Publicación creada correctamente." });
+    res.status(201).json({ message: "Publicación creada exitosamente", destacado: destacar });
   } catch (err) {
-    console.error("❌ Error al guardar publicación:", err);
-    res.status(500).json({ message: err.message || "Error del servidor." });
+    console.error("❌ Error al publicar:", err.message);
+    res.status(500).json({ message: "Error del servidor." });
   }
 });
+
 // Ruta para el buscador
 router.get("/marketplace/buscar", async (req, res) => {
   const { q, zona } = req.query;

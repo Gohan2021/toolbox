@@ -142,6 +142,7 @@ app.get("/uso_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages",
 
 app.get("/marketplace", (req, res) => res.sendFile(path.join(__dirname, "pages", "marketplace.html")));
 app.get("/publicar", (req, res) => res.sendFile(path.join(__dirname, "pages", "publicar.html")));
+app.get("/elige_registro", (req, res) => res.sendFile(path.join(__dirname, "pages", "elige_registro.html")));
 
 // Rutas dinámicas para las páginas de servicios
 app.get("/servicios/:servicio", (req, res) => {

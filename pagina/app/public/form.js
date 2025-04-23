@@ -321,7 +321,7 @@ async function registerAliado(e) {
 
 
         // 🔹 3️⃣ REDIRIGIR A `hazteConocer.html`
-        window.location.href = "/hazteConocer";
+        window.location.href = "/aliado#planes";
 
     } catch (error) {
         console.error("Error al registrar el aliado:", error);
@@ -361,7 +361,6 @@ async function loginAliado(e) {
             alert(data.message || "Credenciales incorrectas.");
             return;
         }
-
         console.log("Inicio de sesión exitoso:", data.message);
 
         // ✅ Guardar el ID del aliado en `sessionStorage` y `localStorage`

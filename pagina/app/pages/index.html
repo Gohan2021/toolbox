@@ -57,6 +57,22 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
+    .plan-bg-basico {
+     background: linear-gradient(145deg, #bfe9c97c, #ffffff);
+    background-blend-mode: overlay; 
+    color: #1a1a1a;
+  }
+  .plan-bg-intermedio {
+    background: linear-gradient(145deg, #a9c5fc6b, #ffffff);
+    background-blend-mode: overlay;
+    color: #1a1a1a;
+  }
+  .plan-bg-premium {
+    background: linear-gradient(145deg, #eee7ce79, #f7f6f6);
+    background-blend-mode: overlay;
+    color: #1a1a1a;
+  }
+  
     </style>
 </head>
 <body>
@@ -136,6 +152,94 @@
             </div>
         </div>
     </div>
+    <!-- Sección de Planes de Suscripción para Aliados -->
+    <section class="container my-5" id="planes">
+    <h2 class="text-center mb-4 fw-bold">Elige tu Plan de Suscripción</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 fw-semibold">
+  
+      <!-- Plan Básico -->
+      <div class="col">
+        <div class="card h-100  border-success shadow rounded-4 p-4 plan-bg-basico">
+          <div class="card-body">
+            <h4 class="card-title">Plan Básico (Gratis)</h4>
+            <p class="card-text">Pensado para aliados que están comenzando o quieren probar la plataforma.</p>
+            <ul class="list-unstyled">
+              <li>✔ Registro y perfil activo</li>
+              <li>✔ Visibilidad limitada en su zona</li>
+              <li>✔ Acceso al Marketplace:</li>
+              <ul style="list-style:none;">
+                <li>✔ Ver publicaciones</li>
+                <li>✔ Publicar hasta 3 productos/mes</li>
+                <li>❌ Sin publicaciones destacadas</li>
+              </ul>
+              <li>❌ Sin prioridad en ofertas</li>
+              <li>❌ Sin sello visual en el perfil</li>
+              <li>🔔 Notificaciones básicas (limitadas)</li>
+            </ul>
+            <div class="d-grid">
+              <button class="btn btn-outline-success fw-bold">Obtener Gratis</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Plan Intermedio -->
+      <div class="col">
+        <div class="card h-100 border-primary shadow rounded-4 p-4 plan-bg-intermedio">
+          <div class="card-body">
+            <h4 class="card-title">Plan Intermedio ($50.000 COP/mes)</h4>
+            <p class="card-text">Ideal para aliados activos que buscan mayor visibilidad.</p>
+            <ul class="list-unstyled">
+              <li>✔ Todo lo del Plan Básico</li>
+              <li>✔ Acceso a todas las ofertas</li>
+              <li>✔ Visibilidad mejorada (70%)</li>
+              <li>✔ Sello gris en perfil</li>
+              <li>🔔 Notificaciones en tiempo real</li>
+              <li>✔ Marketplace:</li>
+              <ul style="list-style:none;">
+                <li>✔ Publicar hasta 4 productos/semana</li>
+                <li>❌ No aparece en destacados</li>
+              </ul>
+              <li>📞 Soporte en 24-48h</li>
+            </ul>
+            <div class="d-grid">
+              <button class="btn btn-outline-primary fw-bold">Suscribirse</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Plan Premium -->
+      <div class="col">
+        <div class="card h-100 border-warning shadow rounded-4 p-4 plan-bg-premium">
+          <div class="card-body">
+            <h4 class="card-title">Plan Premium ($60.000 COP/mes)</h4>
+            <p class="card-text">Para aliados que quieren destacarse y recibir más oportunidades.</p>
+            <ul class="list-unstyled">
+              <li>✔ Todo lo de los planes anteriores</li>
+              <li>✔ Máxima visibilidad (primeros en la lista)</li>
+              <li>✔ Prioridad en ofertas</li>
+              <li>✔ Sello dorado en perfil</li>
+              <li>✔ Marketplace:</li>
+              <ul style="list-style:none;">
+                <li>✔ Publicaciones ilimitadas</li>
+                <li>✔ Acceso a destacados del día</li>
+                <li>✔ Fijar 1 producto/semana</li>
+              </ul>
+              <li>🔁 Renovación automática de visibilidad</li>
+              <li>⚡ Soporte prioritario (&lt;12h)</li>
+              <li>🚀 Acceso anticipado a funciones futuras</li>
+            </ul>
+            <div class="d-grid">
+              <button class="btn btn-outline-warning text-warning fw-bold">Suscribirse</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  
     <!-- Botón de Chatea con nosotros -->
     <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
     class="chat-button fw-semibold pb-2" 

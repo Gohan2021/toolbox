@@ -168,7 +168,7 @@ async function registerAliado(req, res) {
         return res.status(201).send({ 
             status: "Success", 
             message: `Nuevo aliado ${userNameAliado} registrado exitosamente`, 
-            redirect: "/hazteConocer" 
+            redirect: "/aliado#planes" 
         });
 
     } catch (err) {

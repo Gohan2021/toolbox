@@ -100,6 +100,11 @@
         <div id="imageInputs" class="row g-2"></div>
       </div>      
 
+      <div class="form-check mb-3 d-none" id="destacarOption">
+        <input class="form-check-input" type="checkbox" name="destacar" id="destacar">
+        <label class="form-check-label" for="destacar">Destacar publicación</label>
+      </div>
+
       <div class="d-grid">
         <button type="submit" class="btn btn-primary">Publicar en el Marketplace</button>
       </div>
@@ -107,6 +112,43 @@
     </form>
   </div>
   <script>
+    const tipoUsuario = getCookie("tipo_usuario");
+    const idUsuario = getCookie("id_usuario");
+    const plan = getCookie("plan");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("formPublicar");
+      const mensaje = document.getElementById("mensajeUsuario");
+      const destacarOpt = document.getElementById("destacarOption");
+      const ayudaPlan = document.getElementById("ayudaPlan");
+
+      if (!idUsuario || !tipoUsuario) {
+        window.location.href = "/elige_registro";
+        return;
+      }
+
+      form.classList.remove("d-none");
+
+      if (tipoUsuario === "cliente") {
+        ayudaPlan.textContent = "Nota: los clientes no pueden destacar publicaciones.";
+      } else if (tipoUsuario === "aliado") {
+        if (plan === "intermedio") {
+          destacarOpt.classList.remove("d-none");
+          ayudaPlan.textContent = "Puedes destacar hasta 3 publicaciones por mes.";
+        } else if (plan === "premium") {
+          destacarOpt.classList.remove("d-none");
+          ayudaPlan.textContent = "Publicaciones destacadas ilimitadas.";
+        } else {
+          ayudaPlan.textContent = "Plan gratuito: sin opción para destacar publicaciones.";
+        }
+      }
+    });
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+    //lOGICA PARA LAS IMAGENES
     let contador = 0;
     const maxImagenes = 5;
   
@@ -176,6 +218,7 @@
         agregarInputImagen();
       }
     });
+
   </script>
   
 </body>

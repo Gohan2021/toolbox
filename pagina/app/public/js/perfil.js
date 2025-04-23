@@ -208,5 +208,36 @@ function iniciarChat(clienteId, clienteNombre) {
     // Aquí podrías redirigir a una página específica de chat o abrir un modal
     window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
 }
-
-
+// async function cargarPublicacionesAliado() {
+//     const contenedor = document.getElementById("misPublicaciones");
+//     contenedor.innerHTML = `<p class="text-muted">Cargando publicaciones...</p>`;
+  
+//     try {
+//       const res = await fetch("http://localhost:4000/api/marketplace/publicaciones/mis-publicaciones", {
+//         credentials: "include"  // 🔐 Enviar cookies de sesión al backend
+//       });
+  
+//       const data = await res.json();
+  
+//       if (!res.ok) {
+//         throw new Error(data.message || "Error inesperado");
+//       }
+  
+//       if (!data.publicaciones || data.publicaciones.length === 0) {
+//         contenedor.innerHTML = `<p class="text-muted">No has realizado publicaciones aún.</p>`;
+//         return;
+//       }
+  
+//       contenedor.innerHTML = "";
+  
+//       data.publicaciones.forEach(pub => {
+//         const card = renderPublicacionAliado(pub);
+//         contenedor.appendChild(card);
+//       });
+  
+//     } catch (error) {
+//       console.error("❌ Error al cargar publicaciones del aliado:", error);
+//       contenedor.innerHTML = `<p class="text-danger">Error al cargar tus publicaciones.</p>`;
+//     }
+//   }
+  

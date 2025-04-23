@@ -138,6 +138,54 @@ router.post("/logout", (req, res) => {
 });
 // Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
-
-
+//Ruta para obtener detalles de suscripcion de un aliado
+router.get("/aliado/:id/suscripcion", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const conn = await database();
+  
+      const [result] = await conn.query(`
+        SELECT s.*
+        FROM aliado a
+        JOIN suscripcion s ON a.id_suscripcion = s.id_suscripcion
+        WHERE a.id_aliado = ?
+      `, [id]);
+  
+      if (result.length === 0) {
+        return res.status(404).json({ message: "Suscripción no encontrada." });
+      }
+  
+      res.json({ suscripcion: result[0] });
+    } catch (err) {
+      console.error("❌ Error al obtener la suscripción:", err.message);
+      res.status(500).json({ message: "Error del servidor." });
+    }
+  });
+// GET /api/aliado/:id/publicaciones
+// router.get("/aliado/:id/publicaciones", async (req, res) => {
+//     const { id } = req.params;
+//     try {
+//       const conn = await database();
+  
+//       const [publicaciones] = await conn.query(`
+//         SELECT pm.*, GROUP_CONCAT(im.ruta_imagen) AS imagenes
+//         FROM publicacion_marketplace pm
+//         LEFT JOIN imagenes_marketplace im ON pm.id_publicacion = im.id_publicacion
+//         WHERE pm.id_aliado = ?
+//         GROUP BY pm.id_publicacion
+//         ORDER BY pm.fecha_publicacion DESC
+//       `, [id]);
+  
+//       const formatted = publicaciones.map(pub => ({
+//         ...pub,
+//         imagenes: pub.imagenes ? pub.imagenes.split(",") : []
+//       }));
+  
+//       res.json({ publicaciones: formatted });
+//     } catch (err) {
+//       console.error("❌ Error al obtener publicaciones del aliado:", err.message);
+//       res.status(500).json({ message: "Error al cargar publicaciones del aliado." });
+//     }
+//   });
+  
 export default router;
