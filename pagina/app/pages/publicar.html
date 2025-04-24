@@ -104,7 +104,10 @@
         <input class="form-check-input" type="checkbox" name="destacar" id="destacar">
         <label class="form-check-label" for="destacar">Destacar publicación</label>
       </div>
-
+      <div id="ayudaPlan" class="form-text text-muted mb-3 ms-1">
+        <!-- Texto sobre el plan se insertará aquí -->
+      </div>
+      
       <div class="d-grid">
         <button type="submit" class="btn btn-primary">Publicar en el Marketplace</button>
       </div>
@@ -113,7 +116,6 @@
   </div>
   <script>
 // Verificación de sesión y lógica de planes para publicación
-
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("formPublicar");
   const mensaje = document.getElementById("mensajeUsuario");
@@ -121,37 +123,55 @@ document.addEventListener("DOMContentLoaded", async () => {
   const ayudaPlan = document.getElementById("ayudaPlan");
 
   try {
-    const res = await fetch("http://localhost:4000/api/usuario/info", {
+    const res = await fetch("http://localhost:4000/api/aliado/perfil", {
       method: "GET",
       credentials: "include"
     });
 
-    if (!res.ok) throw new Error("Usuario no autenticado");
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        console.warn("⚠️ Sesión inválida. Redirigiendo al registro.");
+        alert("Tu sesión ha expirado o no tienes permisos para acceder. Inicia sesión nuevamente.");
+        window.location.href = "/form";
+        return;
+      }
+      throw new Error(`Error inesperado de respuesta: ${res.status}`);
+    }
 
     const data = await res.json();
-    const { role, tipo_suscripcion } = data;
+    console.log("✅ Respuesta de perfil:", data);
 
-    if (role !== "aliado") {
-      window.location.href = "/elige_registro";
-      return;
+    if (!data.aliado || typeof data.aliado.id_suscripcion === "undefined") {
+      throw new Error("No se pudo encontrar el id_suscripcion en el perfil del aliado.");
     }
+
+    const plan = data.aliado.id_suscripcion;
+    console.log("🧾 Plan detectado:", plan);
 
     form.classList.remove("d-none");
 
-    if (tipo_suscripcion === "intermedio") {
-      destacarOpt.classList.remove("d-none");
-      ayudaPlan.textContent = "Puedes destacar hasta 3 publicaciones por mes.";
-    } else if (tipo_suscripcion === "premium") {
-      destacarOpt.classList.remove("d-none");
-      ayudaPlan.textContent = "Publicaciones destacadas ilimitadas.";
-    } else {
-      ayudaPlan.textContent = "Plan gratuito: sin opción para destacar publicaciones.";
+    switch (plan) {
+      case 2: // Intermedio
+        destacarOpt.classList.remove("d-none");
+        ayudaPlan.textContent = "Puedes destacar hasta 1 publicación por semana.";
+        break;
+      case 3: // Premium
+        destacarOpt.classList.remove("d-none");
+        ayudaPlan.textContent = "Publicaciones destacadas ilimitadas.";
+        break;
+      default:
+        destacarOpt.classList.add("d-none");
+        ayudaPlan.textContent = "Plan gratuito: sin opción para destacar publicaciones.";
+        break;
     }
+
   } catch (err) {
-    console.error("❌ Error al validar sesión:", err);
-    window.location.href = "/elige_registro";
+    console.error("❌ Error al validar sesión o procesar perfil:", err);
+    alert("Ocurrió un error al validar tu sesión. Por favor, intenta más tarde o vuelve a iniciar sesión.");
+    window.location.href = "/form";
   }
 });
+
 
 // Lógica para carga de imágenes
 let contador = 0;

@@ -38,12 +38,17 @@ router.get("/marketplace/publicaciones", async (req, res) => {
 //Publicar material
 router.post("/marketplace/publicar", verifyToken, verificarPlanAliado, uploadMarketplace.array("imagenes", 5), async (req, res) => {
   const { userId, role } = req.user;
-  const { planAliado } = req;
+  const plan = req.planAliado;
   const connection = await database();
 
   try {
-    // 🔒 Límite del plan Básico (hasta 3 publicaciones/mes)
-    if (role === "aliado" && planAliado === "basico") {
+    // 🔒 Si no tiene plan asignado
+    if (role === "aliado" && !plan) {
+      return res.status(403).json({ message: "Debes seleccionar un plan antes de publicar." });
+    }
+
+    // 🔒 Límite mensual para publicaciones del Plan Básico (id = 1)
+    if (role === "aliado" && plan.id_suscripcion === 1) {
       const [count] = await connection.query(
         `SELECT COUNT(*) AS total 
          FROM publicacion_marketplace 
@@ -65,23 +70,9 @@ router.post("/marketplace/publicar", verifyToken, verificarPlanAliado, uploadMar
 
     // 📌 Validar si puede destacar publicaciones
     let destacar = destacado === "true";
-    let puedeDestacar = false;
-    let limiteDestacadas = 0;
 
     if (role === "aliado") {
-      const [subs] = await connection.query(`
-        SELECT s.puede_destacar_publicaciones, s.limite_publicaciones_destacadas
-        FROM aliado a
-        JOIN suscripcion s ON a.id_suscripcion = s.id_suscripcion
-        WHERE a.id_aliado = ?
-      `, [userId]);
-
-      if (subs.length > 0) {
-        puedeDestacar = !!subs[0].puede_destacar_publicaciones;
-        limiteDestacadas = subs[0].limite_publicaciones_destacadas;
-      }
-
-      if (!puedeDestacar) {
+      if (!plan.puede_destacar_publicaciones) {
         destacar = false;
       } else {
         const [countDestacadas] = await connection.query(`
@@ -89,13 +80,12 @@ router.post("/marketplace/publicar", verifyToken, verificarPlanAliado, uploadMar
           WHERE id_aliado = ? AND destacado = 1
         `, [userId]);
 
-        if (countDestacadas[0].total >= limiteDestacadas) {
+        if (countDestacadas[0].total >= plan.limite_publicaciones_destacadas) {
           destacar = false;
         }
       }
     } else {
-      // Clientes no pueden destacar publicaciones
-      destacar = false;
+      destacar = false; // clientes no pueden destacar
     }
 
     // 📝 Guardar publicación
@@ -115,6 +105,7 @@ router.post("/marketplace/publicar", verifyToken, verificarPlanAliado, uploadMar
     }
 
     res.status(201).json({ message: "✅ Publicación creada exitosamente.", destacado: destacar });
+
   } catch (err) {
     console.error("❌ Error al publicar:", err.message);
     res.status(500).json({ message: "Error del servidor." });
