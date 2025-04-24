@@ -208,36 +208,74 @@ function iniciarChat(clienteId, clienteNombre) {
     // Aquí podrías redirigir a una página específica de chat o abrir un modal
     window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
 }
-// async function cargarPublicacionesAliado() {
-//     const contenedor = document.getElementById("misPublicaciones");
-//     contenedor.innerHTML = `<p class="text-muted">Cargando publicaciones...</p>`;
+async function cargarPlan() {
+    try {
+      const res = await fetch("/api/aliado/perfil", { credentials: "include" });
+      const data = await res.json();
   
-//     try {
-//       const res = await fetch("http://localhost:4000/api/marketplace/publicaciones/mis-publicaciones", {
-//         credentials: "include"  // 🔐 Enviar cookies de sesión al backend
-//       });
+      const idSuscripcion = data.aliado.id_suscripcion;
   
-//       const data = await res.json();
+      const planBadge = document.getElementById("planActual");
   
-//       if (!res.ok) {
-//         throw new Error(data.message || "Error inesperado");
-//       }
+      // Establecer nombre del plan y clases visuales
+      switch (idSuscripcion) {
+        case 1:
+          planBadge.textContent = "BÁSICO";
+          planBadge.className = "badge bg-success fs-5 mt-2";
+          break;
+        case 2:
+          planBadge.textContent = "INTERMEDIO";
+          planBadge.className = "badge bg-primary fs-5 mt-2";
+          break;
+        case 3:
+          planBadge.textContent = "PREMIUM";
+          planBadge.className = "badge bg-warning text-dark fs-5 mt-2";
+          break;
+        default:
+          planBadge.textContent = "Desconocido";
+          planBadge.className = "badge bg-danger fs-5 mt-2";
+          break;
+      }
   
-//       if (!data.publicaciones || data.publicaciones.length === 0) {
-//         contenedor.innerHTML = `<p class="text-muted">No has realizado publicaciones aún.</p>`;
-//         return;
-//       }
-  
-//       contenedor.innerHTML = "";
-  
-//       data.publicaciones.forEach(pub => {
-//         const card = renderPublicacionAliado(pub);
-//         contenedor.appendChild(card);
-//       });
-  
-//     } catch (error) {
-//       console.error("❌ Error al cargar publicaciones del aliado:", error);
-//       contenedor.innerHTML = `<p class="text-danger">Error al cargar tus publicaciones.</p>`;
-//     }
-//   }
+    } catch (err) {
+      console.error("Error al obtener plan del aliado:", err);
+    }
+  }
+  async function elegirPlan(idSuscripcion) {
+    try {
+        // 🔍 Verificar si el aliado está autenticado
+        const authCheck = await fetch("/api/aliado/perfil", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (authCheck.status === 401 || authCheck.status === 403) {
+            alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
+            window.location.href = "/form";
+            return;
+        }
+
+        // 📥 Continuar con la suscripción
+        const res = await fetch("/api/aliado/suscribirse", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_suscripcion: idSuscripcion })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert("✅ Te has suscrito correctamente.");
+            window.location.href = "/hazteConocer";
+        } else {
+            alert(`❌ Error: ${data.message}`);
+        }
+
+    } catch (error) {
+        console.error("❌ Error al suscribirse:", error);
+        alert("No se pudo completar la suscripción.");
+    }
+}  
+  document.addEventListener("DOMContentLoaded", cargarPlan);
   

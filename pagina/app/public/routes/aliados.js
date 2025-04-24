@@ -18,7 +18,7 @@ router.get("/aliado/perfil", verifyToken, async (req, res) => {
 
         // 🔍 Obtener información del aliado
         const [aliadoData] = await connection.query(
-            `SELECT id_aliado, nombre, apellido, telefono, email, foto 
+            `SELECT id_aliado, nombre, apellido, telefono, email, foto, id_suscripcion  
              FROM aliado WHERE id_aliado = ?`, 
             [req.user.userId]
         );
@@ -161,31 +161,32 @@ router.get("/aliado/:id/suscripcion", async (req, res) => {
       res.status(500).json({ message: "Error del servidor." });
     }
   });
-// GET /api/aliado/:id/publicaciones
-// router.get("/aliado/:id/publicaciones", async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//       const conn = await database();
-  
-//       const [publicaciones] = await conn.query(`
-//         SELECT pm.*, GROUP_CONCAT(im.ruta_imagen) AS imagenes
-//         FROM publicacion_marketplace pm
-//         LEFT JOIN imagenes_marketplace im ON pm.id_publicacion = im.id_publicacion
-//         WHERE pm.id_aliado = ?
-//         GROUP BY pm.id_publicacion
-//         ORDER BY pm.fecha_publicacion DESC
-//       `, [id]);
-  
-//       const formatted = publicaciones.map(pub => ({
-//         ...pub,
-//         imagenes: pub.imagenes ? pub.imagenes.split(",") : []
-//       }));
-  
-//       res.json({ publicaciones: formatted });
-//     } catch (err) {
-//       console.error("❌ Error al obtener publicaciones del aliado:", err.message);
-//       res.status(500).json({ message: "Error al cargar publicaciones del aliado." });
-//     }
-//   });
-  
+// POST /api/aliado/suscribirse
+router.post("/suscribirse", verifyToken, async (req, res) => {
+    const { id_suscripcion } = req.body;
+
+    if (!id_suscripcion) {
+        return res.status(400).json({ message: "ID de suscripción requerido." });
+    }
+
+    try {
+        const conn = await database();
+
+        // Verificar existencia de la suscripción
+        const [subs] = await conn.query("SELECT * FROM suscripcion WHERE id_suscripcion = ?", [id_suscripcion]);
+        if (subs.length === 0) {
+            return res.status(404).json({ message: "Suscripción no encontrada." });
+        }
+
+        // Actualizar la suscripción del aliado
+        await conn.query("UPDATE aliado SET id_suscripcion = ? WHERE id_aliado = ?", [id_suscripcion, req.user.userId]);
+
+        res.status(200).json({ message: "Suscripción actualizada correctamente." });
+
+    } catch (error) {
+        console.error("❌ Error al actualizar suscripción:", error.message);
+        res.status(500).json({ message: "Error al actualizar la suscripción." });
+    }
+});
+
 export default router;

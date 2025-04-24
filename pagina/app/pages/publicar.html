@@ -112,112 +112,118 @@
     </form>
   </div>
   <script>
-    const tipoUsuario = getCookie("tipo_usuario");
-    const idUsuario = getCookie("id_usuario");
-    const plan = getCookie("plan");
+// Verificación de sesión y lógica de planes para publicación
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("formPublicar");
-      const mensaje = document.getElementById("mensajeUsuario");
-      const destacarOpt = document.getElementById("destacarOption");
-      const ayudaPlan = document.getElementById("ayudaPlan");
+document.addEventListener("DOMContentLoaded", async () => {
+  const form = document.getElementById("formPublicar");
+  const mensaje = document.getElementById("mensajeUsuario");
+  const destacarOpt = document.getElementById("destacarOption");
+  const ayudaPlan = document.getElementById("ayudaPlan");
 
-      if (!idUsuario || !tipoUsuario) {
-        window.location.href = "/elige_registro";
-        return;
-      }
-
-      form.classList.remove("d-none");
-
-      if (tipoUsuario === "cliente") {
-        ayudaPlan.textContent = "Nota: los clientes no pueden destacar publicaciones.";
-      } else if (tipoUsuario === "aliado") {
-        if (plan === "intermedio") {
-          destacarOpt.classList.remove("d-none");
-          ayudaPlan.textContent = "Puedes destacar hasta 3 publicaciones por mes.";
-        } else if (plan === "premium") {
-          destacarOpt.classList.remove("d-none");
-          ayudaPlan.textContent = "Publicaciones destacadas ilimitadas.";
-        } else {
-          ayudaPlan.textContent = "Plan gratuito: sin opción para destacar publicaciones.";
-        }
-      }
+  try {
+    const res = await fetch("http://localhost:4000/api/usuario/info", {
+      method: "GET",
+      credentials: "include"
     });
 
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return match ? decodeURIComponent(match[2]) : null;
+    if (!res.ok) throw new Error("Usuario no autenticado");
+
+    const data = await res.json();
+    const { role, tipo_suscripcion } = data;
+
+    if (role !== "aliado") {
+      window.location.href = "/elige_registro";
+      return;
     }
-    //lOGICA PARA LAS IMAGENES
-    let contador = 0;
-    const maxImagenes = 5;
-  
-    function agregarInputImagen() {
-      if (contador >= maxImagenes) return;
-  
-      const inputGroup = document.createElement("div");
-      inputGroup.classList.add("col-4", "text-center");
-  
-      const inputId = `input-${contador}`;
-      const previewId = `preview-${contador}`;
-  
-      inputGroup.innerHTML = `
-        <input type="file" accept="image/*" class="d-none" name="imagenes" id="${inputId}" onchange="mostrarPreview(this, '${previewId}')">
-        <label for="${inputId}">
-          <div class="image-preview" id="${previewId}">
-            <span class="plus-icon">+</span>
-          </div>
-        </label>
-      `;
-  
-      document.getElementById("imageInputs").appendChild(inputGroup);
-      contador++;
+
+    form.classList.remove("d-none");
+
+    if (tipo_suscripcion === "intermedio") {
+      destacarOpt.classList.remove("d-none");
+      ayudaPlan.textContent = "Puedes destacar hasta 3 publicaciones por mes.";
+    } else if (tipo_suscripcion === "premium") {
+      destacarOpt.classList.remove("d-none");
+      ayudaPlan.textContent = "Publicaciones destacadas ilimitadas.";
+    } else {
+      ayudaPlan.textContent = "Plan gratuito: sin opción para destacar publicaciones.";
     }
-  
-    function mostrarPreview(input, previewId) {
-      const preview = document.getElementById(previewId);
-  
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          preview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">`;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-  
-    document.getElementById("formPublicar").addEventListener("submit", async function (e) {
-      e.preventDefault();
-  
-      const form = document.getElementById("formPublicar");
-      const formData = new FormData(form);
-  
-      try {
-        const res = await fetch("http://localhost:4000/api/marketplace/publicar", {
-          method: "POST",
-          body: formData
-        });
-  
-        const result = await res.json();
-        if (res.ok) {
-          alert("✅ Material publicado correctamente");
-          form.reset();
-          window.location.href = "/marketplace";
-        } else {
-          alert("❌ Error: " + result.message);
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        alert("❌ Error en el servidor");
-      }
+  } catch (err) {
+    console.error("❌ Error al validar sesión:", err);
+    window.location.href = "/elige_registro";
+  }
+});
+
+// Lógica para carga de imágenes
+let contador = 0;
+const maxImagenes = 5;
+
+function agregarInputImagen() {
+  if (contador >= maxImagenes) return;
+
+  const inputGroup = document.createElement("div");
+  inputGroup.classList.add("col-4", "text-center");
+
+  const inputId = `input-${contador}`;
+  const previewId = `preview-${contador}`;
+
+  inputGroup.innerHTML = `
+    <input type="file" accept="image/*" class="d-none" name="imagenes" id="${inputId}" onchange="mostrarPreview(this, '${previewId}')">
+    <label for="${inputId}">
+      <div class="image-preview" id="${previewId}">
+        <span class="plus-icon">+</span>
+      </div>
+    </label>
+  `;
+
+  document.getElementById("imageInputs").appendChild(inputGroup);
+  contador++;
+}
+
+function mostrarPreview(input, previewId) {
+  const preview = document.getElementById(previewId);
+
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      preview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+document.getElementById("formPublicar").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = document.getElementById("formPublicar");
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("http://localhost:4000/api/marketplace/publicar", {
+      method: "POST",
+      credentials: "include",
+      body: formData
     });
-  
-    // Inicializa con los 5 inputs al cargar
-    document.addEventListener("DOMContentLoaded", () => {
-      for (let i = 0; i < maxImagenes; i++) {
-        agregarInputImagen();
-      }
-    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert("✅ Material publicado correctamente");
+      form.reset();
+      window.location.href = "/marketplace";
+    } else {
+      alert("❌ Error: " + result.message);
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    alert("❌ Error en el servidor");
+  }
+});
+
+// Inicializa con los 5 inputs al cargar
+document.addEventListener("DOMContentLoaded", () => {
+  for (let i = 0; i < maxImagenes; i++) {
+    agregarInputImagen();
+  }
+});
 
   </script>
   

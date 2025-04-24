@@ -154,7 +154,7 @@
     </div>
     <!-- Sección de Planes de Suscripción para Aliados -->
     <section class="container my-5" id="planes">
-    <h2 class="text-center mb-4 fw-bold">Elige tu Plan de Suscripción</h2>
+    <h2 class="text-center mb-4 fw-bold">Elige tu plan de suscripción</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4 fw-semibold">
   
       <!-- Plan Básico -->
@@ -177,7 +177,7 @@
               <li>🔔 Notificaciones básicas (limitadas)</li>
             </ul>
             <div class="d-grid">
-              <button class="btn btn-outline-success fw-bold">Obtener Gratis</button>
+              <button onclick="elegirPlan(1)" class="btn btn-outline-success fw-bold">Obtener Gratis</button>
             </div>
           </div>
         </div>
@@ -203,7 +203,7 @@
               <li>📞 Soporte en 24-48h</li>
             </ul>
             <div class="d-grid">
-              <button class="btn btn-outline-primary fw-bold">Suscribirse</button>
+              <button onclick="elegirPlan(2)" class="btn btn-outline-primary fw-bold">Suscribirse</button>
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@
               <li>🚀 Acceso anticipado a funciones futuras</li>
             </ul>
             <div class="d-grid">
-              <button class="btn btn-outline-warning text-warning fw-bold">Suscribirse</button>
+              <button onclick="elegirPlan(3)" class="btn btn-outline-warning fw-bold">Suscribirse</button>
             </div>
           </div>
         </div>
@@ -291,6 +291,43 @@
         function scrollToServices() {
             document.getElementById("servicios").scrollIntoView({ behavior: "smooth" });
         }
+        async function elegirPlan(idSuscripcion) {
+    try {
+        // 🔍 Verificar si el aliado está autenticado
+        const authCheck = await fetch("/api/aliado/perfil", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (authCheck.status === 401 || authCheck.status === 403) {
+            alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
+            window.location.href = "/form";
+            return;
+        }
+
+        // 📥 Continuar con la suscripción
+        const res = await fetch("/api/aliado/suscribirse", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_suscripcion: idSuscripcion })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert("✅ Te has suscrito correctamente.");
+            window.location.href = "/hazteConocer";
+        } else {
+            alert(`❌ Error: ${data.message}`);
+        }
+
+    } catch (error) {
+        console.error("❌ Error al suscribirse:", error);
+        alert("No se pudo completar la suscripción.");
+    }
+}
+
     </script>
 </body>
 </html>

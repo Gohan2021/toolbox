@@ -74,19 +74,101 @@
                     <div class="row" id="publicacionesAliadoContainer">
                       <!-- <p class="text-muted">Cargando publicaciones...</p> -->
                     </div>
-                  </div>                  
+                  </div>
+                  <div class="info-card bg-light border border-primary rounded-4 p-4 shadow-sm mb-4">
+                    <h4 class="text-primary"><i class="fas fa-crown me-2"></i> Plan de Suscripción</h4>
+                    <p class="mb-0">
+                        <strong>Actualmente estás suscrito al plan:</strong><br>
+                        <span id="planActual" class="badge bg-primary fs-5 mt-2">Cargando...</span>
+                    </p>
+                    <small class="text-muted d-block mt-2">
+                        ¿Quieres mejorar tu plan? <a href="/hazteConocer#planes" class="text-decoration-underline text-primary fw-semibold">Haz clic aquí</a>
+                    </small>
+                </div>                  
             </div>
         </div>
 
         <!-- 📌 Sección de Ofertas de Trabajo - Lado Derecho -->
         <!-- Sección de Servicios solicitados con Íconos, Botones y Links -->
         <div class="container mt-5">
-            <h3 class="mb-4"><i class="fas fa-briefcase"></i> Servicios Solicitados</h3> 
-            <div class="row" id="servicesContainer">
-                <p class="text-muted">Cargando servicios...</p>
-            </div>
+          <h3 class="mb-4"><i class="fas fa-briefcase"></i> Servicios Solicitados</h3> 
+          <div class="row" id="servicesContainer">
+              <p class="text-muted">Cargando servicios...</p>
+          </div>
         </div>
     </div>
+    <section class="container my-5" id="planes">
+        <h2 class="text-center mb-4 fw-bold">Comparación de Planes</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered text-center align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Características</th>
+                <th>Básico<br><small>(Gratis)</small></th>
+                <th>Intermedio<br><small>$50.000 COP/mes</small></th>
+                <th>Premium<br><small>$60.000 COP/mes</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Registro y Perfil activo</td>
+                <td>✔</td>
+                <td>✔</td>
+                <td>✔</td>
+              </tr>
+              <tr>
+                <td>Publicaciones en Marketplace</td>
+                <td>3 por mes</td>
+                <td>4 por semana</td>
+                <td>Ilimitadas</td>
+              </tr>
+              <tr>
+                <td>Ofertas destacadas</td>
+                <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Intermedio/Premium</small></td>
+                <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Premium</small></td>
+                <td>✔</td>
+              </tr>
+              <tr>
+                <td>Sello visual en perfil</td>
+                <td><i class="fas fa-times text-danger"></i></td>
+                <td><span class="badge bg-secondary">Gris</span></td>
+                <td><span class="badge bg-warning text-dark">Dorado</span></td>
+              </tr>
+              <tr>
+                <td>Soporte técnico</td>
+                <td>Básico</td>
+                <td>24-48h</td>
+                <td>&lt;12h</td>
+              </tr>
+              <tr>
+                <td>Visibilidad</td>
+                <td>Limitada</td>
+                <td>70%</td>
+                <td>Siempre primero</td>
+              </tr>
+              <tr>
+                <td>Renovación automática de perfil</td>
+                <td><i class="fas fa-lock text-muted"></i></td>
+                <td><i class="fas fa-lock text-muted"></i></td>
+                <td>✔</td>
+              </tr>
+              <tr>
+                <td>Acceso a funciones futuras</td>
+                <td><i class="fas fa-lock text-muted"></i></td>
+                <td><i class="fas fa-lock text-muted"></i></td>
+                <td>✔</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><button onclick="elegirPlan(1)" class="btn btn-outline-secondary" disabled>Gratis</button></td>
+                <td><button onclick="elegirPlan(2)" class="btn btn-outline-primary">Suscribirse</button></td>
+                <td><button onclick="elegirPlan(3)" class="btn btn-outline-warning">Suscribirse</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      
     <!-- Botón de Chatea con nosotros -->
     <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
     class="chat-button fw-semibold pb-2" 
