@@ -115,7 +115,7 @@
       <div class="d-flex align-items-center gap-4 flex-wrap">
         <!-- 🟢 Título -->
         <h1 class="fw-bold text-success fs-4 m-0 white-space-nowrap">
-          🛠️ <span class="text-warning">TOOLBOX</span> <br> Marketplace
+          🛠️ <a class="text-warning" href="/hazteConocer"><span class="text-warning">TOOLBOX</span></a> <br> Marketplace
         </h1>
 
         <!-- 🔍 Formulario de búsqueda -->
@@ -143,6 +143,12 @@
   <!-- 📦 Contenido del Marketplace -->
   <div class="container container-market">
     <!-- Grid de productos -->
+    <div id="bannerDestacados" class="alert alert-warning d-none mt-4 fw-semibold">
+      <i class="bi bi-star-fill text-warning me-2"></i>
+      Las <strong>publicaciones destacadas</strong> son visibles para todos, pero <strong>solo los aliados con Plan Premium</strong> pueden destacarlas.
+      <a href="/aliado#planes" class="ms-2 text-decoration-underline">Ver planes</a>
+    </div>
+    
     <div class="row" id="productosContainer">
       <!-- Card de ejemplo -->
     </div>

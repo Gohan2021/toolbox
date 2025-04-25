@@ -70,7 +70,9 @@
                     <div id="habilidadesYExperiencia"></div>
                 </div>
                 <div class="container mt-5">
-                    <h3 class="mb-4"><i class="fas fa-box-open"></i> Mis Publicaciones en el Marketplace</h3>
+                    <a class="text-dark" href="/marketplace">
+                      <h3 class="mb-4"><i class="fas fa-box-open"></i> Mis Publicaciones en el Marketplace</h3>
+                    </a>
                     <div class="row" id="publicacionesAliadoContainer">
                       <!-- <p class="text-muted">Cargando publicaciones...</p> -->
                     </div>
@@ -84,10 +86,17 @@
                     <small class="text-muted d-block mt-2">
                         ¿Quieres mejorar tu plan? <a href="/hazteConocer#planes" class="text-decoration-underline text-primary fw-semibold">Haz clic aquí</a>
                     </small>
-                </div>                  
+                </div>
+                <div id="destacadosContainer" class="info-card bg-light border border-dark rounded-4 p-4 shadow-sm mb-4 d-none">
+                  <h5 class="fw-semibold">
+                    <i class="fas fa-star me-2"></i> Publicaciones Destacadas <span id="medallaPremium"></span>
+                  </h5>
+                  <p class="mb-0" id="textoDestacados">
+                    <!-- Aquí se inyectará dinámicamente el contenido -->
+                  </p>
+                </div>                                         
             </div>
         </div>
-
         <!-- 📌 Sección de Ofertas de Trabajo - Lado Derecho -->
         <!-- Sección de Servicios solicitados con Íconos, Botones y Links -->
         <div class="container mt-5">
@@ -167,8 +176,7 @@
             </tbody>
           </table>
         </div>
-      </section>
-      
+    </section>      
     <!-- Botón de Chatea con nosotros -->
     <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
     class="chat-button fw-semibold pb-2" 

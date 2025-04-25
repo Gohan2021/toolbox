@@ -240,8 +240,9 @@ async function cargarPlan() {
     } catch (err) {
       console.error("Error al obtener plan del aliado:", err);
     }
+    await cargarContadorDestacados(); // al final de cargarPlan
   }
-  async function elegirPlan(idSuscripcion) {
+async function elegirPlan(idSuscripcion) {
     try {
         // 🔍 Verificar si el aliado está autenticado
         const authCheck = await fetch("/api/aliado/perfil", {
@@ -276,6 +277,51 @@ async function cargarPlan() {
         console.error("❌ Error al suscribirse:", error);
         alert("No se pudo completar la suscripción.");
     }
-}  
-  document.addEventListener("DOMContentLoaded", cargarPlan);
+}
+async function cargarContadorDestacados() {
+    try {
+      console.log("🔁 Intentando fetch de destacados...");
+  
+      const res = await fetch("/api/aliado/destacados/contador", {
+        method: "GET",
+        credentials: "include"
+      });
+  
+      console.log("🌐 Fetch realizado. Status:", res.status);
+      if (!res.ok) throw new Error("No se pudo obtener datos de destacados");
+  
+      const data = await res.json();
+      console.log("📦 Datos recibidos:", data);
+  
+      const contenedor = document.getElementById("destacadosContainer");
+      const texto = document.getElementById("textoDestacados");
+      const medalla = document.getElementById("medallaPremium");
+  
+      if (!data.permitido) {
+        contenedor.classList.remove("d-none");
+        texto.innerHTML = `<span class="text-muted">Tu plan actual <strong>no permite destacar</strong> publicaciones.</span>`;
+        return;
+      }
+  
+      // Si tiene permitido destacar (solo plan premium)
+      contenedor.classList.remove("d-none");
+  
+      if (data.limite === null || data.limite >= 999) {
+        texto.innerHTML = `<strong>Publicaciones destacadas:</strong> Ilimitadas 🎉`;
+        medalla.innerHTML = `<i class="fas fa-medal text-warning ms-2" title="Plan Premium"></i>`;
+      } else {
+        texto.innerHTML = `
+          <strong>Usadas:</strong> ${data.usados}<br>
+          <strong>Límite según tu plan:</strong> ${data.limite}
+        `;
+      }
+  
+    } catch (err) {
+      console.error("❌ Error en fetch de destacados:", err);
+    }
+  }  
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarPlan();
+  });
+  
   

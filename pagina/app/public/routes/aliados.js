@@ -2,7 +2,7 @@ import express from "express";
 import database from "../../database.js";
 import { verifyToken } from "../../controllers/authentication.controller.js";
 import { methods as authentication } from "../../controllers/authentication.controller.js";
-
+import { verificarPlanAliado } from "../verificarPlanAliado.js";
 const router = express.Router();
 
 // ✅ Ruta protegida para obtener la información completa del aliado (Perfil + Servicios Solicitados)
@@ -60,7 +60,6 @@ router.get("/aliado/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
-
 // Ruta existente para obtener los aliados de un servicio específico
 router.get("/servicios/:servicioId", async (req, res) => {
     const { servicioId } = req.params;
@@ -188,5 +187,37 @@ router.post("/suscribirse", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al actualizar la suscripción." });
     }
 });
+router.get("/destacados/contador", verifyToken, verificarPlanAliado, async (req, res) => {
+    const { userId } = req.user;
+    const plan = req.planAliado;
+  
+    console.log("🔍 [API] Verificando plan para destacados:", plan?.nombre || "Sin plan");
+    console.log("🧠 Plan recibido en req.planAliado:", plan);
 
+    if (!plan || !plan.puede_destacar_publicaciones) {
+      console.log("⛔ Plan no permite destacar");
+      return res.json({ permitido: false });
+    }
+  
+    try {
+      const connection = await database();
+      const [count] = await connection.query(`
+        SELECT COUNT(*) AS total FROM publicacion_marketplace
+        WHERE id_aliado = ? AND destacado = 1
+      `, [userId]);
+  
+      console.log(`✅ Publicaciones destacadas usadas: ${count[0].total} / ${plan.limite_publicaciones_destacadas}`);
+  
+      res.json({
+        permitido: true,
+        usados: count[0].total,
+        limite: plan.limite_publicaciones_destacadas
+      });
+  
+    } catch (err) {
+      console.error("❌ Error al obtener contador de destacados:", err.message);
+      res.status(500).json({ message: "Error al consultar publicaciones destacadas." });
+    }
+  });
+  
 export default router;

@@ -131,6 +131,22 @@ function renderCarrusel(pub) {
     </div>
   `;
 }
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch("/api/aliado/perfil", { credentials: "include" });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const plan = data.aliado?.id_suscripcion;
+
+    if (plan !== 3) {
+      // Mostrar el banner si NO es Premium
+      document.getElementById("bannerDestacados").classList.remove("d-none");
+    }
+  } catch (err) {
+    console.error("❌ Error al verificar plan del aliado:", err);
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarMarketplace();
