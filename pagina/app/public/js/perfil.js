@@ -320,8 +320,128 @@ async function cargarContadorDestacados() {
       console.error("❌ Error en fetch de destacados:", err);
     }
   }  
+async function cargarContadorPublicaciones() {
+  try {
+    const res = await fetch("http://localhost:4000/api/aliado/perfil", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+      console.warn("⚠️ No autorizado para cargar perfil.");
+      return;
+    }
+
+    const data = await res.json();
+    const idSuscripcion = data.aliado.id_suscripcion;
+    const contadorDiv = document.getElementById("contadorPublicaciones");
+
+    if (!contadorDiv) return;
+
+    if (idSuscripcion === 3) {
+      contadorDiv.textContent = "📦 Publicaciones disponibles: Ilimitadas (Plan Premium)";
+      contadorDiv.classList.remove("d-none");
+      return;
+    }
+
+    // Ahora si es básico o intermedio, pedimos el contador
+    const contadorRes = await fetch("/api/aliado/marketplace/contador", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!contadorRes.ok) {
+      console.warn("⚠️ No se pudo cargar contador de publicaciones.");
+      return;
+    }
+
+    const contadorData = await contadorRes.json();
+    const usados = contadorData.total || 0;
+
+    let limite = 0;
+    let restante = 0;
+    let periodo = "";
+
+    if (idSuscripcion === 1) { // Básico
+      limite = 3;
+      restante = limite - usados;
+      periodo = "mes";
+    } else if (idSuscripcion === 2) { // Intermedio
+      limite = 4;
+      restante = limite - usados;
+      periodo = "semana";
+    }
+
+    if (restante < 0) restante = 0;
+
+    contadorDiv.innerHTML = `📦 Publicaciones disponibles este ${periodo}: <strong>${restante}</strong>`;
+    contadorDiv.classList.remove("d-none");
+
+  } catch (err) {
+    console.error("❌ Error al cargar contador de publicaciones:", err);
+  }
+}
+async function cargarPublicacionesAliado() {
+    const container = document.getElementById("publicacionesAliadoContainer");
+    if (!container) return;
+  
+    try {
+      const res = await fetch("/api/aliado/mis-publicaciones", {
+        method: "GET",
+        credentials: "include"
+      });
+  
+      if (!res.ok) {
+        container.innerHTML = "<p class='text-muted'>No se pudieron cargar tus publicaciones.</p>";
+        return;
+      }
+  
+      const publicaciones = await res.json();
+      container.innerHTML = ""; // Limpia antes de pintar
+  
+      if (publicaciones.length === 0) {
+        container.innerHTML = `
+          <div class="text-center">
+            <p class="text-muted mb-3">🚀 Aún no has publicado materiales en el Marketplace.</p>
+            <a href="/publicar" class="btn btn-primary fw-semibold">
+              <i class="fas fa-plus-circle"></i> Publicar mi primer material
+            </a>
+          </div>
+        `;
+        return;
+      }
+  
+      // Aplicar grid dinámico
+      container.style.display = "grid";
+      container.style.gridTemplateColumns = "repeat(auto-fit, minmax(250px, 1fr))";
+      container.style.gap = "1.5rem";
+  
+      publicaciones.forEach(pub => {
+        const card = document.createElement("div");
+        card.className = "card-publicacion"; // Estilo elegante que definimos
+  
+        card.innerHTML = `
+          <div class="card-body-publicacion">
+            <h5 class="fw-bold">${pub.titulo}</h5>
+            <p class="text-muted">${pub.descripcion.length > 80 ? pub.descripcion.slice(0, 80) + "..." : pub.descripcion}</p>
+            <p class="fw-semibold text-success">$${parseInt(pub.precio).toLocaleString('es-CO')}</p>
+            <small class="text-muted">Publicado: ${new Date(pub.fecha_publicacion).toLocaleDateString('es-CO')}</small>
+          </div>
+        `;
+  
+        container.appendChild(card);
+      });
+  
+    } catch (error) {
+      console.error("❌ Error al cargar publicaciones del aliado:", error);
+      container.innerHTML = "<p class='text-muted'>Error al cargar tus publicaciones.</p>";
+    }
+  }
+  
   document.addEventListener("DOMContentLoaded", () => {
     cargarPlan();
+    cargarContadorPublicaciones();
+    cargarPublicacionesAliado();
   });
   
   

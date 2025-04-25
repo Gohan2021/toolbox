@@ -219,5 +219,58 @@ router.get("/destacados/contador", verifyToken, verificarPlanAliado, async (req,
       res.status(500).json({ message: "Error al consultar publicaciones destacadas." });
     }
   });
+// GET /api/aliado/marketplace/contador
+router.get("/marketplace/contador", verifyToken, async (req, res) => {
+    try {
+      const connection = await database();
+      const [user] = await connection.query(`
+        SELECT id_suscripcion
+        FROM aliado
+        WHERE id_aliado = ?
+      `, [req.user.userId]);
   
+      const idSuscripcion = user[0]?.id_suscripcion || 1;
+  
+      let query = "";
+      if (idSuscripcion === 2) { // Intermedio (por semana)
+        query = `
+          SELECT COUNT(*) AS total
+          FROM publicacion_marketplace
+          WHERE id_aliado = ?
+          AND WEEK(fecha_publicacion, 1) = WEEK(NOW(), 1)
+        `;
+      } else { // Básico o por defecto
+        query = `
+          SELECT COUNT(*) AS total
+          FROM publicacion_marketplace
+          WHERE id_aliado = ?
+          AND MONTH(fecha_publicacion) = MONTH(NOW())
+        `;
+      }
+  
+      const [count] = await connection.query(query, [req.user.userId]);
+  
+      res.json({ total: count[0].total });
+    } catch (error) {
+      console.error("❌ Error al contar publicaciones:", error.message);
+      res.status(500).json({ message: "Error al obtener contador." });
+    }
+  });
+// GET /api/aliado/mis-publicaciones
+router.get("/mis-publicaciones", verifyToken, async (req, res) => {
+    try {
+      const connection = await database();
+      const [rows] = await connection.query(`
+        SELECT id_publicacion, titulo, descripcion, precio, zona, fecha_publicacion
+        FROM publicacion_marketplace
+        WHERE id_aliado = ?
+        ORDER BY fecha_publicacion DESC
+      `, [req.user.userId]);
+  
+      res.json(rows);
+    } catch (error) {
+      console.error("❌ Error al obtener publicaciones del aliado:", error.message);
+      res.status(500).json({ message: "Error al cargar publicaciones." });
+    }
+  });
 export default router;

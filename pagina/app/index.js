@@ -10,6 +10,7 @@ import { methods as authentication } from "./controllers/authentication.controll
 import servicesRoutes from "./public/routes/aliados.js";
 import clientesRoutes from "./public/routes/clientes.js";
 import marketplaceRoutes from "./public/routes/marketplace.js";
+import aliadosRoutes from "./public/routes/aliados.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
@@ -163,8 +164,9 @@ app.post("/api/register/aliado", authentication.registerAliado);
 app.post("/api/register/cliente", authentication.registerCliente);
 
 // Ruta para servicios y aliados
+// app.use("/api/aliado", servicesRoutes);
+app.use("/api/aliado", aliadosRoutes);
 app.use("/api", servicesRoutes);
-app.use("/api/aliado", servicesRoutes);
 //Ruta para clientes
 app.use("/api", clientesRoutes); 
 app.use("/api/cliente", clientesRoutes);

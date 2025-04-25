@@ -111,7 +111,6 @@ router.post("/marketplace/publicar", verifyToken, verificarPlanAliado, uploadMar
     res.status(500).json({ message: "Error del servidor." });
   }
 });
-
 // Ruta para el buscador
 router.get("/marketplace/buscar", async (req, res) => {
   const { q, zona } = req.query;
@@ -159,6 +158,5 @@ router.get("/marketplace/buscar", async (req, res) => {
     res.status(500).json({ message: "Error al buscar publicaciones." });
   }
 });
-
 export default router;
 

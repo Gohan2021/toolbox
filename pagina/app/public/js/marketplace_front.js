@@ -131,6 +131,42 @@ function renderCarrusel(pub) {
     </div>
   `;
 }
+async function verificarRolAliado() {
+  const accionesDiv = document.getElementById("accionesAliado");
+
+  if (!accionesDiv) {
+    console.warn("⚠️ No se encontró el div de acciones. No se puede aplicar lógica de visibilidad.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/aliado/perfil", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+      console.warn(`⚠️ Respuesta de servidor no OK (${res.status}). Ocultando acciones.`);
+      accionesDiv.classList.add("d-none");
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.aliado && data.aliado.id_aliado) {
+      console.log("👤 Usuario identificado como Aliado. Mostrando acciones.");
+      accionesDiv.classList.remove("d-none");
+    } else {
+      console.warn("⚠️ Usuario no es Aliado. Ocultando acciones.");
+      accionesDiv.classList.add("d-none");
+    }
+
+  } catch (error) {
+    console.warn("⚠️ No se pudo validar sesión (error controlado). Ocultando acciones.");
+    accionesDiv.classList.add("d-none");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("/api/aliado/perfil", { credentials: "include" });
@@ -151,4 +187,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.addEventListener("DOMContentLoaded", () => {
   cargarMarketplace();
   activarBuscadorReactivo();
+  verificarRolAliado();
 });
