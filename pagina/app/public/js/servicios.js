@@ -176,9 +176,72 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById("modalNombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
       document.getElementById("modalTelefonoAliado").textContent = data.aliado.telefono;
       document.getElementById("modalEmailAliado").textContent = data.aliado.email;
-      document.getElementById("modalHabilidadesYExperiencia").innerHTML = data.experiencia.map(exp => `
-        <p><strong>${exp.puesto}:</strong> ${exp.descripcion}</p>
-      `).join('') || "<p class='text-muted'>No se encontró experiencia laboral registrada.</p>";
+  
+      document.getElementById("modalHabilidadesYExperiencia").innerHTML = data.experiencia.map(exp => {
+  
+        // 🔥 MAPEO personalizado de servicios
+        const serviciosMapeados = {
+          "enchape": "Enchape y acabados",
+          "carpinteria": "Carpintería y Muebles",
+          "electricidad": "Instalaciones Eléctricas",
+          "plomeria": "Servicios de Plomería",
+          "pintura": "Pintura y Remodelaciones",
+          "cerrajeria": "Cerrajería y Seguridad",
+          "refrigeracion": "Refrigeración y Aire Acondicionado",
+          "jardineria": "Jardinería y Paisajismo",
+          "obras": "Obras Civiles",
+          "metalicas": "Estructuras Metálicas"
+          // 🔵 Puedes agregar más según necesites
+        };
+      
+        // 🔎 Buscar si el puesto (nombre del servicio) tiene una versión "amigable"
+        const nombreFormateado = serviciosMapeados[exp.puesto.toLowerCase()] || capitalizarPrimeraLetra(exp.puesto);
+      
+        return `${exp.descripcion} de experiencia en ${nombreFormateado}`;
+      
+      }).join(' y ') + "."|| "<p class='text-muted'>No se encontró experiencia laboral registrada.</p>";
+      function capitalizarPrimeraLetra(texto) {
+        return texto.charAt(0).toUpperCase() + texto.slice(1);
+      }      
+      // 🔥 NUEVO: cargar calificación y reseñas
+      const calificacionRes = await fetch(`http://localhost:4000/api/aliado/${id_aliado}/calificaciones`, {
+        credentials: "include"
+      });
+  
+      if (!calificacionRes.ok) throw new Error("Error al cargar calificaciones");
+  
+      const calificaciones = await calificacionRes.json();
+      const calificacionContainer = document.getElementById("modalCalificaciones");
+  
+      if (calificaciones.length === 0) {
+        calificacionContainer.innerHTML = "<p class='text-muted'>Aún no tiene calificaciones.</p>";
+      } else {
+        const promedio = (
+          calificaciones.reduce((sum, cal) => sum + cal.calificacion, 0) / calificaciones.length
+        ).toFixed(1);
+  
+        // 🔥 Primero ordenamos las calificaciones por fecha descendente
+        calificaciones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  
+        let reseñasHTML = "";
+  
+        calificaciones.slice(0, 3).forEach((resena, index) => {
+          reseñasHTML += `
+            <div class="card mt-2">
+              <div class="card-body p-2">
+                <p class="mb-1"><strong>Comentario ${index + 1}:</strong> ${resena.comentario || "Sin comentario."}</p>
+                <small class="text-muted">${new Date(resena.fecha).toLocaleDateString('es-CO')}</small>
+              </div>
+            </div>
+          `;
+        });
+  
+        calificacionContainer.innerHTML = `
+          <p><strong>⭐ Calificación promedio:</strong> ${"⭐".repeat(Math.round(promedio))} (${promedio}/5)</p>
+          <h6 class="mt-3">📝 Reseñas recientes:</h6>
+          ${reseñasHTML}
+        `;
+      }
   
     } catch (error) {
       console.error("Error al obtener los detalles del aliado:", error);
