@@ -249,7 +249,6 @@ router.post("/calificar", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor." });
   }
 });
-
 router.get("/:id_aliado/calificacion", async (req, res) => {
     const { id_aliado } = req.params;
   
@@ -268,6 +267,28 @@ router.get("/:id_aliado/calificacion", async (req, res) => {
       res.status(500).json({ message: "Error interno" });
     }
   });
+// ✅ Obtener lista de calificaciones individuales de un aliado
+router.get("/:id_aliado/calificaciones", async (req, res) => {
+  const { id_aliado } = req.params;
+
+  try {
+    const conn = await database();
+    const [calificaciones] = await conn.query(`
+      SELECT c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, ca.calificacion, ca.comentario, ca.fecha
+      FROM calificacion_aliado ca
+      JOIN cliente c ON ca.id_cliente = c.id_cliente
+      WHERE ca.id_aliado = ?
+      ORDER BY ca.fecha DESC
+    `, [id_aliado]);
+
+    res.json(calificaciones);
+
+  } catch (error) {
+    console.error("❌ Error al obtener calificaciones individuales:", error.message);
+    res.status(500).json({ message: "Error al obtener las calificaciones." });
+  }
+});
+
 //Ruta para obtener detalles de suscripcion de un aliado
 router.get("/:id/suscripcion", async (req, res) => {
   const { id } = req.params;

@@ -47,10 +47,11 @@ async function loadProfileData() {
         } else {
             habilidadesContainer.innerHTML = "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
         }
-
+        const idAliado = data.aliado.id_aliado; // 🔥 AQUÍ DEFINIMOS idAliado
+        // 🔥 Cargar también las calificaciones del aliado
+        cargarCalificacionesAliado(idAliado);
         // 📌 Cargar servicios solicitados
         loadServiciosSolicitados();
-
     } catch (error) {
         console.error("❌ Error al cargar el perfil:", error);
     }
@@ -209,39 +210,43 @@ function iniciarChat(clienteId, clienteNombre) {
     window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
 }
 async function cargarPlan() {
-    try {
-      const res = await fetch("/api/aliado/perfil", { credentials: "include" });
-      const data = await res.json();
-  
-      const idSuscripcion = data.aliado.id_suscripcion;
-  
-      const planBadge = document.getElementById("planActual");
-  
-      // Establecer nombre del plan y clases visuales
-      switch (idSuscripcion) {
-        case 1:
-          planBadge.textContent = "BÁSICO";
-          planBadge.className = "badge bg-success fs-5 mt-2";
-          break;
-        case 2:
-          planBadge.textContent = "INTERMEDIO";
-          planBadge.className = "badge bg-primary fs-5 mt-2";
-          break;
-        case 3:
-          planBadge.textContent = "PREMIUM";
-          planBadge.className = "badge bg-warning text-dark fs-5 mt-2";
-          break;
-        default:
-          planBadge.textContent = "Desconocido";
-          planBadge.className = "badge bg-danger fs-5 mt-2";
-          break;
-      }
-  
-    } catch (err) {
-      console.error("Error al obtener plan del aliado:", err);
+  try {
+    const res = await fetch("/api/aliado/perfil", { credentials: "include" });
+    const data = await res.json();
+
+    const idSuscripcion = data.aliado.id_suscripcion;
+    const planBadge = document.getElementById("planActual");
+    const mejorarTexto = document.getElementById("mejorarPlanTexto"); // <-- agregamos esta línea
+
+    switch (idSuscripcion) {
+      case 1:
+        planBadge.textContent = "BÁSICO";
+        planBadge.className = "badge bg-success fs-5 mt-2";
+        if (mejorarTexto) mejorarTexto.classList.remove("d-none");
+        break;
+      case 2:
+        planBadge.textContent = "INTERMEDIO";
+        planBadge.className = "badge bg-primary fs-5 mt-2";
+        if (mejorarTexto) mejorarTexto.classList.remove("d-none");
+        break;
+      case 3:
+        planBadge.textContent = "PREMIUM";
+        planBadge.className = "badge bg-warning text-dark fs-5 mt-2";
+        if (mejorarTexto) mejorarTexto.classList.add("d-none"); // 🔥 Ocultar si es premium
+        break;
+      default:
+        planBadge.textContent = "Desconocido";
+        planBadge.className = "badge bg-danger fs-5 mt-2";
+        if (mejorarTexto) mejorarTexto.classList.remove("d-none");
+        break;
     }
-    await cargarContadorDestacados(); // al final de cargarPlan
+
+  } catch (err) {
+    console.error("Error al obtener plan del aliado:", err);
   }
+  await cargarContadorDestacados();
+}
+
 async function elegirPlan(idSuscripcion) {
     try {
         // 🔍 Verificar si el aliado está autenticado
@@ -435,6 +440,48 @@ async function cargarPublicacionesAliado() {
     container.innerHTML = "<p class='text-muted'>Error al cargar tus publicaciones.</p>";
   }
 }
+async function cargarCalificacionesAliado(idAliado) {
+  try {
+    const response = await fetch(`http://localhost:4000/api/aliado/${idAliado}/calificaciones`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) throw new Error("No se pudieron cargar las calificaciones");
+
+    const calificaciones = await response.json();
+    const contenedor = document.getElementById("calificacionesAliado");
+
+    contenedor.innerHTML = "";
+
+    if (calificaciones.length === 0) {
+      contenedor.innerHTML = "<p class='text-muted'>Aún no tienes calificaciones.</p>";
+      return;
+    }
+
+    calificaciones.forEach(calificacion => {
+      const card = document.createElement("div");
+      card.classList.add("card", "mb-3", "shadow-sm");
+
+      card.innerHTML = `
+        <div class="card-body">
+          <h5 class="card-title">${calificacion.cliente_nombre} ${calificacion.cliente_apellido}</h5>
+          <p class="card-text">
+            <strong>Calificación:</strong> ${"⭐".repeat(calificacion.calificacion)} (${calificacion.calificacion}/5)<br>
+            <strong>Comentario:</strong> ${calificacion.comentario || "Sin comentario"}<br>
+            <small class="text-muted">${new Date(calificacion.fecha).toLocaleDateString('es-CO')}</small>
+          </p>
+        </div>
+      `;
+
+      contenedor.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("❌ Error al cargar calificaciones:", error);
+  }
+}
+
   document.addEventListener("DOMContentLoaded", () => {
     cargarPlan();
     cargarContadorPublicaciones();
