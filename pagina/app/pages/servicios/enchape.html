@@ -24,6 +24,49 @@
     <title>Servicios/Enchape</title>
     <link rel="icon" href="../../imagenes/Logo.svg">
     <script src="../js/navbar_cliente.js" defer></script>
+    <style>
+        .badge-sello {
+          font-size: 0.8rem;
+          padding: 0.4em 0.6em;
+          border-radius: 0.5rem;
+          font-weight: bold;
+          cursor: pointer;
+          position: relative;
+        }
+        .badge-premium {
+          background-color: gold;
+          color: black;
+        }
+        .badge-intermedio {
+          background-color: gray;
+          color: white;
+        }
+        .badge-basico {
+          background-color: #d3d3d3;
+          color: #333;
+        }
+        /* Tooltip */
+        .badge-sello::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          bottom: 125%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.75);
+          color: white;
+          padding: 5px 8px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s;
+          z-index: 10;
+        }
+        .badge-sello:hover::after {
+          opacity: 1;
+        }
+      </style>
 </head>
 <body>
     <!-- Sección de Técnicos para Plomería -->

@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const logoutButton = document.getElementById("logoutButton");
         if (logoutButton) {
             logoutButton.addEventListener("click", () => {
-                fetch("http://localhost:4000/api/logout", {
+                fetch("http://localhost:4000/api/aliado/logout", {
                     method: "POST",
                     credentials: "include"
                 })

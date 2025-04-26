@@ -41,7 +41,7 @@ async function loginAliado(req, res) {
             httpOnly: true, 
             secure: false, 
             sameSite: "Lax", 
-            maxAge: 60 * 60 * 1000 
+            maxAge: 12 * 60 * 60 * 1000 //12 horas en milisegundos 
         });
 
         console.log("✅ Cookie JWT de ALIADO configurada correctamente:", token);
@@ -218,27 +218,6 @@ async function registerCliente(req, res) {
         );
 
         const clientId = result.insertId; 
-
-        // ✅ 5️⃣ Insertar servicios del cliente (si los hay)
-        // if (Array.isArray(serviciosCliente) && serviciosCliente.length > 0) {
-        //     const servicioMap = {
-        //         "plomeria": 1, "Electricidad": 2, "carpinteria": 3, "enchape": 4, 
-        //         "metalicas": 5, "pintura": 6, "cerrajeria": 7, "refrigeracion": 8, 
-        //         "jardineria": 9, "obras": 10
-        //     };
-
-        //     const serviciosRelacionados = serviciosCliente
-        //         .map(servicio => [servicioMap[servicio.toLowerCase()], clientId])
-        //         .filter(([servicioId]) => servicioId !== undefined);
-
-        //     if (serviciosRelacionados.length > 0) {
-        //         await connection.query(
-        //             "INSERT INTO cliente_servicio (id_servicio, id_cliente) VALUES ?",
-        //             [serviciosRelacionados]
-        //         );
-        //     }
-        // }
-
         // ✅ 6️⃣ Generar token JWT para el nuevo cliente
         const token = jwt.sign(
             { userId: clientId, email: emailCliente }, 

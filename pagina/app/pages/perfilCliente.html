@@ -118,6 +118,15 @@
             color: #ffc108;
             border: 2px solid #ffc108;
         }
+        .star {
+    font-size: 2rem;
+    color: lightgray;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .star.hover, .star.selected {
+    color: gold;
+  }
     </style>
 </head>
 
@@ -144,13 +153,25 @@
             <!-- Servicios que ha tomado el cliente -->
             <div class="info-card mt-4">
                 <h5><i class="fas fa-tools"></i> Servicios con Toolbox</h5>
-                <div id="serviciosTomados" class="row">
-                    <p class="text-muted">Cargando servicios...</p>
+                <!-- Servicios Pendientes -->
+                <div class="info-card mt-4">
+                    <h5><i class="fas fa-clock"></i> Servicios Pendientes</h5>
+                    <div id="serviciosPendientes" class="row">
+                        <p class="text-muted">No tienes servicios pendientes.</p>
+                    </div>
+                </div>
+                
+                <!-- Servicios Completados -->
+                <div class="info-card mt-4">
+                    <h5><i class="fas fa-check-circle"></i> Servicios Completados</h5>
+                    <div id="serviciosCompletados" class="row">
+                        <p class="text-muted">No has completado servicios aún.</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Botón para explorar servicios -->
-            <a href="/cliente" class="explore-btn">Explorar más servicios</a>
+            <a href="/cliente#servicios" class="explore-btn">Explorar más servicios</a>
         </div>
     </div>
     <!-- Footer -->
@@ -189,7 +210,37 @@
             </div>
         </div>
     </footer>
-
+<!-- Modal para calificar aliado -->
+<div class="modal fade" id="modalCalificar" tabindex="-1" aria-labelledby="modalCalificarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCalificarLabel">Calificar Técnico</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="formCalificacion">
+                <input type="hidden" id="idAliadoCalificar">
+              
+                <div class="mb-3 text-center">
+                  <label class="form-label">Califica el servicio:</label>
+                  <div id="ratingStars" class="d-flex justify-content-center mb-2">
+                    <!-- Estrellas se llenan dinámicamente -->
+                  </div>
+                </div>
+              
+                <div class="mb-3">
+                  <label for="comentario" class="form-label">Comentario (opcional):</label>
+                  <textarea class="form-control" id="comentario" rows="3" placeholder="Escribe un comentario..."></textarea>
+                </div>
+              
+                <button type="submit" class="btn btn-warning w-100">Enviar Calificación</button>
+              </form>
+              
+        </div>
+      </div>
+    </div>
+  </div>  
     <!-- 📜 Cargar el script del perfil del cliente -->
     <script src="../js/perfilCliente.js"></script>
 </body>

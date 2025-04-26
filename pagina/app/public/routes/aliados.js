@@ -6,7 +6,7 @@ import { verificarPlanAliado } from "../verificarPlanAliado.js";
 const router = express.Router();
 
 // ✅ Ruta protegida para obtener la información completa del aliado (Perfil + Servicios Solicitados)
-router.get("/aliado/perfil", verifyToken, async (req, res) => {
+router.get("/perfil", verifyToken, async (req, res) => {
     console.log("📡 Solicitando perfil y servicios del aliado:", req.user?.userId);
 
     if (!req.user || !req.user.userId) {
@@ -60,67 +60,29 @@ router.get("/aliado/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del aliado." });
     }
 });
-// Ruta existente para obtener los aliados de un servicio específico
-router.get("/servicios/:servicioId", async (req, res) => {
-    const { servicioId } = req.params;
+router.get("/mis-publicaciones", verifyToken, async (req, res) => {
+  try {
+    const connection = await database();
+    const [rows] = await connection.query(`
+      SELECT 
+        p.id_publicacion, 
+        p.titulo, 
+        p.descripcion, 
+        p.precio, 
+        p.zona, 
+        p.fecha_publicacion,
+        i.ruta_imagen
+      FROM publicacion_marketplace p
+      LEFT JOIN imagenes_marketplace i ON p.id_publicacion = i.id_publicacion
+      WHERE p.id_aliado = ?
+      ORDER BY p.fecha_publicacion DESC
+    `, [req.user.userId]);
 
-    try {
-        const connection = await database();
-
-        const [rows] = await connection.query(
-            `SELECT a.id_aliado, a.nombre, a.apellido, a.telefono, a.email, a.foto
-            FROM aliado a
-            JOIN aliado_servicio asv ON asv.id_aliado = a.id_aliado
-            JOIN servicio s ON asv.id_servicio = s.id_servicio
-            WHERE s.id_servicio = ?;`, 
-            [servicioId]
-        );
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: "No se encontraron aliados para este servicio." });
-        }
-
-        return res.json(rows);
-
-    } catch (error) {
-        console.error("Error al obtener los aliados:", error.message);
-        res.status(500).json({ message: "Error al obtener los aliados.", error: error.message });
-    }
-});
-// ✅ Nueva ruta para obtener la información de un aliado por su ID
-router.get("/aliado/:id_aliado", async (req, res) => {
-    const { id_aliado } = req.params;
-
-    try {
-        const connection = await database();
-
-        // 🔍 Obtener información del aliado
-        const [aliadoData] = await connection.query(
-            `SELECT id_aliado, nombre, apellido, telefono, email, foto 
-             FROM aliado WHERE id_aliado = ?`, 
-            [id_aliado]
-        );
-
-        if (aliadoData.length === 0) {
-            return res.status(404).json({ message: "Aliado no encontrado." });
-        }
-
-        // 🔍 Obtener experiencia laboral
-        const [experienciaData] = await connection.query(
-            `SELECT puesto, descripcion 
-             FROM experiencia_laboral WHERE id_aliado = ?`, 
-            [id_aliado]
-        );
-
-        return res.json({
-            aliado: aliadoData[0],
-            experiencia: experienciaData
-        });
-
-    } catch (error) {
-        console.error("❌ Error al obtener la información del aliado:", error.message);
-        res.status(500).json({ message: "Error al obtener la información del aliado." });
-    }
+    res.json(rows);
+  } catch (error) {
+    console.error("❌ Error al obtener publicaciones del aliado:", error.message);
+    res.status(500).json({ message: "Error al cargar publicaciones." });
+  }
 });
 // 🚪 Endpoint para cerrar sesión
 router.post("/logout", (req, res) => {
@@ -137,29 +99,7 @@ router.post("/logout", (req, res) => {
 });
 // Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
-//Ruta para obtener detalles de suscripcion de un aliado
-router.get("/aliado/:id/suscripcion", async (req, res) => {
-    const { id } = req.params;
-    try {
-      const conn = await database();
-  
-      const [result] = await conn.query(`
-        SELECT s.*
-        FROM aliado a
-        JOIN suscripcion s ON a.id_suscripcion = s.id_suscripcion
-        WHERE a.id_aliado = ?
-      `, [id]);
-  
-      if (result.length === 0) {
-        return res.status(404).json({ message: "Suscripción no encontrada." });
-      }
-  
-      res.json({ suscripcion: result[0] });
-    } catch (err) {
-      console.error("❌ Error al obtener la suscripción:", err.message);
-      res.status(500).json({ message: "Error del servidor." });
-    }
-  });
+
 // POST /api/aliado/suscribirse
 router.post("/suscribirse", verifyToken, async (req, res) => {
     const { id_suscripcion } = req.body;
@@ -256,21 +196,135 @@ router.get("/marketplace/contador", verifyToken, async (req, res) => {
       res.status(500).json({ message: "Error al obtener contador." });
     }
   });
-// GET /api/aliado/mis-publicaciones
-router.get("/mis-publicaciones", verifyToken, async (req, res) => {
-    try {
-      const connection = await database();
-      const [rows] = await connection.query(`
-        SELECT id_publicacion, titulo, descripcion, precio, zona, fecha_publicacion
-        FROM publicacion_marketplace
-        WHERE id_aliado = ?
-        ORDER BY fecha_publicacion DESC
-      `, [req.user.userId]);
+// POST /api/aliado/calificar
+router.post("/calificar", verifyToken, async (req, res) => {
+  try {
+    const { id_aliado, calificacion, comentario } = req.body;
+    const id_cliente = req.user.userId; // Cliente autenticado
+
+    // Validaciones básicas
+    if (!id_aliado || !calificacion) {
+      return res.status(400).json({ message: "ID del aliado y calificación son requeridos." });
+    }
+
+    const calificacionNum = Number(calificacion);
+
+    if (isNaN(calificacionNum) || calificacionNum < 1 || calificacionNum > 5) {
+      return res.status(400).json({ message: "La calificación debe ser un número entre 1 y 5." });
+    }
+
+    const connection = await database();
+
+    // (Opcional) Verificar que el aliado exista
+    const [aliadoExiste] = await connection.query(
+      `SELECT id_aliado FROM aliado WHERE id_aliado = ?`,
+      [id_aliado]
+    );
+
+    if (aliadoExiste.length === 0) {
+      return res.status(404).json({ message: "El aliado que intentas calificar no existe." });
+    }
+
+    // (Opcional avanzado) Verificar si el cliente ya calificó antes
+    const [yaCalificado] = await connection.query(
+      `SELECT id_calificacion FROM calificacion_aliado WHERE id_cliente = ? AND id_aliado = ?`,
+      [id_cliente, id_aliado]
+    );
+
+    if (yaCalificado.length > 0) {
+      return res.status(400).json({ message: "Ya has calificado a este aliado anteriormente." });
+    }
+
+    // Insertar calificación
+    await connection.query(
+      `INSERT INTO calificacion_aliado (id_aliado, id_cliente, calificacion, comentario)
+       VALUES (?, ?, ?, ?)`,
+      [id_aliado, id_cliente, calificacionNum, comentario || null]
+    );
+
+    res.status(201).json({ message: "✅ Calificación enviada exitosamente." });
+
+  } catch (error) {
+    console.error("❌ Error al procesar la calificación:", error);
+    res.status(500).json({ message: "Error interno del servidor." });
+  }
+});
+
+router.get("/:id_aliado/calificacion", async (req, res) => {
+    const { id_aliado } = req.params;
   
-      res.json(rows);
+    try {
+      const conn = await database();
+      const [result] = await conn.query(`
+        SELECT AVG(calificacion) AS promedio, COUNT(*) AS total
+        FROM calificacion_aliado
+        WHERE id_aliado = ?`,
+        [id_aliado]
+      );
+  
+      res.json(result[0]);
     } catch (error) {
-      console.error("❌ Error al obtener publicaciones del aliado:", error.message);
-      res.status(500).json({ message: "Error al cargar publicaciones." });
+      console.error("Error al obtener calificación:", error);
+      res.status(500).json({ message: "Error interno" });
     }
   });
+//Ruta para obtener detalles de suscripcion de un aliado
+router.get("/:id/suscripcion", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const conn = await database();
+
+    const [result] = await conn.query(`
+      SELECT s.*
+      FROM aliado a
+      JOIN suscripcion s ON a.id_suscripcion = s.id_suscripcion
+      WHERE a.id_aliado = ?
+    `, [id]);
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Suscripción no encontrada." });
+    }
+
+    res.json({ suscripcion: result[0] });
+  } catch (err) {
+    console.error("❌ Error al obtener la suscripción:", err.message);
+    res.status(500).json({ message: "Error del servidor." });
+  }
+});
+  // ✅ Nueva ruta para obtener la información de un aliado por su ID
+router.get("/:id_aliado", async (req, res) => {
+  const { id_aliado } = req.params;
+
+  try {
+      const connection = await database();
+
+      // 🔍 Obtener información del aliado
+      const [aliadoData] = await connection.query(
+          `SELECT id_aliado, nombre, apellido, telefono, email, foto 
+           FROM aliado WHERE id_aliado = ?`, 
+          [id_aliado]
+      );
+
+      if (aliadoData.length === 0) {
+          return res.status(404).json({ message: "Aliado no encontrado." });
+      }
+
+      // 🔍 Obtener experiencia laboral
+      const [experienciaData] = await connection.query(
+          `SELECT puesto, descripcion 
+           FROM experiencia_laboral WHERE id_aliado = ?`, 
+          [id_aliado]
+      );
+
+      return res.json({
+          aliado: aliadoData[0],
+          experiencia: experienciaData
+      });
+
+  } catch (error) {
+      console.error("❌ Error al obtener la información del aliado:", error.message);
+      res.status(500).json({ message: "Error al obtener la información del aliado." });
+  }
+});
+
 export default router;

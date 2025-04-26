@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (logoutButton) {
                 logoutButton.addEventListener("click", async () => {
                     try {
-                        const response = await fetch("http://localhost:4000/api/logout/cliente", {
+                        const response = await fetch("http://localhost:4000/api/cliente/logout/cliente", {
                             method: "POST",
                             credentials: "include"
                         });

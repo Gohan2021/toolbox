@@ -115,7 +115,7 @@ async function loadServiciosSolicitados() {
 }
 // 🚪 **Lógica para cerrar sesión**
 function logout() {
-    fetch("http://localhost:4000/api/logout", {
+    fetch("http://localhost:4000/api/aliado/logout", {
         method: "POST",
         credentials: "include" // Incluir cookies en la solicitud
     })
@@ -382,62 +382,59 @@ async function cargarContadorPublicaciones() {
   }
 }
 async function cargarPublicacionesAliado() {
-    const container = document.getElementById("publicacionesAliadoContainer");
-    if (!container) return;
-  
-    try {
-      const res = await fetch("/api/aliado/mis-publicaciones", {
-        method: "GET",
-        credentials: "include"
-      });
-  
-      if (!res.ok) {
-        container.innerHTML = "<p class='text-muted'>No se pudieron cargar tus publicaciones.</p>";
-        return;
-      }
-  
-      const publicaciones = await res.json();
-      container.innerHTML = ""; // Limpia antes de pintar
-  
-      if (publicaciones.length === 0) {
-        container.innerHTML = `
-          <div class="text-center">
-            <p class="text-muted mb-3">🚀 Aún no has publicado materiales en el Marketplace.</p>
-            <a href="/publicar" class="btn btn-primary fw-semibold">
-              <i class="fas fa-plus-circle"></i> Publicar mi primer material
-            </a>
-          </div>
-        `;
-        return;
-      }
-  
-      // Aplicar grid dinámico
-      container.style.display = "grid";
-      container.style.gridTemplateColumns = "repeat(auto-fit, minmax(250px, 1fr))";
-      container.style.gap = "1.5rem";
-  
-      publicaciones.forEach(pub => {
-        const card = document.createElement("div");
-        card.className = "card-publicacion"; // Estilo elegante que definimos
-  
-        card.innerHTML = `
-          <div class="card-body-publicacion">
-            <h5 class="fw-bold">${pub.titulo}</h5>
-            <p class="text-muted">${pub.descripcion.length > 80 ? pub.descripcion.slice(0, 80) + "..." : pub.descripcion}</p>
-            <p class="fw-semibold text-success">$${parseInt(pub.precio).toLocaleString('es-CO')}</p>
-            <small class="text-muted">Publicado: ${new Date(pub.fecha_publicacion).toLocaleDateString('es-CO')}</small>
-          </div>
-        `;
-  
-        container.appendChild(card);
-      });
-  
-    } catch (error) {
-      console.error("❌ Error al cargar publicaciones del aliado:", error);
-      container.innerHTML = "<p class='text-muted'>Error al cargar tus publicaciones.</p>";
+  const container = document.getElementById("publicacionesAliadoContainer");
+  if (!container) return;
+
+  try {
+    const res = await fetch("/api/aliado/mis-publicaciones", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (res.status === 401 || res.status === 403) {
+      console.warn("⚠️ Usuario no autenticado. No se cargarán publicaciones.");
+      container.innerHTML = "<p class='text-muted'>Inicia sesión para ver tus publicaciones.</p>";
+      return;
     }
+
+    if (!res.ok) {
+      console.warn("⚠️ No se pudieron cargar publicaciones:", res.status);
+      container.innerHTML = "<p class='text-muted'>No se pudieron cargar tus publicaciones.</p>";
+      return;
+    }
+
+    const publicaciones = await res.json();
+    container.innerHTML = "";
+
+    if (publicaciones.length === 0) {
+      container.innerHTML = "<p class='text-muted'>Aún no has publicado materiales en el Marketplace.</p>";
+      return;
+    }
+    publicaciones.forEach(pub => {
+      const card = document.createElement("div");
+      card.classList.add("w-100","col-md-6", "mb-4");
+    
+      card.innerHTML = `
+        <div class="card shadow-sm h-100">
+          ${pub.ruta_imagen ? `<img src="${pub.ruta_imagen}" class="card-img-top" alt="Imagen de publicación">` : ""}
+          <div class="card-body">
+            <h5 class="card-title fw-bold">${pub.titulo}</h5>
+            <p class="card-text">${pub.descripcion.length > 80 ? pub.descripcion.slice(0, 80) + "..." : pub.descripcion}</p>
+            <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${pub.zona}</p>
+            <p class="card-text fw-semibold">$${parseInt(pub.precio).toLocaleString('es-CO')}</p>
+            <small class="text-muted">Publicado el ${new Date(pub.fecha_publicacion).toLocaleDateString('es-CO')}</small>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(card);
+    });
+    
+  } catch (error) {
+    console.error("❌ Error al cargar publicaciones del aliado:", error);
+    container.innerHTML = "<p class='text-muted'>Error al cargar tus publicaciones.</p>";
   }
-  
+}
   document.addEventListener("DOMContentLoaded", () => {
     cargarPlan();
     cargarContadorPublicaciones();

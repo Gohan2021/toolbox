@@ -9,7 +9,7 @@ import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de inde
 const router = express.Router();
 
 // ✅ Ruta protegida para obtener la información del cliente autenticado junto con los servicios tomados
-router.get("/cliente/perfil", verifyToken, async (req, res) => {
+router.get("/perfil", verifyToken, async (req, res) => {
     console.log("📡 Solicitud autenticada. ID del usuario:", req.user?.userId);
 
     if (!req.user || !req.user.userId) {
@@ -33,11 +33,20 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
 
         // 🔍 Obtener servicios tomados por el cliente
         const [serviciosTomados] = await connection.query(
-            `SELECT s.id_servicio, s.nombre_servicio, a.nombre AS aliado_nombre, a.apellido AS aliado_apellido, a.foto AS aliado_foto 
-             FROM cliente_aliado ca
-             JOIN servicio s ON ca.id_servicio = s.id_servicio
-             JOIN aliado a ON ca.id_aliado = a.id_aliado
-             WHERE ca.id_cliente = ?`, 
+        `SELECT 
+        s.id_servicio, 
+        s.nombre_servicio, 
+        a.id_aliado,   -- <-- Agrega este
+        a.nombre AS aliado_nombre, 
+        a.apellido AS aliado_apellido, 
+        a.foto AS aliado_foto,
+        ca.estado, 
+        ca.id AS id_servicio_cliente
+        FROM cliente_aliado ca
+        JOIN servicio s ON ca.id_servicio = s.id_servicio
+        JOIN aliado a ON ca.id_aliado = a.id_aliado
+        WHERE ca.id_cliente = ?
+            `, 
             [req.user.userId]
         );
 
@@ -51,9 +60,31 @@ router.get("/cliente/perfil", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error al obtener la información del cliente." });
     }
 });
-
+router.post("/finalizar-servicio", verifyToken, async (req, res) => {
+    const { idServicioCliente } = req.body;
+  
+    if (!idServicioCliente) {
+      return res.status(400).json({ message: "Falta el ID del servicio cliente." });
+    }
+  
+    try {
+      const conn = await database();
+      await conn.query(`
+        UPDATE cliente_aliado 
+        SET estado = 'completado'
+        WHERE id = ?`, 
+        [idServicioCliente]
+      );
+  
+      res.status(200).json({ message: "Servicio marcado como completado." });
+    } catch (error) {
+      console.error("Error al finalizar servicio:", error.message);
+      res.status(500).json({ message: "Error interno." });
+    }
+  });
+  
 // ✅ **Endpoint para subir la imagen de perfil del cliente**
-router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
+router.post("/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
     console.log("📡 Recibiendo imagen de perfil del cliente...");
     console.log("🔍 Archivo recibido:", req.file);
     console.log("🔍 ID del cliente:", req.body.clienteId);
@@ -82,7 +113,7 @@ router.post("/cliente/uploadImage", upload.single("fotoPerfil"), async (req, res
     }
 });
 // ✅ Endpoint para registrar qué aliado fue seleccionado por el cliente
-router.post("/cliente/obtenerServicio", async (req, res) => {
+router.post("/obtenerServicio", async (req, res) => {
     const { clienteId, aliadoId, servicioId } = req.body;
 
     if (!clienteId || !aliadoId || !servicioId) {
@@ -115,8 +146,6 @@ router.post("/cliente/obtenerServicio", async (req, res) => {
         return res.status(500).json({ message: "Error interno al registrar el servicio." });
     }
 });
-
-
 // ✅ Endpoint de Login para clientes
 router.post("/login/cliente", authentication.loginCliente);
 

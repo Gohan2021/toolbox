@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import cors from "cors";
 import database from "./database.js";
 import { methods as authentication } from "./controllers/authentication.controller.js";
-import servicesRoutes from "./public/routes/aliados.js";
+import servicesRoutes from "./public/routes/servicios.routes.js";
 import clientesRoutes from "./public/routes/clientes.js";
 import marketplaceRoutes from "./public/routes/marketplace.js";
 import aliadosRoutes from "./public/routes/aliados.js";
@@ -48,29 +48,6 @@ app.use(cors({
         process.exit(1);
     }
 })();
-
-// Crear la carpeta 'uploads/' si no existe
-// const uploadFolder = path.join(__dirname, "uploads");
-// if (!fs.existsSync(uploadFolder)) {
-//     fs.mkdirSync(uploadFolder, { recursive: true });
-// }
-
-// Configuración de Multer para múltiples archivos, incluida la foto de perfil
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, uploadFolder); // Almacenar en la carpeta 'uploads'
-//     },
-//     filename: (req, file, cb) => {
-//         const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-//         cb(null, uniqueName);
-//     }
-// });
-
-// const upload = multer({ storage });
-// ✅ Exportar `upload` para reutilizarlo en `clientes.js`
-// export { upload };
-// Servir archivos estáticos desde la carpeta 'uploads'
-// app.use("/uploads", express.static(uploadFolder));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads_marketplace", express.static(path.join(__dirname, "public/uploads_marketplace")));
 // ✅ **Endpoint para subir imágenes incluyendo foto de perfil**
@@ -164,48 +141,13 @@ app.post("/api/register/aliado", authentication.registerAliado);
 app.post("/api/register/cliente", authentication.registerCliente);
 
 // Ruta para servicios y aliados
-// app.use("/api/aliado", servicesRoutes);
+// Primero, lo específico
 app.use("/api/aliado", aliadosRoutes);
-app.use("/api", servicesRoutes);
-//Ruta para clientes
-app.use("/api", clientesRoutes); 
 app.use("/api/cliente", clientesRoutes);
-// Ruta para Marketplace
+
+// Luego, lo más general
+app.use("/api", servicesRoutes);
 app.use("/api", marketplaceRoutes);
-// ✅ Endpoint para obtener la información del aliado junto con la experiencia laboral
-app.get("/api/aliado/:id", async (req, res) => {
-    const { id } = req.params;
-    try {
-        const connection = await database();
-
-        // Consultar la información personal del aliado
-        const [aliadoData] = await connection.query(
-            `SELECT nombre, apellido, telefono, email, foto 
-             FROM aliado WHERE id_aliado = ?`, 
-            [id]
-        );
-
-        if (aliadoData.length === 0) {
-            return res.status(404).json({ message: "Aliado no encontrado." });
-        }
-
-        // Consultar la experiencia laboral del aliado
-        const [experienciaData] = await connection.query(
-            `SELECT puesto, descripcion 
-             FROM experiencia_laboral WHERE id_aliado = ?`, 
-            [id]
-        );
-
-        return res.json({
-            aliado: aliadoData[0],
-            experiencia: experienciaData
-        });
-
-    } catch (error) {
-        console.error("Error al obtener la información del aliado:", error.message);
-        res.status(500).json({ message: "Error al obtener la información del aliado." });
-    }
-});
 
 // Iniciar el servidor solo si no es un entorno de pruebas
 if (process.env.NODE_ENV !== "test") {
