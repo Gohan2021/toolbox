@@ -7,7 +7,18 @@ import { methods as authentication } from "../../controllers/authentication.cont
 import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
 
 const router = express.Router();
-
+// Configuración de multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "uploads"); // carpeta donde guardarás las imágenes y videos
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      cb(null, `${Date.now()}-${file.fieldname}${ext}`);
+    }
+  });
+  
+  const upload_image = multer({ storage: storage });
 // ✅ Ruta protegida para obtener la información del cliente autenticado junto con los servicios tomados
 router.get("/perfil", verifyToken, async (req, res) => {
     console.log("📡 Solicitud autenticada. ID del usuario:", req.user?.userId);
@@ -82,7 +93,6 @@ router.post("/finalizar-servicio", verifyToken, async (req, res) => {
       res.status(500).json({ message: "Error interno." });
     }
   });
-  
 // ✅ **Endpoint para subir la imagen de perfil del cliente**
 router.post("/uploadImage", upload.single("fotoPerfil"), async (req, res) => {
     console.log("📡 Recibiendo imagen de perfil del cliente...");
@@ -164,5 +174,59 @@ router.post("/logout/cliente", (req, res) => {
 });
 // ✅ Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
+// Endpoint para publicar necesidad
+router.post("/publicar-necesidad", verifyToken, upload_image.fields([
+  { name: 'imagenes', maxCount: 5 },
+  { name: 'video', maxCount: 1 }
+]), async (req, res) => {
+  const { nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia } = req.body;
+  const id_cliente = req.user?.userId;
+
+  if (!id_cliente || !descripcion) {
+    return res.status(400).json({ message: "Faltan campos obligatorios." });
+  }
+
+  try {
+    const conn = await database();
+
+    const [result] = await conn.query(`
+      INSERT INTO publicacion_necesidad_cliente 
+      (id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto || null, fecha_tentativa || null, urgencia || 'Media']
+    );
+
+    const idPublicacion = result.insertId;
+
+    // Guardar imágenes si existen
+    if (req.files['imagenes']) {
+      const imagenes = req.files['imagenes'];
+      for (const img of imagenes) {
+        await conn.query(`
+          INSERT INTO imagenes_necesidad_cliente (id_publicacion, ruta_imagen)
+          VALUES (?, ?)`,
+          [idPublicacion, `/uploads/${img.filename}`]
+        );
+      }
+    }
+
+    // Guardar video si existe
+    if (req.files['video']) {
+      const video = req.files['video'][0];
+      await conn.query(`
+        UPDATE publicacion_necesidad_cliente
+        SET video_url = ?
+        WHERE id_publicacion = ?`,
+        [`/uploads/${video.filename}`, idPublicacion]
+      );
+    }
+
+    return res.status(201).json({ message: "Solicitud publicada exitosamente." });
+
+  } catch (error) {
+    console.error("❌ Error al publicar necesidad:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
+  }
+});
 
 export default router;

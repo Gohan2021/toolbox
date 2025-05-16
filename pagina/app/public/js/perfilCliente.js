@@ -307,3 +307,58 @@ async function uploadProfileImage(event) {
         alert("Error al subir la imagen. Intenta de nuevo.");
     }
 }
+async function cargarMisSolicitudes() {
+  const container = document.getElementById("solicitudesContainer");
+
+  try {
+    const response = await fetch("http://localhost:4000/api/cliente/mis-solicitudes", {
+      method: "GET",
+      credentials: "include"
+    });
+
+
+    if (!response.ok) {
+      throw new Error("No se pudieron cargar tus solicitudes");
+    }
+
+    const solicitudes = await response.json();
+
+    container.innerHTML = "";
+
+    if (solicitudes.length === 0) {
+      container.innerHTML = "<p class='text-muted text-center'>Aún no has publicado solicitudes.</p>";
+      return;
+    }
+
+    solicitudes.forEach((solicitud) => {
+      const col = document.createElement("div");
+      col.classList.add("col-md-6", "col-lg-4", "mb-4");
+
+      col.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          ${solicitud.imagen_destacada ? `<img src="${solicitud.imagen_destacada}" class="card-img-top" alt="Imagen del servicio">` : ""}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">${solicitud.especialidad_requerida}</h5>
+            <p class="card-text">
+              ${solicitud.descripcion.length > 80 ? solicitud.descripcion.slice(0, 80) + "..." : solicitud.descripcion}
+            </p>
+            <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${solicitud.zona}</p>
+            <p class="card-text"><i class="fas fa-calendar-alt"></i> ${new Date(solicitud.fecha_publicacion).toLocaleDateString('es-CO')}</p>
+            <div class="mt-auto text-center">
+              <a href="/detalle-solicitud?id=${solicitud.id}" class="btn btn-outline-warning btn-sm w-75">Ver Detalle</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(col);
+    });
+
+  } catch (error) {
+    console.error("❌ Error al cargar solicitudes:", error);
+    container.innerHTML = "<p class='text-danger text-center'>No se pudieron cargar tus solicitudes.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", cargarMisSolicitudes);
+

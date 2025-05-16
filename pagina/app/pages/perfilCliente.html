@@ -118,15 +118,18 @@
             color: #ffc108;
             border: 2px solid #ffc108;
         }
+
         .star {
-    font-size: 2rem;
-    color: lightgray;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  .star.hover, .star.selected {
-    color: gold;
-  }
+            font-size: 2rem;
+            color: lightgray;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .star.hover,
+        .star.selected {
+            color: gold;
+        }
     </style>
 </head>
 
@@ -147,7 +150,20 @@
                 <p><strong>Nombre:</strong> <span id="nombreCliente"></span></p>
                 <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> <span id="telefonoCliente"></span></p>
                 <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="emailCliente"></span></p>
-                <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> <span id="direccionCliente"></span></p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> <span id="direccionCliente"></span>
+                </p>
+            </div>
+            <!-- 📌 Sección para Publicar Nueva Solicitud -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3"><i class="fas fa-plus-circle"></i> ¿Necesitas publicar una solicitud de arreglo o reparacion en tu hogar?</h5>
+                    <p class="card-text text-muted mb-4">
+                        Publica tu solicitud y un técnico especializado podrá aceptarla.
+                    </p>
+                    <a href="/formularioPublicacionCliente" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Publicar Solicitud
+                    </a>
+                </div>
             </div>
 
             <!-- Servicios que ha tomado el cliente -->
@@ -160,7 +176,7 @@
                         <p class="text-muted">No tienes servicios pendientes.</p>
                     </div>
                 </div>
-                
+
                 <!-- Servicios Completados -->
                 <div class="info-card mt-4">
                     <h5><i class="fas fa-check-circle"></i> Servicios Completados</h5>
@@ -169,9 +185,16 @@
                     </div>
                 </div>
             </div>
-
             <!-- Botón para explorar servicios -->
             <a href="/cliente#servicios" class="explore-btn">Explorar más servicios</a>
+            <section id="misSolicitudes" class="container py-5">
+                <h2 class="text-center mb-4"><i class="fas fa-clipboard-list"></i> Mis Solicitudes Publicadas</h2>
+
+                <div class="row" id="solicitudesContainer">
+                    <p class="text-muted text-center">Cargando tus solicitudes...</p>
+                </div>
+            </section>
+
         </div>
     </div>
     <!-- Footer -->
@@ -210,37 +233,38 @@
             </div>
         </div>
     </footer>
-<!-- Modal para calificar aliado -->
-<div class="modal fade" id="modalCalificar" tabindex="-1" aria-labelledby="modalCalificarLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalCalificarLabel">Calificar Técnico</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-            <form id="formCalificacion">
-                <input type="hidden" id="idAliadoCalificar">
-              
-                <div class="mb-3 text-center">
-                  <label class="form-label">Califica el servicio:</label>
-                  <div id="ratingStars" class="d-flex justify-content-center mb-2">
-                    <!-- Estrellas se llenan dinámicamente -->
-                  </div>
+    <!-- Modal para calificar aliado -->
+    <div class="modal fade" id="modalCalificar" tabindex="-1" aria-labelledby="modalCalificarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCalificarLabel">Calificar Técnico</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-              
-                <div class="mb-3">
-                  <label for="comentario" class="form-label">Comentario (opcional):</label>
-                  <textarea class="form-control" id="comentario" rows="3" placeholder="Escribe un comentario..."></textarea>
+                <div class="modal-body">
+                    <form id="formCalificacion">
+                        <input type="hidden" id="idAliadoCalificar">
+
+                        <div class="mb-3 text-center">
+                            <label class="form-label">Califica el servicio:</label>
+                            <div id="ratingStars" class="d-flex justify-content-center mb-2">
+                                <!-- Estrellas se llenan dinámicamente -->
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="comentario" class="form-label">Comentario (opcional):</label>
+                            <textarea class="form-control" id="comentario" rows="3"
+                                placeholder="Escribe un comentario..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100">Enviar Calificación</button>
+                    </form>
+
                 </div>
-              
-                <button type="submit" class="btn btn-warning w-100">Enviar Calificación</button>
-              </form>
-              
+            </div>
         </div>
-      </div>
     </div>
-  </div>  
     <!-- 📜 Cargar el script del perfil del cliente -->
     <script src="../js/perfilCliente.js"></script>
 </body>

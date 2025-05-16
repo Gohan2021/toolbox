@@ -4,12 +4,26 @@ body {
 .hidden {
     display: none;
 }
+#hero-img-cliente{
+    height: 38rem;
+    width: 100%;
+    object-fit: cover;
+    opacity: 34%;
+}
 
 #hero-img{
     height: 28rem;
     width: 100%;
     object-fit: cover;
 }
+.subtitle-hero-cliente{
+    font-weight:500;
+    color: #363c40;
+}
+.text-hero-cliente{
+    font-size: larger;
+}
+
 .figure {
     position: relative; /* Asegúrate de que el contenedor tenga posición relativa */
 }

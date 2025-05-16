@@ -32,34 +32,58 @@
     <!-- Hero -->
     <div class="container-fluid" style="width: 100%;">
         <figure class="figure my-4" style="width: 100%;">
-            <img src="/imagenes/fondo-1.jpg" class="img-fluid rounded opacity-50" id="hero-img" alt="...">
+            <img src="/imagenes/fondo-1.jpg" class="img-fluid rounded" id="hero-img-cliente" alt="...">
             <div class="justify-content-center align-items-center px-5" id="container-text-hero-cliente">
-                <div class="title-hero-cliente mt-3 px-5">
+                <div class="title-hero-cliente px-5" style="margin-top: 8rem;">
                     <h1>Encuentra en <span class="text-warning">TOOLBOX</span> profesionales de confianza para tus
                         reparaciones en casa o para tus proyectos de construcción </h1>
                 </div>
-                <!-- Barra de Búsqueda de Servicios -->
-                <div class="search-container">
-                    <form id="serviceSearchForm" class="d-flex justify-content-center m-5" style="padding: 0 10rem;">
-                        <input type="text" id="searchServiceInput" class="form-control text-center ps-5" list="datalistOptionsCliente" placeholder="¿Qué servicio solicitas?" aria-label="¿Qué servicio solicitas?">
-                        <datalist id="datalistOptionsCliente">
-                            <option value="Plomería">
-                            <option value="Electricidad">
-                            <option value="Carpintería">
-                            <option value="Enchape y acabados">
-                            <option value="Estructuras Metálicas">
-                            <option value="Pintura y acabados">
-                            <option value="Cerrajería">
-                            <option value="Refrigeración y aire acondicionado">
-                            <option value="Jardinería y paisajismo">
-                            <option value="Obras Civiles">
-                        </datalist>
-                        <button id="searchServiceBtn" type="submit" class="btn btn-warning">
-                            <img src="/imagenes/buscar.png" alt="Buscar" height="20">
-                        </button>
-                    </form>
-                </div>
-                <div class="text-center pe-3"><a href="/form-cliente"><button type="button"class="btn-empezar text-center px-5 py-2 fw-semibold">Registrarme como cliente</button></a>
+                <div class="d-flex my-5">
+                    <!-- Barra de Búsqueda de Servicios -->
+                    <div class="search-container mt-4 pe-5 d-flex">
+                        <img src="/imagenes/avance-rapido.png" class="w-15 me-4" height="30" alt="">
+                        <div>
+                            <h4 class="subtitle-hero-cliente pb-2">¿Necesitas un técnico especializado para algún servicio específico?</h4>
+                            <p class="text-hero-cliente text-start text-muted fw-semibold mb-4">Podrás encontrar una variedad de servicios en los que podrás
+                                contratar
+                                técnicos especializados para tus servicios de hogar u otros.</p>
+                            <form id="serviceSearchForm" class="d-flex justify-content-center m-5"
+                                style="padding: 0 3rem 0 1rem;">
+                                <input type="text" id="searchServiceInput" class="form-control text-center ps-5"
+                                    list="datalistOptionsCliente" placeholder="¿Qué servicio solicitas?"
+                                    aria-label="¿Qué servicio solicitas?">
+                                <datalist id="datalistOptionsCliente">
+                                    <option value="Plomería">
+                                    <option value="Electricidad">
+                                    <option value="Carpintería">
+                                    <option value="Enchape y acabados">
+                                    <option value="Estructuras Metálicas">
+                                    <option value="Pintura y acabados">
+                                    <option value="Cerrajería">
+                                    <option value="Refrigeración y aire acondicionado">
+                                    <option value="Jardinería y paisajismo">
+                                    <option value="Obras Civiles">
+                                </datalist>
+                                <button id="searchServiceBtn" type="submit" class="btn btn-warning">
+                                    <img src="/imagenes/buscar.png" alt="Buscar" height="20">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- 📌 Sección para Publicar Nueva Solicitud -->
+                    <div class="mt-4 d-flex ms-3">
+                        <img src="/imagenes/avance-rapido.png" class="w-15 me-4" height="30" alt="">
+                        <div>
+                            <h4 class="subtitle-hero-cliente mb-3"><i></i> ¿Necesitas publicar una
+                                solicitud
+                                de arreglo o reparacion en tu hogar?</h4>
+                            <p class="text-muted text-start text-hero-cliente fw-semibold mb-4">Publica tu solicitud y un técnico
+                                especializado podrá aceptarla.</p>
+                            <div class="text-center pe-3"><a href="#" id="btnEmpezar"><button type="button" 
+                            class="btn-empezar text-center px-4 py-2 fw-semibold">Empezar</button></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </figure>
@@ -70,9 +94,8 @@
         <div class="row" id="servicesContainer"></div>
     </div>
     <!-- Botón de Chatea con nosotros -->
-    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
-    class="chat-button fw-semibold pb-2" 
-    target="_blank">
+    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios"
+        class="chat-button fw-semibold pb-2" target="_blank">
         <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
         <small>¡Chatea con nosotros!</small>
     </a>
@@ -118,5 +141,29 @@
         </div>
     </footer>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+  const btnEmpezar = document.getElementById("btnEmpezar");
 
+  try {
+    const response = await fetch("/api/cliente/perfil", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (response.ok) {
+      // Cliente autenticado → redirige a publicar solicitud
+      btnEmpezar.href = "/formularioPublicacionCliente";
+    } else {
+      // No autenticado → redirige a registro
+      btnEmpezar.href = "/form-cliente";
+    }
+  } catch (error) {
+    console.error("❌ Error verificando sesión del cliente:", error);
+    // En caso de error, por defecto al registro
+    btnEmpezar.href = "/form-cliente";
+  }
+});
+
+</script>
 </html>

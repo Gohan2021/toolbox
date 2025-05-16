@@ -290,7 +290,7 @@ async function loginCliente(req, res) {
             httpOnly: true,
             secure: false,
             sameSite: "Lax",
-            maxAge: 60 * 60 * 1000
+            maxAge: 12 * 60 * 60 * 1000
         });
 
         console.log("✅ Cookie `jwt_cliente` generada correctamente:", token);

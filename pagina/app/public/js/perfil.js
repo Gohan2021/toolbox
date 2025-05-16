@@ -1,5 +1,11 @@
 async function loadProfileData() {
     console.log("🔄 Cargando perfil del aliado...");
+    // 🔥 Primero validar si hay sesión
+    const aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+    if (!aliadoId) {
+        console.log("⚡ No hay sesión de aliado. No se cargará el perfil.");
+        return; // 🚀 No hacemos fetch, no lanzamos errores, no hacemos nada
+    }
 
     try {
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {

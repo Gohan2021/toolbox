@@ -111,6 +111,7 @@ app.get("/aliado", (req, res) => res.sendFile(path.join(__dirname, "pages", "ind
 app.get("/form", (req, res) => res.sendFile(path.join(__dirname, "pages", "form.html")));
 app.get("/form-cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "form_cliente.html")));
 app.get("/cliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "cliente.html")));
+app.get("/formularioPublicacionCliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "formularioPublicacionCliente.html")));
 app.get("/hazteConocer", (req, res) => res.sendFile(path.join(__dirname, "pages", "hazteConocer.html")));
 app.get("/perfilCliente", (req, res) => res.sendFile(path.join(__dirname, "pages", "perfilCliente.html")));
 app.get("/myv", (req, res) => res.sendFile(path.join(__dirname, "pages", "myv.html")));

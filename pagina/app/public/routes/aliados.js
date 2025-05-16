@@ -5,61 +5,65 @@ import { methods as authentication } from "../../controllers/authentication.cont
 import { verificarPlanAliado } from "../verificarPlanAliado.js";
 const router = express.Router();
 
-// ✅ Ruta protegida para obtener la información completa del aliado (Perfil + Servicios Solicitados)
+// ✅ Ruta protegida para obtener la información completa del aliado (Optimizada con Promise.all)
 router.get("/perfil", verifyToken, async (req, res) => {
-    console.log("📡 Solicitando perfil y servicios del aliado:", req.user?.userId);
+  console.log("📡 Solicitando perfil y servicios del aliado:", req.user?.userId);
 
-    if (!req.user || !req.user.userId) {
-        return res.status(401).json({ message: "No autorizado, token inválido." });
+  if (!req.user || !req.user.userId) {
+    return res.status(401).json({ message: "No autorizado, token inválido." });
+  }
+
+  try {
+    const connection = await database();
+
+    // 🚀 Cargar todo en paralelo para optimizar la respuesta
+    const [aliadoDataPromise, experienciaDataPromise, serviciosSolicitadosPromise] = await Promise.all([
+      connection.query(`
+        SELECT id_aliado, nombre, apellido, telefono, email, foto, id_suscripcion
+        FROM aliado
+        WHERE id_aliado = ?`,
+        [req.user.userId]
+      ),
+      connection.query(`
+        SELECT puesto, descripcion
+        FROM experiencia_laboral
+        WHERE id_aliado = ?`,
+        [req.user.userId]
+      ),
+      connection.query(`
+        SELECT s.id_servicio, s.nombre_servicio, c.nombre AS cliente_nombre,
+               c.apellido AS cliente_apellido, c.telefono AS cliente_telefono,
+               c.email AS cliente_email, c.foto AS cliente_foto
+        FROM cliente_aliado ca
+        JOIN servicio s ON ca.id_servicio = s.id_servicio
+        JOIN cliente c ON ca.id_cliente = c.id_cliente
+        WHERE ca.id_aliado = ?`,
+        [req.user.userId]
+      )
+    ]);
+
+    const [aliadoData] = aliadoDataPromise;
+    const [experienciaData] = experienciaDataPromise;
+    const [serviciosSolicitados] = serviciosSolicitadosPromise;
+
+    if (aliadoData.length === 0) {
+      return res.status(404).json({ message: "Aliado no encontrado." });
     }
 
-    try {
-        const connection = await database();
+    console.log("✅ Perfil y servicios obtenidos correctamente (optimizado)");
 
-        // 🔍 Obtener información del aliado
-        const [aliadoData] = await connection.query(
-            `SELECT id_aliado, nombre, apellido, telefono, email, foto, id_suscripcion  
-             FROM aliado WHERE id_aliado = ?`, 
-            [req.user.userId]
-        );
+    return res.json({
+      aliado: aliadoData[0],
+      experiencia: experienciaData,
+      serviciosSolicitados: serviciosSolicitados
+    });
 
-        if (aliadoData.length === 0) {
-            return res.status(404).json({ message: "Aliado no encontrado." });
-        }
-
-        // 🔍 Obtener experiencia laboral del aliado
-        const [experienciaData] = await connection.query(
-            `SELECT puesto, descripcion 
-             FROM experiencia_laboral WHERE id_aliado = ?`, 
-            [req.user.userId]
-        );
-
-        // 🔍 Obtener los servicios solicitados por clientes
-        const [serviciosSolicitados] = await connection.query(
-            `SELECT s.id_servicio, s.nombre_servicio, c.nombre AS cliente_nombre, 
-                    c.apellido AS cliente_apellido, c.telefono AS cliente_telefono, 
-                    c.email AS cliente_email, c.foto AS cliente_foto
-             FROM cliente_aliado ca
-             JOIN servicio s ON ca.id_servicio = s.id_servicio
-             JOIN cliente c ON ca.id_cliente = c.id_cliente
-             WHERE ca.id_aliado = ?`,
-            [req.user.userId]
-        );
-
-        console.log("✅ Perfil y servicios obtenidos correctamente");
-
-        // 🔄 Responder con toda la información en un solo JSON
-        return res.json({
-            aliado: aliadoData[0],
-            experiencia: experienciaData,
-            serviciosSolicitados: serviciosSolicitados
-        });
-
-    } catch (error) {
-        console.error("❌ Error al obtener la información del aliado:", error.message);
-        res.status(500).json({ message: "Error al obtener la información del aliado." });
-    }
+  } catch (error) {
+    console.error("❌ Error al obtener la información del aliado (optimizado):", error.message);
+    res.status(500).json({ message: "Error al obtener la información del aliado." });
+  }
 });
+
 router.get("/mis-publicaciones", verifyToken, async (req, res) => {
   try {
     const connection = await database();
@@ -288,7 +292,6 @@ router.get("/:id_aliado/calificaciones", async (req, res) => {
     res.status(500).json({ message: "Error al obtener las calificaciones." });
   }
 });
-
 //Ruta para obtener detalles de suscripcion de un aliado
 router.get("/:id/suscripcion", async (req, res) => {
   const { id } = req.params;
@@ -349,3 +352,4 @@ router.get("/:id_aliado", async (req, res) => {
 });
 
 export default router;
+
