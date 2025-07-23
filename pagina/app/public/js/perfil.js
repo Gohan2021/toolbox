@@ -1,67 +1,58 @@
 async function loadProfileData() {
     console.log("🔄 Cargando perfil del aliado...");
-    // 🔥 Primero validar si hay sesión
-    const aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
-    if (!aliadoId) {
-        console.log("⚡ No hay sesión de aliado. No se cargará el perfil.");
-        return; // 🚀 No hacemos fetch, no lanzamos errores, no hacemos nada
-    }
 
     try {
+        // No dependemos solo de sessionStorage/localStorage
         const response = await fetch("http://localhost:4000/api/aliado/perfil", {
             method: "GET",
             credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: { "Content-Type": "application/json" }
         });
 
-        if (response.status === 401 || response.status === 403) {
-            console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
-            alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-            window.location.href = "/aliado";
-            return;
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
+                alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+                window.location.href = "/aliado";
+                return;
+            }
+            throw new Error(`Error HTTP ${response.status}`);
         }
 
         const data = await response.json();
-        console.log("✅ Perfil cargado:", data);
+        console.log("✅ Datos de perfil:", data);
 
         if (!data.aliado || !data.aliado.id_aliado) {
-            throw new Error("Datos del aliado no encontrados.");
+            throw new Error("Datos del aliado no encontrados en el backend.");
         }
-        // 🔥 **Asegurar que el ID se guarde en sessionStorage y localStorage**
-        if (!sessionStorage.getItem("aliadoId")) {
-            sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
-        }
-        if (!localStorage.getItem("aliadoId")) {
-            localStorage.setItem("aliadoId", data.aliado.id_aliado);
-        }
-        // Cargar datos personales
+
+        // Guardamos el ID en session/localStorage
+        sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+        localStorage.setItem("aliadoId", data.aliado.id_aliado);
+
+        // Mostrar datos del aliado
         document.getElementById("nombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
-        document.getElementById("telefonoAliado").textContent = data.aliado.telefono;
+        document.getElementById("telefonoAliado").textContent = data.aliado.telefono || "No registrado";
         document.getElementById("emailAliado").textContent = data.aliado.email;
         document.getElementById("profileImage").src = data.aliado.foto || "/imagenes/acceso.png";
 
-        // Cargar habilidades y experiencia combinadas
+        // Cargar experiencia
         const habilidadesContainer = document.getElementById("habilidadesYExperiencia");
-        habilidadesContainer.innerHTML = "";
+        habilidadesContainer.innerHTML = data.experiencia.length
+            ? data.experiencia.map(exp => `<p>🛠 <strong>${exp.puesto}</strong> – ${exp.descripcion}</p>`).join("")
+            : "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
 
-        if (data.experiencia && data.experiencia.length > 0) {
-            data.experiencia.forEach(exp => {
-                habilidadesContainer.innerHTML += `<p>🛠 <strong>${exp.puesto}</strong> – ${exp.descripcion}</p>`;
-            });
-        } else {
-            habilidadesContainer.innerHTML = "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
-        }
-        const idAliado = data.aliado.id_aliado; // 🔥 AQUÍ DEFINIMOS idAliado
-        // 🔥 Cargar también las calificaciones del aliado
-        cargarCalificacionesAliado(idAliado);
-        // 📌 Cargar servicios solicitados
-        loadServiciosSolicitados();
+        // Cargar servicios solicitados
+        loadServiciosSolicitados(data.serviciosSolicitados);
+
+        // Cargar calificaciones
+        cargarCalificacionesAliado(data.aliado.id_aliado);
+
     } catch (error) {
         console.error("❌ Error al cargar el perfil:", error);
     }
 }
+
 // 📌 **Cargar los servicios solicitados al aliado**
 async function loadServiciosSolicitados() {
     console.log("🔄 Cargando servicios solicitados...");
