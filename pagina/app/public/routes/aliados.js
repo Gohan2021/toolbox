@@ -253,6 +253,133 @@ router.post("/calificar", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor." });
   }
 });
+// ✅ Ruta para obtener necesidades filtradas por especialidad del aliado
+router.get("/necesidades", verifyToken, async (req, res) => {
+  console.log("📡 Solicitud de necesidades por el aliado...");
+
+  try {
+    const aliadoId = req.user?.userId;
+    console.log("🔍 ID de aliado desde el token:", aliadoId);
+
+    if (!aliadoId) {
+      return res.status(401).json({ message: "No autorizado, token inválido." });
+    }
+
+    const conn = await database();
+
+    // Verificar si el aliado existe
+    const [aliadoData] = await conn.query(
+      "SELECT id_aliado FROM aliado WHERE id_aliado = ?",
+      [aliadoId]
+    );
+
+    if (aliadoData.length === 0) {
+      console.warn("⚠️ Aliado no encontrado en la BD.");
+      return res.status(404).json({ message: "Aliado no encontrado." });
+    }
+
+    console.log("✅ Aliado encontrado. Obteniendo sus servicios...");
+
+    // Obtener las especialidades que tiene el aliado
+    const [serviciosAliado] = await conn.query(
+      `SELECT s.nombre_servicio
+       FROM aliado_servicio as als
+       JOIN servicio s ON als.id_servicio = s.id_servicio
+       WHERE als.id_aliado = ?`,
+      [aliadoId]
+    );
+
+    if (serviciosAliado.length === 0) {
+      console.log("ℹ️ El aliado no tiene servicios asociados.");
+      return res.json([]); // Devuelve array vacío si no hay servicios
+    }
+
+    const especialidades = serviciosAliado.map(s => s.nombre_servicio);
+    console.log("🔧 Especialidades del aliado:", especialidades);
+
+    // Buscar publicaciones de clientes con esas especialidades
+    const [necesidades] = await conn.query(
+      `SELECT p.id_publicacion, p.descripcion, p.zona, p.fecha_tentativa, p.presupuesto,
+              p.urgencia, p.nombre_cliente, p.telefono_cliente, p.email_cliente,
+              (SELECT ruta_imagen FROM imagenes_necesidad_cliente i 
+               WHERE i.id_publicacion = p.id_publicacion LIMIT 1) AS imagen_destacada
+       FROM publicacion_necesidad_cliente p
+       WHERE p.especialidad_requerida IN (?)`,
+      [especialidades]
+    );
+    console.log("📦 Necesidades encontradas:", necesidades.length);
+
+    return res.json(necesidades);
+
+  } catch (error) {
+    console.error("❌ Error en /api/aliado/necesidades:", error.message);
+    return res.status(500).json({ message: "Error al obtener las necesidades." });
+  }
+});
+// Obtener detalle de una necesidad (con imágenes)
+router.get("/necesidad/:id_publicacion", verifyToken, async (req, res) => {
+  const { id_publicacion } = req.params;
+
+  try {
+    const conn = await database();
+
+    // Obtener datos de la publicación
+    const [publicacion] = await conn.query(`
+      SELECT p.id_publicacion, p.nombre_cliente, p.telefono_cliente, p.email_cliente, 
+             p.zona, p.horario_contacto, p.especialidad_requerida, p.descripcion, 
+             p.presupuesto, p.fecha_tentativa, p.urgencia,
+             DATE_FORMAT(p.fecha_publicacion, '%Y-%m-%d %H:%i:%s') as fecha_publicacion
+      FROM publicacion_necesidad_cliente p
+      WHERE p.id_publicacion = ?
+    `, [id_publicacion]);
+
+    if (publicacion.length === 0) {
+      return res.status(404).json({ message: "Publicación no encontrada." });
+    }
+
+    // Obtener imágenes de la publicación
+    const [imagenes] = await conn.query(`
+      SELECT ruta_imagen 
+      FROM imagenes_necesidad_cliente 
+      WHERE id_publicacion = ?
+    `, [id_publicacion]);
+
+    const resultado = {
+      ...publicacion[0],
+      imagenes: imagenes || []
+    };
+
+    return res.json(resultado);
+
+  } catch (error) {
+    console.error("❌ Error al obtener detalle de la necesidad:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
+  }
+});
+
+router.post("/tomar-necesidad", verifyToken, async (req, res) => {
+  const { id_publicacion } = req.body;
+  const idAliado = req.user?.userId;
+
+  if (!id_publicacion || !idAliado) {
+    return res.status(400).json({ message: "Faltan datos." });
+  }
+
+  try {
+    const conn = await database();
+
+    // Guardamos en una tabla de relación (aliado_necesidad_cliente)
+    await conn.query(`
+      INSERT INTO aliado_necesidad_cliente (id_aliado, id_publicacion) 
+      VALUES (?, ?)`, [idAliado, id_publicacion]
+    );
+
+    return res.status(201).json({ message: "Solicitud tomada exitosamente." });
+  } catch (error) {
+    console.error("❌ Error al tomar la solicitud:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
+  }
+});
 router.get("/:id_aliado/calificacion", async (req, res) => {
     const { id_aliado } = req.params;
   

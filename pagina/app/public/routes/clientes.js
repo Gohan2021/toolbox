@@ -299,10 +299,19 @@ router.get("/necesidad/:id", verifyToken, async (req, res) => {
 
     // Obtener la publicación
     const [publicacion] = await conn.query(`
-      SELECT id_publicacion, especialidad_requerida, descripcion, zona, 
-             presupuesto, fecha_tentativa, urgencia, fecha_publicacion
-      FROM publicacion_necesidad_cliente
-      WHERE id_publicacion = ?`,
+      SELECT 
+        id_publicacion,
+        nombre_cliente,
+        telefono_cliente,
+        email_cliente,
+        descripcion,
+        zona,
+        presupuesto,
+        fecha_tentativa,
+        urgencia,
+        especialidad_requerida
+       FROM publicacion_necesidad_cliente
+       WHERE id_publicacion = ?`,
       [id]
     );
 

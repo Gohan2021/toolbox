@@ -33,7 +33,7 @@ async function loginAliado(req, res) {
         const token = jwt.sign(
             { userId: user.id_aliado, email: user.email, role: "aliado" }, // Agregamos `role`
             process.env.JWT_LOGIN,
-            { expiresIn: "1h" }
+            { expiresIn: "5h" }
         );
 
         // 🍪 Configurar la cookie con un nombre específico para Aliado
@@ -222,7 +222,7 @@ async function registerCliente(req, res) {
         const token = jwt.sign(
             { userId: clientId, email: emailCliente }, 
             process.env.JWT_LOGIN, 
-            { expiresIn: "1h" }
+            { expiresIn: "5h" }
         );
 
         // ✅ 7️⃣ Guardar la cookie `jwt_cliente`
@@ -283,7 +283,7 @@ async function loginCliente(req, res) {
         const token = jwt.sign(
             { userId: user.id_cliente, email: user.email },
             process.env.JWT_LOGIN,
-            { expiresIn: "1h" }
+            { expiresIn: "5h" }
         );
 
         res.cookie("jwt_cliente", token, {

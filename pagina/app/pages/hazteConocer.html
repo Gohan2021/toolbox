@@ -135,6 +135,13 @@
           <div class="row" id="servicesContainer">
               <p class="text-muted">Cargando servicios...</p>
           </div>
+          <!-- 📌 Sección de Necesidades de Clientes -->
+          <div class="container mt-5">
+            <h3 class="mb-4"><i class="fas fa-clipboard-list"></i> Necesidades de Clientes</h3>
+            <div class="row" id="necesidadesContainer">
+              <p class="text-muted">Cargando necesidades...</p>
+            </div>
+          </div>
           <div class="info-card mt-4">
             <h5><i class="fas fa-star"></i> Calificaciones Recibidas</h5>
             <div id="calificacionesAliado">
@@ -262,7 +269,33 @@
                 </div>
             </div>
         </div>
-    </footer>   
+    </footer>
+<!-- Modal Detalle -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitulo">Detalle de solicitud</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Cliente:</strong> <span id="modalCliente"></span></p>
+        <p><strong>Teléfono:</strong> <span id="modalTelefono"></span></p>
+        <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+        <p><strong>Descripción:</strong> <span id="modalDescripcion"></span></p>
+        <p><strong>Presupuesto:</strong> <span id="modalPresupuesto"></span></p>
+        <p><strong>Fecha tentativa:</strong> <span id="modalFechaTentativa"></span></p>
+        <p><strong>Urgencia:</strong> <span id="modalUrgencia"></span></p>
+        <div id="modalImagenes" class="d-flex flex-wrap"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+   
 <!-- Cargar el script después de que se haya cargado todo el contenido del DOM -->
 <script src="../js/perfil.js"></script>
 </body>

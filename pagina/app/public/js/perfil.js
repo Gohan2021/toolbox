@@ -1,85 +1,85 @@
 async function loadProfileData() {
-    console.log("🔄 Cargando perfil del aliado...");
+  console.log("🔄 Cargando perfil del aliado...");
 
-    try {
-        // No dependemos solo de sessionStorage/localStorage
-        const response = await fetch("http://localhost:4000/api/aliado/perfil", {
-            method: "GET",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" }
-        });
+  try {
+    // No dependemos solo de sessionStorage/localStorage
+    const response = await fetch("http://localhost:4000/api/aliado/perfil", {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" }
+    });
 
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
-                alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-                window.location.href = "/aliado";
-                return;
-            }
-            throw new Error(`Error HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("✅ Datos de perfil:", data);
-
-        if (!data.aliado || !data.aliado.id_aliado) {
-            throw new Error("Datos del aliado no encontrados en el backend.");
-        }
-
-        // Guardamos el ID en session/localStorage
-        sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
-        localStorage.setItem("aliadoId", data.aliado.id_aliado);
-
-        // Mostrar datos del aliado
-        document.getElementById("nombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
-        document.getElementById("telefonoAliado").textContent = data.aliado.telefono || "No registrado";
-        document.getElementById("emailAliado").textContent = data.aliado.email;
-        document.getElementById("profileImage").src = data.aliado.foto || "/imagenes/acceso.png";
-
-        // Cargar experiencia
-        const habilidadesContainer = document.getElementById("habilidadesYExperiencia");
-        habilidadesContainer.innerHTML = data.experiencia.length
-            ? data.experiencia.map(exp => `<p>🛠 <strong>${exp.puesto}</strong> – ${exp.descripcion}</p>`).join("")
-            : "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
-
-        // Cargar servicios solicitados
-        loadServiciosSolicitados(data.serviciosSolicitados);
-
-        // Cargar calificaciones
-        cargarCalificacionesAliado(data.aliado.id_aliado);
-
-    } catch (error) {
-        console.error("❌ Error al cargar el perfil:", error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        console.warn("⚠️ No autorizado. Redirigiendo al inicio de sesión.");
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        window.location.href = "/aliado";
+        return;
+      }
+      throw new Error(`Error HTTP ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log("✅ Datos de perfil:", data);
+
+    if (!data.aliado || !data.aliado.id_aliado) {
+      throw new Error("Datos del aliado no encontrados en el backend.");
+    }
+
+    // Guardamos el ID en session/localStorage
+    sessionStorage.setItem("aliadoId", data.aliado.id_aliado);
+    localStorage.setItem("aliadoId", data.aliado.id_aliado);
+
+    // Mostrar datos del aliado
+    document.getElementById("nombreAliado").textContent = `${data.aliado.nombre} ${data.aliado.apellido}`;
+    document.getElementById("telefonoAliado").textContent = data.aliado.telefono || "No registrado";
+    document.getElementById("emailAliado").textContent = data.aliado.email;
+    document.getElementById("profileImage").src = data.aliado.foto || "/imagenes/acceso.png";
+
+    // Cargar experiencia
+    const habilidadesContainer = document.getElementById("habilidadesYExperiencia");
+    habilidadesContainer.innerHTML = data.experiencia.length
+      ? data.experiencia.map(exp => `<p>🛠 <strong>${exp.puesto}</strong> – ${exp.descripcion}</p>`).join("")
+      : "<p class='text-muted'>No se encontraron habilidades registradas.</p>";
+
+    // Cargar servicios solicitados
+    loadServiciosSolicitados(data.serviciosSolicitados);
+
+    // Cargar calificaciones
+    cargarCalificacionesAliado(data.aliado.id_aliado);
+
+  } catch (error) {
+    console.error("❌ Error al cargar el perfil:", error);
+  }
 }
 
 // 📌 **Cargar los servicios solicitados al aliado**
 async function loadServiciosSolicitados() {
-    console.log("🔄 Cargando servicios solicitados...");
+  console.log("🔄 Cargando servicios solicitados...");
 
-    try {
-        const response = await fetch("http://localhost:4000/api/aliado/perfil", {
-            method: "GET",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" }
-        });
+  try {
+    const response = await fetch("http://localhost:4000/api/aliado/perfil", {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" }
+    });
 
-        if (!response.ok) {
-            throw new Error("❌ No se pudieron cargar los servicios solicitados.");
-        }
+    if (!response.ok) {
+      throw new Error("❌ No se pudieron cargar los servicios solicitados.");
+    }
 
-        const data = await response.json();
-        console.log("✅ Servicios solicitados:", data.serviciosSolicitados);
+    const data = await response.json();
+    console.log("✅ Servicios solicitados:", data.serviciosSolicitados);
 
-        const servicesContainer = document.getElementById("servicesContainer");
-        servicesContainer.innerHTML = ""; // Limpiar contenido previo
+    const servicesContainer = document.getElementById("servicesContainer");
+    servicesContainer.innerHTML = ""; // Limpiar contenido previo
 
-        if (data.serviciosSolicitados.length > 0) {
-            data.serviciosSolicitados.forEach(servicio => {
-                const col = document.createElement("div");
-                col.classList.add("col-md-6", "mb-3");
+    if (data.serviciosSolicitados.length > 0) {
+      data.serviciosSolicitados.forEach(servicio => {
+        const col = document.createElement("div");
+        col.classList.add("col-md-6", "mb-3");
 
-                col.innerHTML = `
+        col.innerHTML = `
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="text-center">
@@ -100,111 +100,111 @@ async function loadServiciosSolicitados() {
                         </div>
                     </div>
                 </div>
-            `;            
-                servicesContainer.appendChild(col);
-            });
-        } else {
-            servicesContainer.innerHTML = "<p class='text-muted'>No tienes solicitudes de servicios aún.</p>";
-        }
-
-    } catch (error) {
-        console.error("❌ Error al cargar los servicios solicitados:", error);
+            `;
+        servicesContainer.appendChild(col);
+      });
+    } else {
+      servicesContainer.innerHTML = "<p class='text-muted'>No tienes solicitudes de servicios aún.</p>";
     }
+
+  } catch (error) {
+    console.error("❌ Error al cargar los servicios solicitados:", error);
+  }
 }
 // 🚪 **Lógica para cerrar sesión**
 function logout() {
-    fetch("http://localhost:4000/api/aliado/logout", {
-        method: "POST",
-        credentials: "include" // Incluir cookies en la solicitud
-    })
+  fetch("http://localhost:4000/api/aliado/logout", {
+    method: "POST",
+    credentials: "include" // Incluir cookies en la solicitud
+  })
     .then(response => response.json())
     .then(data => {
-        sessionStorage.clear();
-        localStorage.clear();
-        window.location.href = data.redirect || "/";
+      sessionStorage.clear();
+      localStorage.clear();
+      window.location.href = data.redirect || "/";
     })
     .catch(error => {
-        console.error("Error al cerrar sesión:", error);
-        alert("No se pudo cerrar la sesión correctamente.");
+      console.error("Error al cerrar sesión:", error);
+      alert("No se pudo cerrar la sesión correctamente.");
     });
 }
 
 // **Ejecutar cuando la página cargue**
 document.addEventListener("DOMContentLoaded", () => {
-    loadProfileData();
+  loadProfileData();
 
-    const logoutButton = document.getElementById("logoutButton");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", logout);
-    }
+  const logoutButton = document.getElementById("logoutButton");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logout);
+  }
 });
 
 // 📸 **Subir imagen de perfil**
 async function uploadProfileImage(event) {
-    const fileInput = document.getElementById("fotoPerfil");
-    const file = fileInput.files[0];
+  const fileInput = document.getElementById("fotoPerfil");
+  const file = fileInput.files[0];
 
-    // 🛠 Intentar obtener el ID del aliado
-    let aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+  // 🛠 Intentar obtener el ID del aliado
+  let aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
 
-    // 🚀 Si no existe, intentar recargar el perfil antes de fallar
-    if (!aliadoId) {
-        console.warn("⚠️ ID del aliado no encontrado. Intentando recargar perfil...");
-        await loadProfileData();  
-        aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+  // 🚀 Si no existe, intentar recargar el perfil antes de fallar
+  if (!aliadoId) {
+    console.warn("⚠️ ID del aliado no encontrado. Intentando recargar perfil...");
+    await loadProfileData();
+    aliadoId = sessionStorage.getItem("aliadoId") || localStorage.getItem("aliadoId");
+  }
+
+  if (!file) {
+    alert("Por favor selecciona una imagen.");
+    return;
+  }
+
+  if (!aliadoId) {
+    alert("No se encontró el ID del aliado. Inicia sesión nuevamente.");
+    window.location.href = "/";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("fotoPerfil", file);
+  formData.append("aliadoId", aliadoId);
+
+  try {
+    const response = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById("profileImage").src = data.fotoPerfil || "/imagenes/default-profile.png";
+      alert("Imagen de perfil actualizada con éxito.");
+    } else {
+      alert(data.error || "Error al subir la imagen.");
     }
 
-    if (!file) {
-        alert("Por favor selecciona una imagen.");
-        return;
-    }
-
-    if (!aliadoId) {
-        alert("No se encontró el ID del aliado. Inicia sesión nuevamente.");
-        window.location.href = "/"; 
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("fotoPerfil", file);
-    formData.append("aliadoId", aliadoId); 
-
-    try {
-        const response = await fetch("http://localhost:4000/api/register/aliado/loadImages", {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            document.getElementById("profileImage").src = data.fotoPerfil || "/imagenes/default-profile.png";
-            alert("Imagen de perfil actualizada con éxito.");
-        } else {
-            alert(data.error || "Error al subir la imagen.");
-        }
-
-    } catch (error) {
-        console.error("❌ Error al subir la imagen:", error);
-        alert("Error al subir la imagen. Intenta de nuevo.");
-    }
+  } catch (error) {
+    console.error("❌ Error al subir la imagen:", error);
+    alert("Error al subir la imagen. Intenta de nuevo.");
+  }
 }
 // Logica para el chat
 document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("iniciar-chat-btn")) {
-        const clienteId = event.target.getAttribute("data-cliente-id");
-        const clienteNombre = event.target.getAttribute("data-cliente-nombre");
+  if (event.target.classList.contains("iniciar-chat-btn")) {
+    const clienteId = event.target.getAttribute("data-cliente-id");
+    const clienteNombre = event.target.getAttribute("data-cliente-nombre");
 
-        // Abrir el chat con el cliente
-        iniciarChat(clienteId, clienteNombre);
-    }
+    // Abrir el chat con el cliente
+    iniciarChat(clienteId, clienteNombre);
+  }
 });
 
 function iniciarChat(clienteId, clienteNombre) {
-    console.log(`💬 Iniciando chat con ${clienteNombre} (ID: ${clienteId})`);
+  console.log(`💬 Iniciando chat con ${clienteNombre} (ID: ${clienteId})`);
 
-    // Aquí podrías redirigir a una página específica de chat o abrir un modal
-    window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
+  // Aquí podrías redirigir a una página específica de chat o abrir un modal
+  window.location.href = `/chat?clienteId=${clienteId}&clienteNombre=${clienteNombre}`;
 }
 async function cargarPlan() {
   try {
@@ -245,83 +245,83 @@ async function cargarPlan() {
 }
 
 async function elegirPlan(idSuscripcion) {
-    try {
-        // 🔍 Verificar si el aliado está autenticado
-        const authCheck = await fetch("/api/aliado/perfil", {
-            method: "GET",
-            credentials: "include"
-        });
+  try {
+    // 🔍 Verificar si el aliado está autenticado
+    const authCheck = await fetch("/api/aliado/perfil", {
+      method: "GET",
+      credentials: "include"
+    });
 
-        if (authCheck.status === 401 || authCheck.status === 403) {
-            alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
-            window.location.href = "/form";
-            return;
-        }
-
-        // 📥 Continuar con la suscripción
-        const res = await fetch("/api/aliado/suscribirse", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id_suscripcion: idSuscripcion })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            alert("✅ Te has suscrito correctamente.");
-            window.location.href = "/hazteConocer";
-        } else {
-            alert(`❌ Error: ${data.message}`);
-        }
-
-    } catch (error) {
-        console.error("❌ Error al suscribirse:", error);
-        alert("No se pudo completar la suscripción.");
+    if (authCheck.status === 401 || authCheck.status === 403) {
+      alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
+      window.location.href = "/form";
+      return;
     }
+
+    // 📥 Continuar con la suscripción
+    const res = await fetch("/api/aliado/suscribirse", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_suscripcion: idSuscripcion })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Te has suscrito correctamente.");
+      window.location.href = "/hazteConocer";
+    } else {
+      alert(`❌ Error: ${data.message}`);
+    }
+
+  } catch (error) {
+    console.error("❌ Error al suscribirse:", error);
+    alert("No se pudo completar la suscripción.");
+  }
 }
 async function cargarContadorDestacados() {
-    try {
-      console.log("🔁 Intentando fetch de destacados...");
-  
-      const res = await fetch("/api/aliado/destacados/contador", {
-        method: "GET",
-        credentials: "include"
-      });
-  
-      console.log("🌐 Fetch realizado. Status:", res.status);
-      if (!res.ok) throw new Error("No se pudo obtener datos de destacados");
-  
-      const data = await res.json();
-      console.log("📦 Datos recibidos:", data);
-  
-      const contenedor = document.getElementById("destacadosContainer");
-      const texto = document.getElementById("textoDestacados");
-      const medalla = document.getElementById("medallaPremium");
-  
-      if (!data.permitido) {
-        contenedor.classList.remove("d-none");
-        texto.innerHTML = `<span class="text-muted">Tu plan actual <strong>no permite destacar</strong> publicaciones.</span>`;
-        return;
-      }
-  
-      // Si tiene permitido destacar (solo plan premium)
+  try {
+    console.log("🔁 Intentando fetch de destacados...");
+
+    const res = await fetch("/api/aliado/destacados/contador", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    console.log("🌐 Fetch realizado. Status:", res.status);
+    if (!res.ok) throw new Error("No se pudo obtener datos de destacados");
+
+    const data = await res.json();
+    console.log("📦 Datos recibidos:", data);
+
+    const contenedor = document.getElementById("destacadosContainer");
+    const texto = document.getElementById("textoDestacados");
+    const medalla = document.getElementById("medallaPremium");
+
+    if (!data.permitido) {
       contenedor.classList.remove("d-none");
-  
-      if (data.limite === null || data.limite >= 999) {
-        texto.innerHTML = `<strong>Publicaciones destacadas:</strong> Ilimitadas 🎉`;
-        medalla.innerHTML = `<i class="fas fa-medal text-warning ms-2" title="Plan Premium"></i>`;
-      } else {
-        texto.innerHTML = `
+      texto.innerHTML = `<span class="text-muted">Tu plan actual <strong>no permite destacar</strong> publicaciones.</span>`;
+      return;
+    }
+
+    // Si tiene permitido destacar (solo plan premium)
+    contenedor.classList.remove("d-none");
+
+    if (data.limite === null || data.limite >= 999) {
+      texto.innerHTML = `<strong>Publicaciones destacadas:</strong> Ilimitadas 🎉`;
+      medalla.innerHTML = `<i class="fas fa-medal text-warning ms-2" title="Plan Premium"></i>`;
+    } else {
+      texto.innerHTML = `
           <strong>Usadas:</strong> ${data.usados}<br>
           <strong>Límite según tu plan:</strong> ${data.limite}
         `;
-      }
-  
-    } catch (err) {
-      console.error("❌ Error en fetch de destacados:", err);
     }
-  }  
+
+  } catch (err) {
+    console.error("❌ Error en fetch de destacados:", err);
+  }
+}
 async function cargarContadorPublicaciones() {
   try {
     const res = await fetch("http://localhost:4000/api/aliado/perfil", {
@@ -414,8 +414,8 @@ async function cargarPublicacionesAliado() {
     }
     publicaciones.forEach(pub => {
       const card = document.createElement("div");
-      card.classList.add("w-100","col-md-6", "mb-4");
-    
+      card.classList.add("w-100", "col-md-6", "mb-4");
+
       card.innerHTML = `
         <div class="card shadow-sm h-100">
           ${pub.ruta_imagen ? `<img src="${pub.ruta_imagen}" class="card-img-top" alt="Imagen de publicación">` : ""}
@@ -428,10 +428,10 @@ async function cargarPublicacionesAliado() {
           </div>
         </div>
       `;
-      
+
       container.appendChild(card);
     });
-    
+
   } catch (error) {
     console.error("❌ Error al cargar publicaciones del aliado:", error);
     container.innerHTML = "<p class='text-muted'>Error al cargar tus publicaciones.</p>";
@@ -478,11 +478,127 @@ async function cargarCalificacionesAliado(idAliado) {
     console.error("❌ Error al cargar calificaciones:", error);
   }
 }
+// 📌 Cargar necesidades para el aliado
+async function cargarNecesidadesAliado() {
+  console.log("🔄 Cargando necesidades...");
+  const container = document.getElementById("necesidadesContainer");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    cargarPlan();
-    cargarContadorPublicaciones();
-    cargarPublicacionesAliado();
-  });
-  
-  
+  try {
+    const response = await fetch("http://localhost:4000/api/aliado/necesidades", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) throw new Error("No se pudieron cargar las necesidades.");
+
+    const necesidades = await response.json();
+    console.log("📦 Necesidades cargadas:", necesidades);
+
+    container.innerHTML = "";
+    if (necesidades.length === 0) {
+      container.innerHTML = "<p class='text-muted'>No hay solicitudes disponibles.</p>";
+      return;
+    }
+
+    necesidades.forEach(necesidad => {
+      const card = document.createElement("div");
+      card.classList.add("col-md-6", "mb-4");
+      card.innerHTML = `
+      <div class="card shadow-sm h-100">
+          ${necesidad.imagen_destacada ? `<img src="${necesidad.imagen_destacada}" class="card-img-top" alt="Imagen del cliente">` : ""}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">${necesidad.nombre_cliente || "Cliente"}</h5>
+            <p class="card-text">${necesidad.descripcion.length > 60 ? necesidad.descripcion.slice(0, 60) + "..." : necesidad.descripcion}</p>
+            <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${necesidad.zona}</p>
+            <p class="card-text"><i class="fas fa-calendar-alt"></i> ${new Date(necesidad.fecha_tentativa).toLocaleDateString('es-CO')}</p>
+            <div class="mt-auto text-center">
+              <button class="btn btn-outline-warning btn-sm w-75" onclick="mostrarDetalleNecesidad(${necesidad.id_publicacion})">Ver Detalle</button>
+            </div>
+          </div>
+      </div>
+      `;
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("❌ Error al cargar necesidades:", error);
+    container.innerHTML = "<p class='text-danger'>Error al cargar necesidades.</p>";
+  }
+}
+
+async function tomarSolicitud(id_publicacion) {
+  try {
+    const response = await fetch("http://localhost:4000/api/aliado/tomar-necesidad", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_publicacion })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert("✅ Solicitud tomada correctamente.");
+      cargarNecesidadesAliado(); // Recargar lista
+    } else {
+      alert(`❌ Error: ${data.message}`);
+    }
+  } catch (error) {
+    console.error("❌ Error al tomar la solicitud:", error);
+    alert("Error al tomar la solicitud.");
+  }
+}
+async function mostrarDetalleNecesidad(id_publicacion) {
+  console.log("🔍 Cargando detalle de necesidad ID:", id_publicacion);
+
+  try {
+    const response = await fetch(`http://localhost:4000/api/cliente/necesidad/${id_publicacion}`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) throw new Error("Error al obtener detalle de la solicitud.");
+
+    const data = await response.json();
+    console.log("✅ Detalle de la necesidad:", data);
+
+    // Actualizar el modal con los datos correctos
+    document.getElementById("modalTitulo").textContent = data.especialidad_requerida || "Solicitud de servicio";
+    document.getElementById("modalCliente").textContent = data.nombre_cliente || "No especificado";
+    document.getElementById("modalTelefono").textContent = data.telefono_cliente || "No disponible";
+    document.getElementById("modalEmail").textContent = data.email_cliente || "No disponible";
+    document.getElementById("modalDescripcion").textContent = data.descripcion || "Sin descripción";
+    document.getElementById("modalPresupuesto").textContent = data.presupuesto ? `$${Number(data.presupuesto).toLocaleString('es-CO')}` : "No especificado";
+    document.getElementById("modalFechaTentativa").textContent = data.fecha_tentativa ? new Date(data.fecha_tentativa).toLocaleDateString('es-CO') : "No especificada";
+    document.getElementById("modalUrgencia").textContent = data.urgencia || "Media";
+
+    // Mostrar imágenes
+    const imgContainer = document.getElementById("modalImagenes");
+    imgContainer.innerHTML = "";
+    if (data.imagenes && data.imagenes.length > 0) {
+      data.imagenes.forEach(img => {
+        const imgElement = document.createElement("img");
+        imgElement.src = img.ruta_imagen;
+        imgElement.classList.add("img-thumbnail", "me-2");
+        imgElement.style.maxWidth = "150px";
+        imgContainer.appendChild(imgElement);
+      });
+    } else {
+      imgContainer.innerHTML = "<p class='text-muted'>No hay imágenes disponibles.</p>";
+    }
+
+    // Abrir el modal
+    const modal = new bootstrap.Modal(document.getElementById("modalDetalle"));
+    modal.show();
+
+  } catch (error) {
+    console.error("❌ Error al mostrar detalle:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPlan();
+  cargarContadorPublicaciones();
+  cargarPublicacionesAliado();
+  cargarNecesidadesAliado();
+});
+
