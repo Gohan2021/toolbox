@@ -5,20 +5,10 @@ import path from "path";
 import { verifyToken } from "../../controllers/authentication.controller.js";
 import { methods as authentication } from "../../controllers/authentication.controller.js";
 import { upload } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
+import { uploadSolicitudes } from "../../multerConfig.js"; // ✅ Importar `upload` de index.js
+
 
 const router = express.Router();
-// Configuración de multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads"); // carpeta donde guardarás las imágenes y videos
-    },
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, `${Date.now()}-${file.fieldname}${ext}`);
-    }
-  });
-  
-  const upload_image = multer({ storage: storage });
 // ✅ Ruta protegida para obtener la información del cliente autenticado junto con los servicios tomados
 router.get("/perfil", verifyToken, async (req, res) => {
     console.log("📡 Solicitud autenticada. ID del usuario:", req.user?.userId);
@@ -175,57 +165,170 @@ router.post("/logout/cliente", (req, res) => {
 // ✅ Ruta para solicitar la recuperación de contraseña
 router.post("/request-password-reset", authentication.requestPasswordReset);
 // Endpoint para publicar necesidad
-router.post("/publicar-necesidad", verifyToken, upload_image.fields([
-  { name: 'imagenes', maxCount: 5 },
-  { name: 'video', maxCount: 1 }
-]), async (req, res) => {
-  const { nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia } = req.body;
+// Endpoint para publicar necesidad
+router.post(
+  "/publicar-necesidad",
+  verifyToken,
+  uploadSolicitudes.fields([
+    { name: "imagenes", maxCount: 5 },
+    { name: "video", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    console.log("📡 POST /publicar-necesidad");
+    console.log("📝 Body recibido:", req.body);
+    console.log("📂 Archivos recibidos:", req.files);
+
+    const { 
+      nombre_cliente, 
+      telefono_cliente, 
+      email_cliente, 
+      zona, 
+      horario_contacto, 
+      especialidad_requerida, 
+      descripcion, 
+      presupuesto, 
+      fecha_tentativa, 
+      urgencia 
+    } = req.body;
+
+    const id_cliente = req.user?.userId;
+
+    if (!id_cliente || !descripcion) {
+      console.warn("⚠️ Faltan campos obligatorios.");
+      return res.status(400).json({ message: "Faltan campos obligatorios." });
+    }
+
+    try {
+      const conn = await database();
+
+      // Insertar publicación
+      const [result] = await conn.query(
+        `INSERT INTO publicacion_necesidad_cliente 
+        (id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          id_cliente, 
+          nombre_cliente, 
+          telefono_cliente, 
+          email_cliente, 
+          zona, 
+          horario_contacto, 
+          especialidad_requerida, 
+          descripcion, 
+          presupuesto || null, 
+          fecha_tentativa || null, 
+          urgencia || "Media"
+        ]
+      );
+
+      const idPublicacion = result.insertId;
+      console.log("✅ Publicación creada con ID:", idPublicacion);
+
+      // Guardar imágenes
+      if (req.files && req.files["imagenes"]) {
+        console.log("📸 Guardando imágenes...");
+        for (const img of req.files["imagenes"]) {
+          const imgPath = `/uploads/solicitudes/${img.filename}`;
+          console.log("   ➕ Imagen:", imgPath);
+          await conn.query(
+            `INSERT INTO imagenes_necesidad_cliente (id_publicacion, ruta_imagen)
+             VALUES (?, ?)`,
+            [idPublicacion, imgPath]
+          );
+        }
+      }
+
+      // Guardar video
+      if (req.files && req.files["video"]) {
+        const video = req.files["video"][0];
+        const videoPath = `/uploads/solicitudes/${video.filename}`;
+        console.log("🎥 Video guardado:", videoPath);
+
+        await conn.query(
+          `UPDATE publicacion_necesidad_cliente
+           SET video_url = ?
+           WHERE id_publicacion = ?`,
+          [videoPath, idPublicacion]
+        );
+      }
+
+      return res.status(201).json({ message: "Solicitud publicada exitosamente." });
+
+    } catch (error) {
+      console.error("❌ Error al publicar necesidad:", error);
+      return res.status(500).json({ message: "Error interno del servidor." });
+    }
+  }
+);
+
+// Obtener las publicaciones del cliente
+router.get("/mis-necesidades", verifyToken, async (req, res) => {
   const id_cliente = req.user?.userId;
 
-  if (!id_cliente || !descripcion) {
-    return res.status(400).json({ message: "Faltan campos obligatorios." });
+  if (!id_cliente) {
+    return res.status(401).json({ message: "No autorizado." });
   }
 
   try {
     const conn = await database();
 
-    const [result] = await conn.query(`
-      INSERT INTO publicacion_necesidad_cliente 
-      (id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto || null, fecha_tentativa || null, urgencia || 'Media']
+    const [publicaciones] = await conn.query(`
+      SELECT p.id_publicacion, p.descripcion, p.presupuesto, p.fecha_tentativa, p.urgencia, p.zona,
+             p.horario_contacto, p.especialidad_requerida, p.video_url,
+             GROUP_CONCAT(i.ruta_imagen) AS imagenes
+      FROM publicacion_necesidad_cliente p
+      LEFT JOIN imagenes_necesidad_cliente i ON p.id_publicacion = i.id_publicacion
+      WHERE p.id_cliente = ?
+      GROUP BY p.id_publicacion
+      ORDER BY p.id_publicacion DESC
+    `, [id_cliente]);
+
+    return res.json(publicaciones);
+  } catch (error) {
+    console.error("❌ Error al obtener necesidades del cliente:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
+  }
+});
+// Obtener el detalle de una necesidad específica por ID
+// ✅ Obtener detalle de una necesidad (incluye imágenes)
+router.get("/necesidad/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const conn = await database();
+
+    // Obtener la publicación
+    const [publicacion] = await conn.query(`
+      SELECT id_publicacion, especialidad_requerida, descripcion, zona, 
+             presupuesto, fecha_tentativa, urgencia, fecha_publicacion
+      FROM publicacion_necesidad_cliente
+      WHERE id_publicacion = ?`,
+      [id]
     );
 
-    const idPublicacion = result.insertId;
-
-    // Guardar imágenes si existen
-    if (req.files['imagenes']) {
-      const imagenes = req.files['imagenes'];
-      for (const img of imagenes) {
-        await conn.query(`
-          INSERT INTO imagenes_necesidad_cliente (id_publicacion, ruta_imagen)
-          VALUES (?, ?)`,
-          [idPublicacion, `/uploads/${img.filename}`]
-        );
-      }
+    if (publicacion.length === 0) {
+      return res.status(404).json({ message: "Publicación no encontrada." });
     }
 
-    // Guardar video si existe
-    if (req.files['video']) {
-      const video = req.files['video'][0];
-      await conn.query(`
-        UPDATE publicacion_necesidad_cliente
-        SET video_url = ?
-        WHERE id_publicacion = ?`,
-        [`/uploads/${video.filename}`, idPublicacion]
-      );
-    }
+    // Obtener imágenes relacionadas
+    const [imagenes] = await conn.query(`
+      SELECT ruta_imagen 
+      FROM imagenes_necesidad_cliente
+      WHERE id_publicacion = ?`,
+      [id]
+    );
 
-    return res.status(201).json({ message: "Solicitud publicada exitosamente." });
+    // Combinar datos
+    const detalle = {
+      ...publicacion[0],
+      imagenes: imagenes
+    };
+
+    return res.json(detalle);
 
   } catch (error) {
-    console.error("❌ Error al publicar necesidad:", error);
-    return res.status(500).json({ message: "Error interno del servidor." });
+    console.error("❌ Error al obtener detalle de la necesidad:", error);
+    return res.status(500).json({ message: "Error interno al obtener la necesidad." });
   }
 });
 

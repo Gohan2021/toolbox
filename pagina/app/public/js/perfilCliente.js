@@ -154,8 +154,8 @@ function crearCardServicio(servicio, estado) {
     }
   
     return col;
-  }
-  async function finalizarServicio(idServicioCliente, idAliado) {
+}
+async function finalizarServicio(idServicioCliente, idAliado) {
     if (!confirm("¿Estás seguro que quieres finalizar este servicio?")) return;
   
     try {
@@ -183,7 +183,7 @@ function crearCardServicio(servicio, estado) {
       console.error("❌ Error al finalizar servicio:", error);
       alert("Ocurrió un error. Inténtalo nuevamente.");
     }
-  }
+}
   
 // Enviar calificación
 document.getElementById("formCalificacion").addEventListener("submit", async (e) => {
@@ -307,22 +307,20 @@ async function uploadProfileImage(event) {
         alert("Error al subir la imagen. Intenta de nuevo.");
     }
 }
-async function cargarMisSolicitudes() {
+async function cargarMisSolicitudes() { 
   const container = document.getElementById("solicitudesContainer");
 
   try {
-    const response = await fetch("http://localhost:4000/api/cliente/mis-solicitudes", {
+    const response = await fetch("http://localhost:4000/api/cliente/mis-necesidades", {
       method: "GET",
       credentials: "include"
     });
-
 
     if (!response.ok) {
       throw new Error("No se pudieron cargar tus solicitudes");
     }
 
     const solicitudes = await response.json();
-
     container.innerHTML = "";
 
     if (solicitudes.length === 0) {
@@ -334,6 +332,18 @@ async function cargarMisSolicitudes() {
       const col = document.createElement("div");
       col.classList.add("col-md-6", "col-lg-4", "mb-4");
 
+      // Validar fecha_publicacion
+      let fechaFormateada = "No definida";
+      if (solicitud.fecha_tentativa) {
+        const fecha = new Date(solicitud.fecha_tentativa.replace(" ", "T"));
+        if (!isNaN(fecha)) {
+          fechaFormateada = fecha.toLocaleDateString("es-CO", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          });
+        }
+      }
       col.innerHTML = `
         <div class="card h-100 shadow-sm">
           ${solicitud.imagen_destacada ? `<img src="${solicitud.imagen_destacada}" class="card-img-top" alt="Imagen del servicio">` : ""}
@@ -343,14 +353,13 @@ async function cargarMisSolicitudes() {
               ${solicitud.descripcion.length > 80 ? solicitud.descripcion.slice(0, 80) + "..." : solicitud.descripcion}
             </p>
             <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${solicitud.zona}</p>
-            <p class="card-text"><i class="fas fa-calendar-alt"></i> ${new Date(solicitud.fecha_publicacion).toLocaleDateString('es-CO')}</p>
+            <p class="card-text"><i class="fas fa-calendar-alt"></i> ${new Date(solicitud.fecha_tentativa.replace(" ", "T")).toLocaleDateString('es-CO')}</p>
             <div class="mt-auto text-center">
-              <a href="/detalle-solicitud?id=${solicitud.id}" class="btn btn-outline-warning btn-sm w-75">Ver Detalle</a>
+              <button class="btn btn-outline-warning btn-sm w-75" onclick="mostrarDetalle(${solicitud.id_publicacion})">Ver Detalle</button>
             </div>
           </div>
         </div>
       `;
-
       container.appendChild(col);
     });
 
@@ -359,6 +368,52 @@ async function cargarMisSolicitudes() {
     container.innerHTML = "<p class='text-danger text-center'>No se pudieron cargar tus solicitudes.</p>";
   }
 }
+async function mostrarDetalle(idPublicacion) {
+  try {
+    const response = await fetch(`http://localhost:4000/api/cliente/necesidad/${idPublicacion}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener detalle de la solicitud.");
+    }
+
+    const solicitud = await response.json();
+    console.log("📝 Detalle de la solicitud:", solicitud);
+
+    const modalBody = document.querySelector("#detalleModal .modal-body");
+
+    // Crear galería de imágenes
+    let imagenesHTML = "";
+    if (solicitud.imagenes && solicitud.imagenes.length > 0) {
+      imagenesHTML = solicitud.imagenes.map(img => `
+        <img src="${img.ruta_imagen}" 
+             class="img-fluid rounded mb-2" 
+             style="max-height: 200px; object-fit: cover;">
+      `).join("");
+    } else {
+      imagenesHTML = `<p class="text-muted">No hay imágenes disponibles.</p>`;
+    }
+
+    modalBody.innerHTML = `
+      <h5>${solicitud.especialidad_requerida}</h5>
+      <p><strong>Descripción:</strong> ${solicitud.descripcion}</p>
+      <p><strong>Zona:</strong> ${solicitud.zona}</p>
+      <p><strong>Fecha tentativa:</strong> ${solicitud.fecha_tentativa ? new Date(solicitud.fecha_tentativa).toISOString().split("T")[0] : "No definida"}</p>
+      <p><strong>Presupuesto:</strong> $${solicitud.presupuesto || "Sin definir"}</p>
+      <p><strong>Urgencia:</strong> ${solicitud.urgencia}</p>
+      <div class="mt-3">${imagenesHTML}</div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById("detalleModal"));
+    modal.show();
+
+  } catch (error) {
+    console.error("❌ Error al mostrar detalle:", error);
+  }
+}
 
 document.addEventListener("DOMContentLoaded", cargarMisSolicitudes);
+
 
