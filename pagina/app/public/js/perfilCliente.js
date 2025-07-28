@@ -397,7 +397,6 @@ async function mostrarDetalle(idPublicacion) {
     }
 
     modalBody.innerHTML = `
-      <h5>${solicitud.especialidad_requerida}</h5>
       <p><strong>Descripción:</strong> ${solicitud.descripcion}</p>
       <p><strong>Zona:</strong> ${solicitud.zona}</p>
       <p><strong>Fecha tentativa:</strong> ${solicitud.fecha_tentativa ? new Date(solicitud.fecha_tentativa).toISOString().split("T")[0] : "No definida"}</p>

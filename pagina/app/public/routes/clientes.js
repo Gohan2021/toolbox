@@ -166,10 +166,7 @@ router.post("/logout/cliente", (req, res) => {
 router.post("/request-password-reset", authentication.requestPasswordReset);
 // Endpoint para publicar necesidad
 // Endpoint para publicar necesidad
-router.post(
-  "/publicar-necesidad",
-  verifyToken,
-  uploadSolicitudes.fields([
+router.post("/publicar-necesidad",verifyToken,uploadSolicitudes.fields([
     { name: "imagenes", maxCount: 5 },
     { name: "video", maxCount: 1 }
   ]),
@@ -184,7 +181,7 @@ router.post(
       email_cliente, 
       zona, 
       horario_contacto, 
-      especialidad_requerida, 
+      id_servicio, 
       descripcion, 
       presupuesto, 
       fecha_tentativa, 
@@ -204,16 +201,16 @@ router.post(
       // Insertar publicación
       const [result] = await conn.query(
         `INSERT INTO publicacion_necesidad_cliente 
-        (id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia)
+        (id_cliente, id_servicio ,nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, descripcion, presupuesto, fecha_tentativa, urgencia)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          id_cliente, 
+          id_cliente,
+          id_servicio, 
           nombre_cliente, 
           telefono_cliente, 
           email_cliente, 
           zona, 
           horario_contacto, 
-          especialidad_requerida, 
           descripcion, 
           presupuesto || null, 
           fecha_tentativa || null, 
@@ -260,36 +257,38 @@ router.post(
     }
   }
 );
-
 // Obtener las publicaciones del cliente
 router.get("/mis-necesidades", verifyToken, async (req, res) => {
-  const id_cliente = req.user?.userId;
-
-  if (!id_cliente) {
-    return res.status(401).json({ message: "No autorizado." });
-  }
-
   try {
+    const idCliente = req.user?.userId;
     const conn = await database();
 
-    const [publicaciones] = await conn.query(`
-      SELECT p.id_publicacion, p.descripcion, p.presupuesto, p.fecha_tentativa, p.urgencia, p.zona,
-             p.horario_contacto, p.especialidad_requerida, p.video_url,
-             GROUP_CONCAT(i.ruta_imagen) AS imagenes
-      FROM publicacion_necesidad_cliente p
-      LEFT JOIN imagenes_necesidad_cliente i ON p.id_publicacion = i.id_publicacion
-      WHERE p.id_cliente = ?
-      GROUP BY p.id_publicacion
-      ORDER BY p.id_publicacion DESC
-    `, [id_cliente]);
+    const [rows] = await conn.query(`
+        SELECT 
+    p.id_publicacion, 
+    p.descripcion, 
+    p.zona, 
+    p.fecha_tentativa, 
+    p.presupuesto, 
+    p.urgencia, 
+    p.fecha_publicacion, 
+    s.nombre_servicio AS especialidad_requerida,
+    (SELECT ruta_imagen 
+     FROM imagenes_necesidad_cliente i 
+     WHERE i.id_publicacion = p.id_publicacion LIMIT 1) AS imagen_destacada
+  FROM publicacion_necesidad_cliente p
+  JOIN servicio s ON p.id_servicio = s.id_servicio
+  WHERE p.id_cliente = ?
+  ORDER BY p.fecha_publicacion DESC;
+    `, [idCliente]);
 
-    return res.json(publicaciones);
+    return res.json(rows);
   } catch (error) {
-    console.error("❌ Error al obtener necesidades del cliente:", error);
-    return res.status(500).json({ message: "Error interno del servidor." });
+    console.error("❌ Error al obtener necesidades:", error);
+    return res.status(500).json({ message: "Error al cargar las necesidades." });
   }
 });
-// Obtener el detalle de una necesidad específica por ID
+
 // ✅ Obtener detalle de una necesidad (incluye imágenes)
 router.get("/necesidad/:id", verifyToken, async (req, res) => {
   const { id } = req.params;

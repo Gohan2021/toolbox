@@ -91,29 +91,30 @@
   const maxImagenes = 5;
   const imageInputsContainer = document.getElementById("imageInputs");
   const selectEspecialidad = document.getElementById("especialidadRequerida");
+  
 
   // Lista de servicios
-  const servicios = [
-    "Plomería",
-    "Electricidad",
-    "Carpintería",
-    "Enchape y acabados",
-    "Estructuras Metálicas",
-    "Pintura y acabados",
-    "Cerrajería",
-    "Refrigeración y aire acondicionado",
-    "Jardinería y paisajismo",
-    "Obras Civiles"
-  ];
+const servicios = [
+  { id: 1, nombre: "Plomería" },
+  { id: 2, nombre: "Electricidad" },
+  { id: 3, nombre: "Carpintería" },
+  { id: 4, nombre: "Enchape y acabados" },
+  { id: 5, nombre: "Estructuras Metálicas" },
+  { id: 6, nombre: "Pintura y acabados" },
+  { id: 7, nombre: "Cerrajería" },
+  { id: 8, nombre: "Refrigeración y aire acondicionado" },
+  { id: 9, nombre: "Jardinería y paisajismo" },
+  { id: 10, nombre: "Obras Civiles" }
+];
 
   // 🔥 LIMPIAMOS las opciones existentes (excepto el placeholder)
   selectEspecialidad.innerHTML = `<option selected disabled value="">Selecciona...</option>`;
 
   // Agregar opciones
-  servicios.forEach(servicio => {
+  servicios.forEach(s => {
     const option = document.createElement("option");
-    option.value = servicio;
-    option.textContent = servicio;
+    option.value = s.id;   // El value ahora será el ID
+    option.textContent = s.nombre;
     selectEspecialidad.appendChild(option);
   });
 
@@ -168,15 +169,13 @@
   }
 });
 
-  document.getElementById("formPublicarNecesidad").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const form = e.target;
-
-  if (!form.checkValidity()) {
-    form.classList.add("was-validated");
-    return;
-  }
+document.getElementById("formPublicarNecesidad").addEventListener("submit", async (e) => {
+e.preventDefault();
+const form = e.target;
+if (!form.checkValidity()) {
+  form.classList.add("was-validated");
+  return;
+}
 
   const formData = new FormData();
   formData.append("nombre_cliente", document.getElementById("nombreCliente").value.trim());
@@ -184,7 +183,7 @@
   formData.append("email_cliente", document.getElementById("emailCliente").value.trim());
   formData.append("zona", document.getElementById("zona").value.trim());
   formData.append("horario_contacto", document.getElementById("horarioContacto").value.trim());
-  formData.append("especialidad_requerida", document.getElementById("especialidadRequerida").value);
+  formData.append("id_servicio", document.getElementById("especialidadRequerida").value);
   formData.append("descripcion", document.getElementById("descripcion").value.trim());
   formData.append("presupuesto", document.getElementById("presupuesto").value);
   formData.append("fecha_tentativa", document.getElementById("fechaTentativa").value);
