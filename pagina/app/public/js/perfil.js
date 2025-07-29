@@ -503,20 +503,29 @@ async function cargarNecesidadesAliado() {
     necesidades.forEach(necesidad => {
       const card = document.createElement("div");
       card.classList.add("col-md-6", "mb-4");
+
       card.innerHTML = `
-      <div class="card shadow-sm h-100">
-          ${necesidad.imagen_destacada ? `<img src="${necesidad.imagen_destacada}" class="card-img-top" alt="Imagen del cliente">` : ""}
+        <div class="card shadow-sm h-100">
+          ${necesidad.imagen_destacada 
+            ? `<img src="${necesidad.imagen_destacada}" class="card-img-top" alt="Imagen del cliente">` 
+            : ""}
           <div class="card-body d-flex flex-column">
             <h5 class="card-title fw-bold">${necesidad.nombre_cliente || "Cliente"}</h5>
-            <p class="card-text">${necesidad.descripcion.length > 60 ? necesidad.descripcion.slice(0, 60) + "..." : necesidad.descripcion}</p>
+            <p class="card-text">
+              ${necesidad.descripcion && necesidad.descripcion.length > 60 
+                ? necesidad.descripcion.slice(0, 60) + "..." 
+                : (necesidad.descripcion || "Sin descripción")}
+            </p>
             <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${necesidad.zona}</p>
             <p class="card-text"><i class="fas fa-calendar-alt"></i> ${new Date(necesidad.fecha_tentativa).toLocaleDateString('es-CO')}</p>
-            <div class="mt-auto text-center">
-              <button class="btn btn-outline-warning btn-sm w-75" onclick="mostrarDetalleNecesidad(${necesidad.id_publicacion})">Ver Detalle</button>
+            <div class="mt-auto text-center d-flex gap-2 justify-content-center">
+              <button class="btn btn-outline-warning btn-sm" onclick="mostrarDetalleNecesidad(${necesidad.id_publicacion})">Ver Detalle</button>
+              <button class="btn btn-success btn-sm" onclick="atenderNecesidad(${necesidad.id_publicacion}, this)">Atender</button>
             </div>
           </div>
-      </div>
+        </div>
       `;
+
       container.appendChild(card);
     });
 
@@ -526,27 +535,33 @@ async function cargarNecesidadesAliado() {
   }
 }
 
-async function tomarSolicitud(id_publicacion) {
+window.atenderNecesidad = async function (id_publicacion, button) {
+  if (!confirm("¿Deseas atender esta necesidad?")) return;
+
   try {
-    const response = await fetch("http://localhost:4000/api/aliado/tomar-necesidad", {
+    const response = await fetch("http://localhost:4000/api/aliado/atender-necesidad", {
       method: "POST",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ id_publicacion })
     });
 
     const data = await response.json();
+
     if (response.ok) {
-      alert("✅ Solicitud tomada correctamente.");
-      cargarNecesidadesAliado(); // Recargar lista
+      alert(data.message);
+      // Eliminar la card directamente
+      const card = button.closest(".col-md-6");
+      if (card) card.remove();
     } else {
-      alert(`❌ Error: ${data.message}`);
+      alert(data.message || "No se pudo atender la necesidad.");
     }
   } catch (error) {
-    console.error("❌ Error al tomar la solicitud:", error);
-    alert("Error al tomar la solicitud.");
+    console.error("❌ Error al atender necesidad:", error);
+    alert("Error de conexión al intentar atender la necesidad.");
   }
-}
+};
+
 async function mostrarDetalleNecesidad(id_publicacion) {
   console.log("🔍 Cargando detalle de necesidad ID:", id_publicacion);
 

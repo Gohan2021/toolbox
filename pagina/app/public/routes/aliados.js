@@ -455,6 +455,41 @@ router.get("/:id_aliado", async (req, res) => {
       res.status(500).json({ message: "Error al obtener la información del aliado." });
   }
 });
+// POST /api/aliado/atender-necesidad
+router.post("/atender-necesidad", verifyToken, async (req, res) => {
+  const { id_publicacion } = req.body;
+  const id_aliado = req.user?.userId;
+
+  if (!id_publicacion || !id_aliado) {
+    return res.status(400).json({ message: "Datos incompletos para atender la necesidad." });
+  }
+
+  try {
+    const conn = await database();
+
+    // Verificar si ya fue tomada por otro aliado
+    const [existe] = await conn.query(
+      "SELECT * FROM aliado_necesidad_cliente WHERE id_publicacion = ?",
+      [id_publicacion]
+    );
+
+    if (existe.length > 0) {
+      return res.status(409).json({ message: "Esta necesidad ya fue tomada por otro aliado." });
+    }
+
+    // Registrar que el aliado tomó la necesidad
+    await conn.query(
+      `INSERT INTO aliado_necesidad_cliente (id_aliado, id_publicacion)
+       VALUES (?, ?)`,
+      [id_aliado, id_publicacion]
+    );
+
+    return res.status(201).json({ message: "✅ Has tomado esta necesidad exitosamente." });
+  } catch (error) {
+    console.error("❌ Error al atender necesidad:", error);
+    return res.status(500).json({ message: "Error interno al atender la necesidad." });
+  }
+});
 
 export default router;
 
