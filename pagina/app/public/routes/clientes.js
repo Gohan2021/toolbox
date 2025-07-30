@@ -171,10 +171,6 @@ router.post("/publicar-necesidad",verifyToken,uploadSolicitudes.fields([
     { name: "video", maxCount: 1 }
   ]),
   async (req, res) => {
-    console.log("📡 POST /publicar-necesidad");
-    console.log("📝 Body recibido:", req.body);
-    console.log("📂 Archivos recibidos:", req.files);
-
     const { 
       nombre_cliente, 
       telefono_cliente, 
@@ -198,25 +194,33 @@ router.post("/publicar-necesidad",verifyToken,uploadSolicitudes.fields([
     try {
       const conn = await database();
 
-      // Insertar publicación
-      const [result] = await conn.query(
-        `INSERT INTO publicacion_necesidad_cliente 
-        (id_cliente, id_servicio ,nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, descripcion, presupuesto, fecha_tentativa, urgencia)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          id_cliente,
-          id_servicio, 
-          nombre_cliente, 
-          telefono_cliente, 
-          email_cliente, 
-          zona, 
-          horario_contacto, 
-          descripcion, 
-          presupuesto || null, 
-          fecha_tentativa || null, 
-          urgencia || "Media"
-        ]
-      );
+// Obtener el nombre del servicio para guardarlo en especialidad_requerida
+    const [servicio] = await conn.query(
+      `SELECT nombre_servicio FROM servicio WHERE id_servicio = ?`,
+      [id_servicio]
+    );
+    const nombreServicio = servicio.length > 0 ? servicio[0].nombre_servicio : "No definido";
+
+    // Insertar la necesidad en la tabla principal
+    const [result] = await conn.query(`
+      INSERT INTO publicacion_necesidad_cliente 
+      (id_cliente, nombre_cliente, telefono_cliente, email_cliente, zona, horario_contacto, id_servicio, especialidad_requerida, descripcion, presupuesto, fecha_tentativa, urgencia)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id_cliente,
+        nombre_cliente,
+        telefono_cliente,
+        email_cliente,
+        zona,
+        horario_contacto,
+        id_servicio,
+        nombreServicio,
+        descripcion,
+        presupuesto || null,
+        fecha_tentativa || null,
+        urgencia || 'Media'
+      ]
+    );
 
       const idPublicacion = result.insertId;
       console.log("✅ Publicación creada con ID:", idPublicacion);

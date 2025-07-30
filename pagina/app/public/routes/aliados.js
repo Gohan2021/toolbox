@@ -254,40 +254,71 @@ router.post("/calificar", verifyToken, async (req, res) => {
   }
 });
 // ✅ Ruta para obtener necesidades filtradas por especialidad del aliado
+// ✅ Obtener necesidades filtradas por los servicios del aliado
 router.get("/necesidades", verifyToken, async (req, res) => {
   try {
     const aliadoId = req.user?.userId;
+    if (!aliadoId) {
+      return res.status(401).json({ message: "No autorizado." });
+    }
+
     const conn = await database();
 
-    // Obtener los servicios asociados al aliado
+    // 1. Obtener los IDs de servicios que ofrece el aliado
     const [serviciosAliado] = await conn.query(
       "SELECT id_servicio FROM aliado_servicio WHERE id_aliado = ?",
       [aliadoId]
     );
 
-    if (serviciosAliado.length === 0) {
+    console.log("📝 Servicios del aliado:", serviciosAliado);
+
+    // 2. Validar si no tiene servicios
+    if (!serviciosAliado || serviciosAliado.length === 0) {
+      console.warn("⚠️ El aliado no tiene servicios registrados.");
       return res.json([]);
     }
 
+    // 3. Extraer los IDs de servicio
     const serviciosIds = serviciosAliado.map(s => s.id_servicio);
+    console.log("🔍 IDs de servicio del aliado:", serviciosIds);
+
+    // 4. Crear placeholders dinámicos
     const placeholders = serviciosIds.map(() => "?").join(",");
+    console.log("🔍 Placeholders generados:", placeholders);
 
-    // Consulta con JOIN para obtener nombre del servicio
-    const [necesidades] = await conn.query(
-      `
-      SELECT p.id_publicacion, p.descripcion, p.zona, p.fecha_tentativa, p.presupuesto,
-             p.urgencia, p.nombre_cliente, p.telefono_cliente, p.email_cliente,
-             s.nombre_servicio,
-             (SELECT ruta_imagen FROM imagenes_necesidad_cliente i WHERE i.id_publicacion = p.id_publicacion LIMIT 1) AS imagen_destacada
+    // 5. Ejecutar la consulta
+    const query = `
+      SELECT 
+        p.id_publicacion,
+        p.descripcion,
+        p.zona,
+        p.fecha_tentativa,
+        p.presupuesto,
+        p.urgencia,
+        p.nombre_cliente,
+        p.telefono_cliente,
+        p.email_cliente,
+        p.especialidad_requerida,
+        (SELECT ruta_imagen 
+         FROM imagenes_necesidad_cliente i 
+         WHERE i.id_publicacion = p.id_publicacion LIMIT 1) AS imagen_destacada
       FROM publicacion_necesidad_cliente p
-      JOIN servicio s ON p.id_servicio = s.id_servicio
       WHERE p.id_servicio IN (${placeholders})
+        AND NOT EXISTS (
+          SELECT 1 
+          FROM aliado_necesidad_cliente anc
+          WHERE anc.id_publicacion = p.id_publicacion
+        )
       ORDER BY p.fecha_publicacion DESC
-      `,
-      serviciosIds
-    );
+    `;
 
+    console.log("📝 Consulta final:", query);
+
+    const [necesidades] = await conn.query(query, serviciosIds);
+
+    console.log("📦 Necesidades encontradas:", necesidades.length);
     return res.json(necesidades);
+
   } catch (error) {
     console.error("❌ Error en /api/aliado/necesidades:", error);
     return res.status(500).json({ message: "Error al obtener las necesidades." });
@@ -334,30 +365,72 @@ router.get("/necesidad/:id_publicacion", verifyToken, async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor." });
   }
 });
-
-router.post("/tomar-necesidad", verifyToken, async (req, res) => {
+// POST /api/aliado/atender-necesidad
+router.post("/atender-necesidad", verifyToken, async (req, res) => {
   const { id_publicacion } = req.body;
   const idAliado = req.user?.userId;
 
   if (!id_publicacion || !idAliado) {
-    return res.status(400).json({ message: "Faltan datos." });
+    return res.status(400).json({ message: "Faltan datos para atender la necesidad." });
   }
 
   try {
     const conn = await database();
 
-    // Guardamos en una tabla de relación (aliado_necesidad_cliente)
-    await conn.query(`
-      INSERT INTO aliado_necesidad_cliente (id_aliado, id_publicacion) 
-      VALUES (?, ?)`, [idAliado, id_publicacion]
+    // Verificar si ya fue tomada por otro aliado
+    const [yaTomada] = await conn.query(
+      `SELECT * FROM aliado_necesidad_cliente WHERE id_publicacion = ?`,
+      [id_publicacion]
     );
 
-    return res.status(201).json({ message: "Solicitud tomada exitosamente." });
+    if (yaTomada.length > 0) {
+      return res.status(409).json({ message: "Esta solicitud ya fue tomada por otro aliado." });
+    }
+
+    // Guardar la relación
+    await conn.query(
+      `INSERT INTO aliado_necesidad_cliente (id_aliado, id_publicacion) VALUES (?, ?)`,
+      [idAliado, id_publicacion]
+    );
+
+    res.status(201).json({ message: "Solicitud tomada exitosamente." });
   } catch (error) {
-    console.error("❌ Error al tomar la solicitud:", error);
-    return res.status(500).json({ message: "Error interno del servidor." });
+    console.error("❌ Error en atender-necesidad:", error);
+    res.status(500).json({ message: "Error al atender la necesidad." });
   }
 });
+
+router.get("/necesidades-tomadas", verifyToken, async (req, res) => {
+  const aliadoId = req.user?.userId;
+
+  try {
+    const conn = await database();
+    const [necesidadesTomadas] = await conn.query(`
+      SELECT 
+        p.id_publicacion,
+        p.descripcion,
+        p.zona,
+        p.fecha_tentativa,
+        p.presupuesto,
+        p.urgencia,
+        p.nombre_cliente,
+        p.telefono_cliente,
+        p.email_cliente,
+        (SELECT ruta_imagen FROM imagenes_necesidad_cliente i WHERE i.id_publicacion = p.id_publicacion LIMIT 1) AS imagen_destacada
+      FROM publicacion_necesidad_cliente p
+      INNER JOIN aliado_necesidad_cliente anc ON anc.id_publicacion = p.id_publicacion
+      WHERE anc.id_aliado = ?
+      ORDER BY p.fecha_publicacion DESC
+    `, [aliadoId]);
+
+    return res.json(necesidadesTomadas);
+
+  } catch (error) {
+    console.error("❌ Error en /api/aliado/necesidades-tomadas:", error);
+    return res.status(500).json({ message: "Error al obtener las necesidades tomadas." });
+  }
+});
+
 router.get("/:id_aliado/calificacion", async (req, res) => {
     const { id_aliado } = req.params;
   
@@ -455,41 +528,7 @@ router.get("/:id_aliado", async (req, res) => {
       res.status(500).json({ message: "Error al obtener la información del aliado." });
   }
 });
-// POST /api/aliado/atender-necesidad
-router.post("/atender-necesidad", verifyToken, async (req, res) => {
-  const { id_publicacion } = req.body;
-  const id_aliado = req.user?.userId;
 
-  if (!id_publicacion || !id_aliado) {
-    return res.status(400).json({ message: "Datos incompletos para atender la necesidad." });
-  }
-
-  try {
-    const conn = await database();
-
-    // Verificar si ya fue tomada por otro aliado
-    const [existe] = await conn.query(
-      "SELECT * FROM aliado_necesidad_cliente WHERE id_publicacion = ?",
-      [id_publicacion]
-    );
-
-    if (existe.length > 0) {
-      return res.status(409).json({ message: "Esta necesidad ya fue tomada por otro aliado." });
-    }
-
-    // Registrar que el aliado tomó la necesidad
-    await conn.query(
-      `INSERT INTO aliado_necesidad_cliente (id_aliado, id_publicacion)
-       VALUES (?, ?)`,
-      [id_aliado, id_publicacion]
-    );
-
-    return res.status(201).json({ message: "✅ Has tomado esta necesidad exitosamente." });
-  } catch (error) {
-    console.error("❌ Error al atender necesidad:", error);
-    return res.status(500).json({ message: "Error interno al atender la necesidad." });
-  }
-});
 
 export default router;
 
