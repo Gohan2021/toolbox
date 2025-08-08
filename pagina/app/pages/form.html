@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,95 +23,122 @@
     <script src="../js/navbar.js" defer></script>
     <script src="form.js" defer></script>
 </head>
+
 <body>
     <!-- formulario -->
     <div class="form-container">
         <h2 class="text-center text-warning mb-4">Empecemos creando tu perfil</h2>
-            <!-- Campos para Aliado -->
-            <form id="register-form-aliado">
-                <div id="independentFields" class="">
-                    <div class="mb-2">
-                        <!-- Nombre -->
-                        <label for="userNameAliado" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" name="userNameAliado" id="userNameAliado" placeholder="Ingresa nombre" required>
-                        <!-- Apellidos -->
-                        <label for="surnameAliado" class="form-label my-2">Apellidos</label>
-                        <input type="text" class="form-control" name="surnameAliado" id="surnameAliado" placeholder="Ingresa apellidos" required>
-                        <!-- Cedula -->
-                        <label for="userIDAliado" class="form-label my-2">Número de identificación</label>
-                        <input type="number" class="form-control" name="userIDAliado" id="userIDAliado" placeholder="Ingresa identificación" required>
-                        <!-- Foto de cedula frontal-->
-                        <label for="idphotofront" class="form-label my-2">Foto de la cédula lado frontal</label>
-                        <input class="form-control" type="file" name="idphotofront" id="imageInputFront" accept="image/*" required>
-                        <!-- Foto de cedula trasera-->
-                        <label for="idphotoback" class="form-label my-2">Foto de la cédula lado trasera</label>
-                        <input class="form-control" type="file" name="idphotoback" id="imageInputBack" accept="image/*" required>
-                        <!-- Date of Birth -->
-                        <label for="dobAliado" class="form-label my-2">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" id="dobAliado" name="dobAliado" required>
-                        <!-- telefono -->
-                        <label for="telAliado" class="form-label my-2">Teléfono</label>
-                        <input type="number" class="form-control" name="telAliado" id="telAliado" placeholder="Ingresa teléfono" required>
-                        <!-- direccion -->
-                         <label for="dirAliado" class="form-label my-2">Dirección</label>
-                         <input type="text" class="form-control" name="dirAliado" id="dirAliado" placeholder="ingresa la direccion de residencia">
-                        <!-- Correo -->
-                        <label for="emailUserAliado" class="form-label my-2">Correo</label>
-                        <input type="text" class="form-control" name="emailUserAliado" id="emailUserAliado" placeholder="name@example.com">
-                        <label for="passwordAliado" class="col-form-label">Contraseña</label>
-                        <div class="row g-3 align-items-center">
-                            <div class="col-auto">
-                              <input type="password" name="passwordAliado" id="passwordAliado" class="form-control" aria-describedby="passwordHelpInline">
-                            </div>
-                            <div class="col-auto">
-                              <span id="passwordHelpInline" class="form-text">
-                                Debe tener entre 8-20 caracteres.
-                              </span>
-                            </div>
-                          </div>
+        <!-- Campos para Aliado -->
+        <form id="register-form-aliado">
+            <!--Política de tratamiento de datos-->
+            <div class="form-check my-3">
+                <input class="form-check-input policy-check" type="checkbox" id="aceptoPolitica" required>
+                <label class="form-check-label" for="aceptoPolitica">
+                    He leído y acepto la
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#politicaModal">Política de Tratamiento de Datos
+                        Personales</a>.
+                </label>
+                <div class="invalid-feedback">Debes aceptar la política para continuar.</div>
+            </div>
+            <div id="independentFields" class="">
+                <div class="mb-2">
+                    <!-- Nombre -->
+                    <label for="userNameAliado" class="form-label">Nombres</label>
+                    <input type="text" class="form-control" name="userNameAliado" id="userNameAliado"
+                        placeholder="Ingresa nombre" required>
+                    <!-- Apellidos -->
+                    <label for="surnameAliado" class="form-label my-2">Apellidos</label>
+                    <input type="text" class="form-control" name="surnameAliado" id="surnameAliado"
+                        placeholder="Ingresa apellidos" required>
+                    <!-- Cedula -->
+                    <label for="userIDAliado" class="form-label my-2">Número de identificación</label>
+                    <input type="number" class="form-control" name="userIDAliado" id="userIDAliado"
+                        placeholder="Ingresa identificación" required>
+                    <!-- Foto de cedula frontal-->
+                    <label for="idphotofront" class="form-label my-2">Foto de la cédula lado frontal</label>
+                    <input class="form-control" type="file" name="idphotofront" id="imageInputFront" accept="image/*"
+                        required>
+                    <!-- Foto de cedula trasera-->
+                    <label for="idphotoback" class="form-label my-2">Foto de la cédula lado trasera</label>
+                    <input class="form-control" type="file" name="idphotoback" id="imageInputBack" accept="image/*"
+                        required>
+                    <!-- Date of Birth -->
+                    <label for="dobAliado" class="form-label my-2">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="dobAliado" name="dobAliado" required>
+                    <!-- telefono -->
+                    <label for="telAliado" class="form-label my-2">Teléfono</label>
+                    <input type="number" class="form-control" name="telAliado" id="telAliado"
+                        placeholder="Ingresa teléfono" required>
+                    <!-- direccion -->
+                    <label for="dirAliado" class="form-label my-2">Dirección</label>
+                    <input type="text" class="form-control" name="dirAliado" id="dirAliado"
+                        placeholder="ingresa la direccion de residencia">
+                    <!-- Correo -->
+                    <label for="emailUserAliado" class="form-label my-2">Correo</label>
+                    <input type="text" class="form-control" name="emailUserAliado" id="emailUserAliado"
+                        placeholder="name@example.com">
+                    <!-- Contraseña Aliado -->
+                    <label for="passwordAliado" class="col-form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" name="passwordAliado" id="passwordAliado" class="form-control"
+                            aria-describedby="passwordHelpInline" minlength="8" maxlength="20" required>
+                        <button type="button" class="btn btn-outline-secondary toggle-password"
+                            data-target="passwordAliado">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
-                    <!-- Servicios -->
-                    <div class="my-2">
-                        <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
-                        <!-- Servicios que ofrece con Dropdown -->
-                        <label for="skillsAliado" class="form-label">Servicio que ofreces</label>
-                        <div class="dropdown skillsDropdown mb-2">
-                            <button class="btn btn-secondary dropdown-toggle form-control text-start" type="button" id="skillsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Selecciona un servicio</button>
-                            <ul class="dropdown-menu" aria-labelledby="skillsDropdown">
-                                <li><a class="dropdown-item" href="#" data-value="plomeria">Plomería</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="electricidad">Electricidad</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="carpinteria">Carpintería</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="enchape">Enchape y acabados</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="metalicas">Estructuras metálicas</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="pintura">Pintura y acabados</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="cerrajeria">Cerrajeria</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="refrigeracion">Aire acondicionado y refrigeración </a></li>
-                                <li><a class="dropdown-item" href="#" data-value="jardineria">Jardineria y paisajismo</a></li>
-                                <li><a class="dropdown-item" href="#" data-value="obras">Obras civiles</a></li>
-                            </ul>
-                            <!-- Input oculto para almacenar el valor seleccionado -->
-                            <input type="hidden" id="skillsAliado" name="skillsAliado" required>
-                        </div>
-                        <!-- experiencia en meses del servicio -->
-                        <label for="expAliado" class="form-label my-2">Experiencia</label>
-                        <input type="text" class="form-control" name="expAliado" id="expAliado" placeholder="Experiencia en meses o años en el oficio" required>
-                        <!-- Foto de certificados-->
-                        <label for="imageFilecert" class="form-label my-2">Agregar certificaciones (opcional)</label>
-                        <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert" accept="image/*">
+                    <div class="form-text" id="passwordHelpInline">
+                        Debe tener entre 8-20 caracteres.
                     </div>
-                    <div id="skillsContainer"></div>
-                    <button type="button" class="btn btn-warning my-2" onclick="addSkill()">Agregar otra habilidad </button>
-                                        
-                    <p id="error" class="text-danger hidden">Error al realizar el registro, la cédula, el correo o el teléfono ya están registrados</p>
-
-                    <button type="submit" class="btn btn-warning mt-3 w-100">Crear Perfil</button>
                 </div>
-            </form>
+                <!-- Servicios -->
+                <div class="my-2">
+                    <h5 class="semi-bold">¿Qué servicios ofreces?</h5>
+                    <!-- Servicios que ofrece con Dropdown -->
+                    <label for="skillsAliado" class="form-label">Servicio que ofreces</label>
+                    <div class="dropdown skillsDropdown mb-2">
+                        <button class="btn btn-secondary dropdown-toggle form-control text-start" type="button"
+                            id="skillsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Selecciona un
+                            servicio</button>
+                        <ul class="dropdown-menu" aria-labelledby="skillsDropdown">
+                            <li><a class="dropdown-item" href="#" data-value="plomeria">Plomería</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="electricidad">Electricidad</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="carpinteria">Carpintería</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="enchape">Enchape y acabados</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="metalicas">Estructuras metálicas</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="pintura">Pintura y acabados</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="cerrajeria">Cerrajeria</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="refrigeracion">Aire acondicionado y
+                                    refrigeración </a></li>
+                            <li><a class="dropdown-item" href="#" data-value="jardineria">Jardineria y paisajismo</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#" data-value="obras">Obras civiles</a></li>
+                        </ul>
+                        <!-- Input oculto para almacenar el valor seleccionado -->
+                        <input type="hidden" id="skillsAliado" name="skillsAliado" required>
+                    </div>
+                    <!-- experiencia en meses del servicio -->
+                    <label for="expAliado" class="form-label my-2">Experiencia</label>
+                    <input type="text" class="form-control" name="expAliado" id="expAliado"
+                        placeholder="Experiencia en meses o años en el oficio" required>
+                    <!-- Foto de certificados-->
+                    <label for="imageFilecert" class="form-label my-2">Agregar certificaciones (opcional)</label>
+                    <input class="form-control cert-input" type="file" name="imageFilecertName" id="imageFilecert"
+                        accept="image/*">
+                </div>
+                <div id="skillsContainer"></div>
+                <button type="button" class="btn btn-warning my-2" onclick="addSkill()">Agregar otra habilidad </button>
+
+                <p id="error" class="text-danger hidden">Error al realizar el registro, la cédula, el correo o el
+                    teléfono ya están registrados</p>
+
+                <button type="submit" class="btn btn-warning mt-3 w-100">Crear Perfil</button>
+            </div>
+        </form>
     </div>
     <!-- Botón de Chatea con nosotros -->
-    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
-    class="chat-button fw-semibold pb-2" 
-    target="_blank">
+    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios"
+        class="chat-button fw-semibold pb-2" target="_blank">
         <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
         <small>¡Chatea con nosotros!</small>
     </a>
@@ -155,27 +183,149 @@
             </div>
         </div>
     </footer>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            function validarCorreo(email) {
-                const emailPattern = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
-                return emailPattern.test(email);
+    <div class="modal fade" id="politicaModal" tabindex="-1" aria-labelledby="politicaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="politicaLabel">Política de Tratamiento de Datos Personales - TOOLBOX
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Enlace al PDF (ajusta la ruta si la sirves desde otra carpeta) -->
+                    <p class="mb-2">
+                        Puedes descargar la versión en PDF aquí:
+                        <a href="/docs/politica-tratamiento-datos-toolbox.pdf" target="_blank" rel="noopener">Descargar
+                            PDF</a>
+                    </p>
+
+                    <!-- Contenido scrollable (resumen fiel del PDF) -->
+                    <div style="max-height: 60vh; overflow:auto; padding-right: .25rem">
+                        <h6>1. Identificación del responsable</h6>
+                        <p><strong>TOOLBOX</strong> — NIT: 1001185545-0 — Correo: toolboxencontacto@gmail.com —
+                            Dirección: Cra 9 #19-27 — Tel: 3133847392</p>
+
+                        <h6>2. Marco legal</h6>
+                        <p>Ley 1581 de 2012, Decreto 1377 de 2013 y demás normas aplicables en Colombia.</p>
+
+                        <h6>3. Finalidades</h6>
+                        <ul>
+                            <li>Facilitar contacto entre clientes y aliados técnicos.</li>
+                            <li>Gestionar registros, suscripciones y accesos.</li>
+                            <li>Procesar pagos, facturación y transacciones internas.</li>
+                            <li>Comunicar novedades, promociones y actualizaciones.</li>
+                            <li>Realizar encuestas, calificaciones o recomendaciones.</li>
+                            <li>Cumplir obligaciones legales y contractuales.</li>
+                        </ul>
+
+                        <h6>4. Datos recogidos</h6>
+                        <ul>
+                            <li>Nombre, documento, teléfono, correo, dirección/ubicación.</li>
+                            <li>Experiencia/certificaciones (aliados), fotos, videos.</li>
+                            <li>Datos técnicos de conexión (IP, dispositivo, ubicación).</li>
+                        </ul>
+
+                        <h6>5. Derechos del titular</h6>
+                        <ul>
+                            <li>Conocer, actualizar y rectificar datos.</li>
+                            <li>Solicitar prueba de autorización.</li>
+                            <li>Ser informado del uso de sus datos.</li>
+                            <li>Presentar quejas ante la SIC.</li>
+                            <li>Revocar autorización y/o solicitar supresión.</li>
+                        </ul>
+
+                        <h6>6. Medidas de seguridad</h6>
+                        <p>Medidas físicas, administrativas y tecnológicas razonables. No se responde por accesos no
+                            autorizados
+                            causados por terceros mediante acciones ilegales.</p>
+
+                        <h6>7. Transferencia/Transmisión a terceros</h6>
+                        <p>Posible con aliados estratégicos (pasarela de pagos, mensajería, marketing) solo para operar
+                            la plataforma.</p>
+
+                        <h6>8. Consultas y reclamos</h6>
+                        <p>Escribir a <strong>toolboxencontacto@gmail.com</strong>. Respuesta en máximo 15 días hábiles.
+                        </p>
+
+                        <h6>9. Vigencia</h6>
+                        <p>Rige desde su publicación. TOOLBOX puede actualizarla y lo informará por sus canales
+                            oficiales.</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="aceptarPoliticaBtn" type="button" class="btn btn-warning">Acepto y continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        function validarCorreo(email) {
+            const emailPattern = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+            return emailPattern.test(email);
+        }
+
+        document.getElementById("register-form-aliado").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const emailInput = document.getElementById("emailUserAliado");
+            const email = emailInput.value.trim();
+
+            if (!validarCorreo(email)) {
+                alert("Por favor ingrese un correo electrónico válido.");
+                emailInput.focus();
+                return;
             }
-    
-            document.getElementById("register-form-aliado").addEventListener("submit", (e) => {
-                e.preventDefault();
-    
-                const emailInput = document.getElementById("emailUserAliado");
-                const email = emailInput.value.trim();
-    
-                if (!validarCorreo(email)) {
-                    alert("Por favor ingrese un correo electrónico válido.");
-                    emailInput.focus();
-                    return;
+        });
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".toggle-password").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const inputId = btn.getAttribute("data-target");
+                const input = document.getElementById(inputId);
+                const icon = btn.querySelector("i");
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.replace("fa-eye", "fa-eye-slash");
+                } else {
+                    input.type = "password";
+                    icon.classList.replace("fa-eye-slash", "fa-eye");
                 }
             });
         });
-    </script>
-    
-</body>
+    });
+    // Soporta un checkbox por formulario o varios (cliente/aliado) en una misma página
+    document.addEventListener("DOMContentLoaded", () => {
+        const modalEl = document.getElementById("politicaModal");
+        const aceptarBtn = document.getElementById("aceptarPoliticaBtn");
+
+        // Todas las casillas de aceptación que encuentre
+        const checks = document.querySelectorAll(".policy-check");
+
+        // Al hacer clic en "Acepto y continuar", marca todos los checks visibles y cierra el modal
+        aceptarBtn?.addEventListener("click", () => {
+            checks.forEach(chk => { chk.checked = true; chk.dispatchEvent(new Event("change")); });
+            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+        });
+
+        // Bloquea el envío si no han aceptado (por seguridad extra, además del required HTML)
+        document.querySelectorAll("form").forEach(form => {
+            form.addEventListener("submit", (e) => {
+                const policy = form.querySelector(".policy-check");
+                if (policy && !policy.checked) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    policy.focus();
+                    form.classList.add("was-validated");
+                }
+            });
+        });
+    });
+</script>
+
 </html>
