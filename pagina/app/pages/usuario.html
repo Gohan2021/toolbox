@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <title>Seleccionar usuario</title>
   <link rel="icon" href="/imagenes/Logo.svg">
+  <script src="../js/footer_cliente.js" defer></script>
   <style>
     html,
     body {
@@ -35,9 +36,9 @@
   <div class="container-fluid">
     <img src="/imagenes/fondo-1.jpg" alt=".." class="img-fluid opacity-50 fondo-img" width="100%">
     <div class="container-fondo">
-      <a class="text-warning d-flex mx-3 mt-5" style="text-decoration: none;" href="#"><img
-        src="/imagenes/Logo.svg" height="40" class="mx-2" alt="...">
-      <h3 class="fw-bold">TOOLBOX</h3>
+      <a class="text-warning d-flex mx-3 mt-5" style="text-decoration: none;" href="#"><img src="/imagenes/Logo.svg"
+          height="40" class="mx-2" alt="...">
+        <h3 class="fw-bold">TOOLBOX</h3>
       </a>
     </div>
     <div class="container-fluid" style="margin-top: 4.375rem; height: 23.75rem;">
@@ -48,8 +49,8 @@
             <div class="card-img-overlay text-center px-5 pt-5">
               <h2 class="card-title">Ingresar como cliente</h2>
               <h5 class="card-text text-white fw-semibold my-3">¿Requieres un servicio de reparación en tu casa o
-                contratar un trabajador de confianza y calificado para tus proyectos de construcción?.</h5>
-                <button class="btn btn-warning mt-4 fw-bold w-50" onclick="irACliente()">Más información aquí</button>
+                contratar un trabajador de confianza y calificado para tus proyectos de construcción?</h5>
+              <button class="btn btn-warning mt-4 fw-bold w-50" onclick="irACliente()">Más información aquí</button>
 
             </div>
           </div>
@@ -58,10 +59,10 @@
           <div class="card text-bg-dark">
             <img src="/imagenes/worker.jpg" class="card-img opacity-25 object-fit-cover" height="300px" alt="...">
             <div class="card-img-overlay text-center px-5 pt-5">
-              <h2 class="card-title">Ingresar como profesional</h2>
+              <h2 class="card-title">Ingresar como aliado</h2>
               <h5 class="card-text text-white fw-semibold my-3">Descubre nuevos clientes y ofrece tus servicios como
-                trabajador independiete</h5>
-                <button class="btn btn-warning mt-4 fw-bold w-50" onclick="irAAliado()">Más información aquí</button>
+                trabajador independiete...</h5>
+              <button class="btn btn-warning mt-4 fw-bold w-50" onclick="irAAliado()">Más información aquí</button>
 
             </div>
           </div>
@@ -69,65 +70,23 @@
       </div>
     </div>
   </div>
-      <!-- Botón de Chatea con nosotros -->
-      <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
-      class="chat-button fw-semibold pb-2" 
-      target="_blank">
-          <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
-          <small>¡Chatea con nosotros!</small>
-      </a>
-  <!-- Footer -->
-  <footer id="footer" class="contact-container mt-5 text-white bg-black">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <h4>CONTACTANOS</h4>
-          <p>Número Telefónico:</p>
-          <p>Correo:</p>
-          <p>Oficina:</p>
-          <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
-        </div>
-        <div class="col-md-4 text-center">
-          <h4>SIGUENOS EN</h4>
-          <div class="d-flex justify-content-center">
-            <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
-              <i class="fab fa-facebook fa-2x"></i>
-            </a>
-            <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
-              <i class="fab fa-instagram fa-2x"></i>
-            </a>
-            <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
-              <i class="fab fa-linkedin fa-2x"></i>
-            </a>
-          </div>
-        </div>
-        <div class="col-md-4 text-center">
-          <h4>ACERCA DE NOSOTROS</h4>
-          <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a dar a
-            conocer tus habilidades y servicios.</p>
-          <a class="text-white" href="#">Politicas de privacidad y uso</a>
-        </div>
-      </div>
-      <div class="text-center mt-4">
-        <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
-        <div>Icons made by
-          <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a
-            class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- Botón de Chatea con nosotros -->
+  <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios"
+    class="chat-button fw-semibold pb-2" target="_blank">
+    <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
+    <small>¡Chatea con nosotros!</small>
+  </a>
   <script>
     function irACliente() {
-        window.location.href = "/cliente";
+      window.location.href = "/cliente";
     }
 
     function irAAliado() {
-        window.location.href = "/aliado";
+      window.location.href = "/aliado";
     }
-</script>
+  </script>
 
-    
+
 </body>
 
 </html>

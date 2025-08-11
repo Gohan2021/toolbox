@@ -1,103 +1,177 @@
 body {
     background-color: #f8f9fa;
 }
+
 .hidden {
     display: none;
 }
-#hero-img-cliente{
+
+#hero-img-cliente {
     height: 38rem;
     width: 100%;
     object-fit: cover;
     opacity: 44%;
 }
 
-#hero-img{
+#hero-img {
     height: 28rem;
     width: 100%;
     object-fit: cover;
     opacity: 44%;
 }
-.subtitle-hero-cliente{
-    font-weight:500;
+
+.title-hero-cliente {
+    padding: 0 1rem;
+    margin-top: 8rem;
+}
+
+.subtitle-hero-cliente {
+    font-weight: 500;
     color: #363c40;
 }
-.text-hero-cliente{
+
+.text-hero-cliente {
     font-size: larger;
 }
 
 .figure {
-    position: relative; /* Asegúrate de que el contenedor tenga posición relativa */
+    position: relative;
+    /* Asegúrate de que el contenedor tenga posición relativa */
 }
 
 #container-text-hero {
-    position: absolute; /* Posiciona el div de forma absoluta */
-    top: 50%; /* Mueve el div al 50% desde la parte superior */
-    left: 50%; /* Mueve el div al 50% desde la izquierda */
-    transform: translate(-50%, -50%); /* Ajusta el div para centrarlo */
-    display: flex; /* Utiliza flexbox para alinear los elementos */
-    width: 100%; /* Asegúrate de que el contenedor ocupe el 100% del ancho */
+    position: absolute;
+    /* Posiciona el div de forma absoluta */
+    top: 50%;
+    /* Mueve el div al 50% desde la parte superior */
+    left: 50%;
+    /* Mueve el div al 50% desde la izquierda */
+    transform: translate(-50%, -50%);
+    /* Ajusta el div para centrarlo */
+    display: flex;
+    /* Utiliza flexbox para alinear los elementos */
+    width: 100%;
+    /* Asegúrate de que el contenedor ocupe el 100% del ancho */
 }
+
 #container-text-hero-cliente {
-    position: absolute; /* Posiciona el div de forma absoluta */
-    top: 50%; /* Mueve el div al 50% desde la parte superior */
-    left: 50%; /* Mueve el div al 50% desde la izquierda */
-    transform: translate(-50%, -50%); /* Ajusta el div para centrarlo */
-    width: 100%; /* Asegúrate de que el contenedor ocupe el 100% del ancho */
+    position: absolute;
+    /* Posiciona el div de forma absoluta */
+    top: 50%;
+    /* Mueve el div al 50% desde la parte superior */
+    left: 50%;
+    /* Mueve el div al 50% desde la izquierda */
+    transform: translate(-50%, -50%);
+    /* Ajusta el div para centrarlo */
+    width: 100%;
+    /* Asegúrate de que el contenedor ocupe el 100% del ancho */
 }
-.title-hero, .text-hero {
-    width: 50%; /* Cada div ocupa el 50% del ancho del contenedor */
-    text-align: left; /* Centra el texto dentro de cada div */
+
+.title-hero,
+.text-hero {
+    width: 50%;
+    /* Cada div ocupa el 50% del ancho del contenedor */
+    text-align: left;
+    /* Centra el texto dentro de cada div */
     /* color: #373D41; */
     color: #363c40;
 }
-.title-hero-cliente, .text-hero-cliente {
-    width: 100%; /* Cada div ocupa el 100% del ancho del contenedor */
-    text-align: center; /* Centra el texto dentro de cada div */
-    color: #363c40; /* Color del texto */
+
+.title-hero-cliente,
+.text-hero-cliente {
+    width: 100%;
+    /* Cada div ocupa el 100% del ancho del contenedor */
+    text-align: center;
+    /* Centra el texto dentro de cada div */
+    color: #363c40;
+    /* Color del texto */
 }
 
-.text-link-hero{
-    color: inherit; /* Hereda el color del elemento padre */
-    text-decoration: none; /* Quita el subrayado */
+.container-busqueda-cliente {
+    margin: 0 5rem;
+    display: flex;
 }
-.btn-empezar{
+
+.search-container {
+    margin-top: 4rem;
+    padding-right: 5rem;
+}
+
+.form-busqueda-cliente {
+    display: flex;
+    justify-content: center;
+    margin: 5rem;
+    padding: 0 3rem 0 1rem;
+}
+
+.seccion-publicar {
+    display: flex;
+    margin-top: 4rem;
+    margin-left: 3rem;
+}
+
+.text-link-hero {
+    color: inherit;
+    /* Hereda el color del elemento padre */
+    text-decoration: none;
+    /* Quita el subrayado */
+}
+
+.btn-empezar {
     border: 1px solid rgb(203, 203, 203);
     background-color: #ffc108;
     border-radius: 20px;
 }
+
 .card {
-    transition: transform 0.2s; /* Efecto de hover */
+    transition: transform 0.2s;
+    /* Efecto de hover */
     height: 350px;
 }
 
 .card:hover {
-    transform: scale(1.05); /* Aumenta el tamaño al pasar el mouse */
+    transform: scale(1.05);
+    /* Aumenta el tamaño al pasar el mouse */
 }
 
 .card-title {
     font-weight: bold;
-    color:#363c40;
+    color: #363c40;
 }
+
 .card-text {
     color: #363c40;
 }
+
 .chat-button {
     color: #363c40;
-    position: fixed; /* Fijo en la pantalla */
-    bottom: 5.25rem; /* Distancia desde el fondo */
-    right: 1px; /* Distancia desde la derecha */
-    background-color: #22ba45; /* Color de fondo */
-    border-radius: 2.1rem; /* Hacerlo circular */
-    padding: 0.5% 1.5%; /* Espaciado interno */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra */
-    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
-    text-decoration: none; /* Quita el subrayado */
+    position: fixed;
+    /* Fijo en la pantalla */
+    bottom: 5.25rem;
+    /* Distancia desde el fondo */
+    right: 1px;
+    /* Distancia desde la derecha */
+    background-color: #22ba45;
+    /* Color de fondo */
+    border-radius: 2.1rem;
+    /* Hacerlo circular */
+    padding: 0.5% 1.5%;
+    /* Espaciado interno */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    /* Sombra */
+    z-index: 1000;
+    /* Asegúrate de que esté por encima de otros elementos */
+    text-decoration: none;
+    /* Quita el subrayado */
 }
 
 .chat-button img {
-    width: 1.4rem; /* Ancho del ícono */
-    height: 1.4rem; /* Alto del ícono */
+    width: 1.4rem;
+    /* Ancho del ícono */
+    height: 1.4rem;
+    /* Alto del ícono */
 }
+
 .contact-container {
     padding: 5rem 0 2rem 0;
     background-color: #000;
@@ -111,10 +185,12 @@ body {
 .contact-container p {
     margin-bottom: 1rem;
 }
-.container-hero-perfil{
+
+.container-hero-perfil {
     background-color: black;
     height: 15rem;
 }
+
 .form-container {
     max-width: 600px;
     margin: 50px auto;
@@ -123,26 +199,34 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .hidden {
     display: none;
 }
+
 .fondo-img {
-    position: absolute; /* Posiciona la imagen de fondo */
+    position: absolute;
+    /* Posiciona la imagen de fondo */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Asegura que la imagen cubra todo el fondo */
-    z-index: -1; /* Envía la imagen al fondo */
+    object-fit: cover;
+    /* Asegura que la imagen cubra todo el fondo */
+    z-index: -1;
+    /* Envía la imagen al fondo */
 }
+
 .container-fondo {
-    position: relative; /* Cambia a posición relativa para que los elementos se posicionen sobre la imagen */
+    position: relative;
+    /* Cambia a posición relativa para que los elementos se posicionen sobre la imagen */
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
 }
+
 /* Cliente */
 .service-btn {
     width: 100%;
@@ -152,7 +236,8 @@ body {
     text-align: center;
     color: #333;
     border-radius: 10px;
-    background-color: #f8f9fa; /* Ligero fondo claro */
+    background-color: #f8f9fa;
+    /* Ligero fondo claro */
     border: none;
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -169,28 +254,34 @@ body {
 
 .service-icon {
     font-size: 3rem;
-    color: #ffc107; /* Color amarillo Bootstrap */
+    color: #ffc107;
+    /* Color amarillo Bootstrap */
 }
 
 .card-title {
     font-weight: 600;
 }
+
 /* Estilos para el boton de cerrar sesion */
 #logoutButton {
-    border-radius: 20px; /* Bordes redondeados */
-    transition: all 0.3s ease; /* Efecto suave */
+    border-radius: 20px;
+    /* Bordes redondeados */
+    transition: all 0.3s ease;
+    /* Efecto suave */
 }
 
 #logoutButton:hover {
-    background-color: #dc3545; /* Rojo de Bootstrap */
+    background-color: #dc3545;
+    /* Rojo de Bootstrap */
     color: white;
-    transform: translateY(-2px); /* Efecto de elevación */
+    transform: translateY(-2px);
+    /* Efecto de elevación */
 }
 
 #logoutButton i {
-    font-size: 1.2rem; /* Tamaño del ícono */
+    font-size: 1.2rem;
+    /* Tamaño del ícono */
 }
-
 
 /* Tarjeta de perfil */
 /* Estilos Generales */
@@ -237,7 +328,8 @@ body {
     margin-top: 10px;
     width: 80%;
     text-align: center;
-    font-weight: 600; /* Hace que el texto resalte más */
+    font-weight: 600;
+    /* Hace que el texto resalte más */
 }
 
 /* ✅ Efecto hover para mejorar la interacción */
@@ -283,9 +375,10 @@ body {
 /* Títulos */
 .jobs-section h3 {
     font-size: 1.6rem;
-    font-weight:bold;
+    font-weight: bold;
     color: black;
 }
+
 /* Tarjetas de ofertas */
 .job-card {
     display: flex;
@@ -348,7 +441,8 @@ body {
         flex-direction: column;
     }
 
-    .profile-section, .jobs-section {
+    .profile-section,
+    .jobs-section {
         width: 100%;
     }
 }
@@ -383,6 +477,7 @@ body {
     font-size: 0.9rem;
     padding: 8px 12px;
 }
+
 .aliado-buttons .btn {
     font-size: 0.9rem;
     padding: 10px 14px;
@@ -410,6 +505,7 @@ body {
 .aliado-buttons .btn-warning:hover {
     background: #ff9800;
 }
+
 .modal-header {
     background: #ffc108;
     color: black;
@@ -435,10 +531,137 @@ body {
 .modal-footer {
     background: #f8f9fa;
 }
-/* Estilos para el formulario de busqueda de cliente */
 
+/* RESPONSIVE CLIENTE*/
 
+/* Responsive pagina inicio cliente */
+@media (max-width: 1136px) {
+    .figure {
+        position: relative !important;
+        width: 100% !important;
+        min-height: 45rem !important;
+        height: auto !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        display: block !important;
+        /* Cambia a block para evitar conflicto con el contenido */
+    }
 
+    #hero-img-cliente {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 40rem !important;
+        object-fit: cover !important;
+        opacity: 44%;
+        z-index: 1;
+        display: block;
+    }
 
+    #container-text-hero-cliente {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90vw !important;
+        max-width: 95vw !important;
+        height: auto !important;
+        padding: 1rem !important;
+        z-index: 2;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: transparent;
+        box-sizing: border-box;
+        text-align: center !important;
+    }
 
+    .title-hero-cliente {
+        font-size: 2rem !important;
+        margin-top: 0rem !important;
+        padding: 0 0.5rem 0 0.5rem !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .title-hero-cliente h1 {
+        font-size: 1.2rem !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .subtitle-hero-cliente,
+    .text-hero-cliente {
+        font-size: 1rem !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .search-container {
+        width: 100% !important;
+        padding: 0 !important;
+        margin-bottom: 1rem !important;
+        margin-right: 0 !important;
+    }
+
+    .container-busqueda-cliente {
+        margin: 0 1rem;
+        display: block;
+    }
+
+    .form-busqueda-cliente {
+        display: flex;
+        justify-content: center;
+        margin: 1rem;
+        padding: 0;
+    }
+
+    .seccion-publicar {
+        display: flex;
+        margin: 2rem 0 1rem 0;
+    }
+}
+
+/* Responsive Misión y Visión para cliente */
+@media (max-width: 1136px) {
+    #mision-vision {
+        min-height: 45rem !important;
+        height: auto !important;
+        padding: 2rem 0 !important;
+    }
+
+    #mision-vision .row {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    #mision-vision .col-md-6 {
+        width: 90vw !important;
+        max-width: 95vw !important;
+        margin: 0 auto 2rem auto !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    #mision-vision .card {
+        width: 100% !important;
+        min-height: 18rem !important;
+        height: auto !important;
+        border-radius: 20px !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    #mision-vision .card-body h2 {
+        font-size: 1.3rem !important;
+        text-align: center !important;
+    }
+
+    #mision-vision .card-body p {
+        font-size: 1rem !important;
+        text-align: center !important;
+    }
+}
 

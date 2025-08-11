@@ -25,6 +25,7 @@
     <title>ToolBox</title>
     <link rel="icon" href="/imagenes/Logo.svg">
     <script src="../js/navbar_cliente.js" defer></script>
+    <script src="../js/footer_cliente.js" defer></script>
     <script src="form.js" defer></script>
 </head>
 
@@ -34,21 +35,22 @@
         <figure class="figure my-4" style="width: 100%;">
             <img src="/imagenes/fondo-1.jpg" class="img-fluid rounded" id="hero-img-cliente" alt="...">
             <div class="justify-content-center align-items-center px-5" id="container-text-hero-cliente">
-                <div class="title-hero-cliente px-5" style="margin-top: 8rem;">
+                <div class="title-hero-cliente">
                     <h1>Encuentra en <span class="text-warning">TOOLBOX</span> profesionales de confianza para tus
                         reparaciones en casa o para tus proyectos de construcción </h1>
                 </div>
-                <div class="d-flex my-5">
+                <div class="container-busqueda-cliente">
                     <!-- Barra de Búsqueda de Servicios -->
-                    <div class="search-container mt-4 pe-5 d-flex">
+                    <div class="search-container d-flex">
                         <img src="/imagenes/avance-rapido.png" class="w-15 me-4" height="30" alt="">
                         <div>
-                            <h4 class="subtitle-hero-cliente pb-2">¿Necesitas un técnico especializado para algún servicio específico?</h4>
-                            <p class="text-hero-cliente text-start text-muted fw-semibold mb-4">Podrás encontrar una variedad de servicios en los que podrás
+                            <h4 class="subtitle-hero-cliente pb-2">¿Necesitas un técnico especializado para algún
+                                servicio específico?</h4>
+                            <p class="text-hero-cliente text-start text-muted fw-semibold mb-4">Podrás encontrar una
+                                variedad de servicios en los que podrás
                                 contratar
                                 técnicos especializados para tus servicios de hogar u otros.</p>
-                            <form id="serviceSearchForm" class="d-flex justify-content-center m-5"
-                                style="padding: 0 3rem 0 1rem;">
+                            <form id="serviceSearchForm" class="form-busqueda-cliente">
                                 <input type="text" id="searchServiceInput" class="form-control text-center ps-5"
                                     list="datalistOptionsCliente" placeholder="¿Qué servicio solicitas?"
                                     aria-label="¿Qué servicio solicitas?">
@@ -71,16 +73,17 @@
                         </div>
                     </div>
                     <!-- 📌 Sección para Publicar Nueva Solicitud -->
-                    <div class="mt-4 d-flex ms-3">
+                    <div class="seccion-publicar">
                         <img src="/imagenes/avance-rapido.png" class="w-15 me-4" height="30" alt="">
                         <div>
                             <h4 class="subtitle-hero-cliente mb-3"><i></i> ¿Necesitas publicar una
                                 solicitud
                                 de arreglo o reparacion en tu hogar?</h4>
-                            <p class="text-muted text-start text-hero-cliente fw-semibold mb-4">Publica tu solicitud y un técnico
+                            <p class="text-muted text-start text-hero-cliente fw-semibold mb-4">Publica tu solicitud y
+                                un técnico
                                 especializado podrá aceptarla.</p>
-                            <div class="text-center pe-3"><a href="#" id="btnEmpezar"><button type="button" 
-                            class="btn-empezar text-center px-4 py-2 fw-semibold">Empezar</button></a>
+                            <div class="text-center pe-3"><a href="#" id="btnEmpezar"><button type="button"
+                                        class="btn-empezar text-center px-4 py-2 fw-semibold">Empezar</button></a>
                             </div>
                         </div>
                     </div>
@@ -99,71 +102,31 @@
         <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
         <small>¡Chatea con nosotros!</small>
     </a>
-    <!-- Footer -->
-    <footer id="footer" class="contact-container mt-5 text-white bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <h4>CONTACTANOS</h4>
-                    <p>Número Telefónico:</p>
-                    <p>Correo:</p>
-                    <p>Oficina:</p>
-                    <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>SIGUENOS EN</h4>
-                    <div class="d-flex justify-content-center">
-                        <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-facebook fa-2x"></i>
-                        </a>
-                        <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-instagram fa-2x"></i>
-                        </a>
-                        <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-linkedin fa-2x"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>ACERCA DE NOSOTROS</h4>
-                    <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a
-                        dar a conocer tus habilidades y servicios.</p>
-                    <a class="text-white" href="#">Politicas de privacidad y uso</a>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
-                <div>Icons made by
-                    <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-                    from <a class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
-  const btnEmpezar = document.getElementById("btnEmpezar");
+        const btnEmpezar = document.getElementById("btnEmpezar");
 
-  try {
-    const response = await fetch("/api/cliente/perfil", {
-      method: "GET",
-      credentials: "include"
+        try {
+            const response = await fetch("/api/cliente/perfil", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                // Cliente autenticado → redirige a publicar solicitud
+                btnEmpezar.href = "/formularioPublicacionCliente";
+            } else {
+                // No autenticado → redirige a registro
+                btnEmpezar.href = "/form-cliente";
+            }
+        } catch (error) {
+            console.error("❌ Error verificando sesión del cliente:", error);
+            // En caso de error, por defecto al registro
+            btnEmpezar.href = "/form-cliente";
+        }
     });
 
-    if (response.ok) {
-      // Cliente autenticado → redirige a publicar solicitud
-      btnEmpezar.href = "/formularioPublicacionCliente";
-    } else {
-      // No autenticado → redirige a registro
-      btnEmpezar.href = "/form-cliente";
-    }
-  } catch (error) {
-    console.error("❌ Error verificando sesión del cliente:", error);
-    // En caso de error, por defecto al registro
-    btnEmpezar.href = "/form-cliente";
-  }
-});
-
 </script>
+
 </html>
