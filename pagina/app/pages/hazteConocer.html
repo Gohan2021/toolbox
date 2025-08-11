@@ -2,307 +2,268 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Servicios de reparación y proyectos de construccion">
-    <meta name="robots" content="index, follow">
-    <link rel="stylesheet" href="../estilos.css">
-    <!-- <script src="../js/perfil.js"></script> -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="/imagenes/Logo.svg">
-    <script src="../js/navbar.js" defer></script>
-    <title>ToolBox</title>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Servicios de reparación y proyectos de construccion">
+  <meta name="robots" content="index, follow">
+  <link rel="stylesheet" href="../estilos.css">
+  <!-- <script src="../js/perfil.js"></script> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="/imagenes/Logo.svg">
+  <script src="../js/navbar.js" defer></script>
+  <script src="../js/footer_cliente.js" defer></script>
+  <title>ToolBox</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
 
-        .profile-image {
-            width: 10rem;
-            height: 10rem;
-            object-fit: cover;
-        }
+    .profile-image {
+      width: 10rem;
+      height: 10rem;
+      object-fit: cover;
+    }
 
-        .card-img-top {
-            height: 150px;
-            object-fit: cover;
-        }
+    .card-img-top {
+      height: 150px;
+      object-fit: cover;
+    }
 
-        .edit-image {
-            cursor: pointer;
-        }
-        #publicacionesAliadoContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
+    .edit-image {
+      cursor: pointer;
+    }
 
-.card-publicacion {
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  transition: transform 0.2s;
-}
+    #publicacionesAliadoContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
 
-.card-publicacion:hover {
-  transform: translateY(-5px);
-}
+    .card-publicacion {
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
 
-.card-publicacion img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
+    .card-publicacion:hover {
+      transform: translateY(-5px);
+    }
 
-.card-body-publicacion {
-  padding: 1rem;
-}
+    .card-publicacion img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
 
-    </style>
+    .card-body-publicacion {
+      padding: 1rem;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Contenedor Principal -->
-    <div class="main-container">
-        <!-- 📌 Sección de Perfil - Lado Izquierdo -->
-        <div class="profile-section">
-            <h4 >Mi cuenta</h4>
-            <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image" id="profileImage">
-            <button class="edit-image" onclick="document.getElementById('fotoPerfil').click();">
-                <i class="fas fa-camera"></i> Cambiar Imagen
-            </button>
-            <input type="file" id="fotoPerfil" style="display: none;" accept="image/*" onchange="uploadProfileImage(event)">
-        
-            <!-- Tarjetas de Información -->
-            <div class="profile-info">
-                <div class="info-card">
-                    <h4><i class="fas fa-user"></i> Datos Personales</h4>
-                    <p><strong>Nombre:</strong> <span id="nombreAliado"></span></p>
-                    <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> <span id="telefonoAliado"></span></p>
-                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="emailAliado"></span></p>
-                </div>
-            
-                <div class="info-card">
-                    <h4><i class="fas fa-tools"></i> Habilidades y Experiencia</h4>
-                    <div id="habilidadesYExperiencia"></div>
-                </div>
-                <div class="info-card bg-light border border-dark rounded-4 p-4 shadow-sm mb-4">
-                  <h4 class="text-dark"><i class="fas fa-crown me-2"></i> Plan de Suscripción</h4>
-                  <p class="mb-0">
-                      <strong>Actualmente estás suscrito al plan:</strong><br>
-                      <span id="planActual" class="badge fs-5 mt-2">Cargando...</span>
-                  </p>
-                  <small class="text-muted d-block mt-2" id="mejorarPlanTexto">
-                      ¿Quieres mejorar tu plan? <a href="/hazteConocer#planes" class="text-decoration-underline text-primary fw-semibold">Haz clic aquí</a>
-                  </small>
-                </div>
-                <div class="container mt-5">
-                      <h3 class="mb-4"><i class="fas fa-box-open"></i> Mis Publicaciones en el Marketplace</h3>
-                      <span><a href="/marketplace">Ir al marketplace</a></span>
-                    <div class="row" id="publicacionesAliadoContainer">
-                      <!-- <p class="text-muted">Cargando publicaciones...</p> -->
-                    </div>
-                    <div id="contadorPublicaciones" class="alert alert-info d-none mt-3 fw-semibold"></div>
-                  </div>
+  <!-- Contenedor Principal -->
+  <div class="main-container">
+    <!-- 📌 Sección de Perfil - Lado Izquierdo -->
+    <div class="profile-section">
+      <h4>Mi cuenta</h4>
+      <img src="/imagenes/acceso.png" alt="Imagen de perfil" class="profile-image" id="profileImage">
+      <button class="edit-image" onclick="document.getElementById('fotoPerfil').click();">
+        <i class="fas fa-camera"></i> Cambiar Imagen
+      </button>
+      <input type="file" id="fotoPerfil" style="display: none;" accept="image/*" onchange="uploadProfileImage(event)">
 
-                <div id="destacadosContainer" class="info-card bg-light border border-dark rounded-4 p-4 shadow-sm mb-4 d-none">
-                  <h5 class="fw-semibold">
-                    <i class="fas fa-star me-2"></i> Publicaciones Destacadas <span id="medallaPremium"></span>
-                  </h5>
-                  <p class="mb-0" id="textoDestacados">
-                    <!-- Aquí se inyectará dinámicamente el contenido -->
-                  </p>
-                </div>                                         
-            </div>
+      <!-- Tarjetas de Información -->
+      <div class="profile-info">
+        <div class="info-card">
+          <h4><i class="fas fa-user"></i> Datos Personales</h4>
+          <p><strong>Nombre:</strong> <span id="nombreAliado"></span></p>
+          <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> <span id="telefonoAliado"></span></p>
+          <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="emailAliado"></span></p>
         </div>
-        <!-- 📌 Sección de Ofertas de Trabajo - Lado Derecho -->
-        <!-- Sección de Servicios solicitados con Íconos, Botones y Links -->
+
+        <div class="info-card">
+          <h4><i class="fas fa-tools"></i> Habilidades y Experiencia</h4>
+          <div id="habilidadesYExperiencia"></div>
+        </div>
+        <div class="info-card bg-light border border-dark rounded-4 p-4 shadow-sm mb-4">
+          <h4 class="text-dark"><i class="fas fa-crown me-2"></i> Plan de Suscripción</h4>
+          <p class="mb-0">
+            <strong>Actualmente estás suscrito al plan:</strong><br>
+            <span id="planActual" class="badge fs-5 mt-2">Cargando...</span>
+          </p>
+          <small class="text-muted d-block mt-2" id="mejorarPlanTexto">
+            ¿Quieres mejorar tu plan? <a href="/hazteConocer#planes"
+              class="text-decoration-underline text-primary fw-semibold">Haz clic aquí</a>
+          </small>
+        </div>
         <div class="container mt-5">
-          <h3 class="mb-4"><i class="fas fa-briefcase"></i> Servicios Solicitados</h3> 
-          <div class="row" id="servicesContainer">
-              <p class="text-muted">Cargando servicios...</p>
+          <h3 class="mb-4"><i class="fas fa-box-open"></i> Mis Publicaciones en el Marketplace</h3>
+          <span><a href="/marketplace">Ir al marketplace</a></span>
+          <div class="row" id="publicacionesAliadoContainer">
+          <!-- <p class="text-muted">Cargando publicaciones...</p> -->
           </div>
-          <!-- 📌 Sección de Necesidades de Clientes -->
-          <div class="container mt-5">
-            <h3 class="mb-4"><i class="fas fa-clipboard-list"></i> Necesidades de Clientes</h3>
-            <div class="row" id="necesidadesContainer">
-              <p class="text-muted">Cargando necesidades...</p>
-            </div>
-          </div>
-          <div class="container mt-5">
-            <h3 class="mb-4"><i class="fas fa-check-circle"></i> Necesidades que Estoy Atendiendo</h3>
-            <div class="row" id="necesidadesTomadasContainer">
-              <p class="text-muted">Cargando necesidades tomadas...</p>
-            </div>
-          </div>
-          <div class="info-card mt-4">
-            <h5><i class="fas fa-star"></i> Calificaciones Recibidas</h5>
-            <div id="calificacionesAliado">
-              <p class="text-muted">Cargando calificaciones...</p>
-            </div>
-          </div>
-          
+          <div id="contadorPublicaciones" class="alert alert-info d-none mt-3 fw-semibold"></div>
         </div>
+
+        <div id="destacadosContainer" class="info-card bg-light border border-dark rounded-4 p-4 shadow-sm mb-4 d-none">
+          <h5 class="fw-semibold">
+            <i class="fas fa-star me-2"></i> Publicaciones Destacadas <span id="medallaPremium"></span>
+          </h5>
+          <p class="mb-0" id="textoDestacados">
+            <!-- Aquí se inyectará dinámicamente el contenido -->
+          </p>
+        </div>
+      </div>
     </div>
-    <section class="container my-5" id="planes">
-        <h2 class="text-center mb-4 fw-bold">Comparación de Planes</h2>
-        <div class="table-responsive">
-          <table class="table table-bordered text-center align-middle">
-            <thead class="table-dark">
-              <tr>
-                <th>Características</th>
-                <th>Básico<br><small>(Gratis)</small></th>
-                <th>Intermedio<br><small>$50.000 COP/mes</small></th>
-                <th>Premium<br><small>$60.000 COP/mes</small></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Registro y Perfil activo</td>
-                <td>✔</td>
-                <td>✔</td>
-                <td>✔</td>
-              </tr>
-              <tr>
-                <td>Publicaciones en Marketplace</td>
-                <td>3 por mes</td>
-                <td>4 por semana</td>
-                <td>Ilimitadas</td>
-              </tr>
-              <tr>
-                <td>Ofertas destacadas</td>
-                <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Intermedio/Premium</small></td>
-                <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Premium</small></td>
-                <td>✔</td>
-              </tr>
-              <tr>
-                <td>Sello visual en perfil</td>
-                <td><i class="fas fa-times text-danger"></i></td>
-                <td><span class="badge bg-secondary">Gris</span></td>
-                <td><span class="badge bg-warning text-dark">Dorado</span></td>
-              </tr>
-              <tr>
-                <td>Soporte técnico</td>
-                <td>Básico</td>
-                <td>24-48h</td>
-                <td>&lt;12h</td>
-              </tr>
-              <tr>
-                <td>Visibilidad</td>
-                <td>Limitada</td>
-                <td>70%</td>
-                <td>Siempre primero</td>
-              </tr>
-              <tr>
-                <td>Renovación automática de perfil</td>
-                <td><i class="fas fa-lock text-muted"></i></td>
-                <td><i class="fas fa-lock text-muted"></i></td>
-                <td>✔</td>
-              </tr>
-              <tr>
-                <td>Acceso a funciones futuras</td>
-                <td><i class="fas fa-lock text-muted"></i></td>
-                <td><i class="fas fa-lock text-muted"></i></td>
-                <td>✔</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td><button onclick="elegirPlan(1)" class="btn btn-outline-secondary" disabled>Gratis</button></td>
-                <td><button onclick="elegirPlan(2)" class="btn btn-outline-primary">Suscribirse</button></td>
-                <td><button onclick="elegirPlan(3)" class="btn btn-outline-warning">Suscribirse</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-    </section>      
-    <!-- Botón de Chatea con nosotros -->
-    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
-    class="chat-button fw-semibold pb-2" 
-    target="_blank">
-        <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
-        <small>¡Chatea con nosotros!</small>
-    </a>
-    <!-- Footer -->
-    <footer id="footer" class="contact-container mt-5 text-white bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <h4>CONTACTANOS</h4>
-                    <p>Número Telefónico:</p>
-                    <p>Correo:</p>
-                    <p>Oficina:</p>
-                    <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>SIGUENOS EN</h4>
-                    <div class="d-flex justify-content-center">
-                        <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-facebook fa-2x"></i>
-                        </a>
-                        <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-instagram fa-2x"></i>
-                        </a>
-                        <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-linkedin fa-2x"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>ACERCA DE NOSOTROS</h4>
-                    <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a
-                        dar a conocer tus habilidades y servicios.</p>
-                    <a class="text-white" href="#">Politicas de privacidad y uso</a>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
-                <div>Icons made by
-                    <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-                    from <a class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-<!-- Modal Detalle -->
-<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitulo">Detalle de solicitud</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    <!-- 📌 Sección de Ofertas de Trabajo - Lado Derecho -->
+    <!-- Sección de Servicios solicitados con Íconos, Botones y Links -->
+    <div class="container mt-5">
+      <h3 class="mb-4"><i class="fas fa-briefcase"></i> Servicios Solicitados</h3>
+      <div class="row" id="servicesContainer">
+        <p class="text-muted">Cargando servicios...</p>
       </div>
-      <div class="modal-body">
-        <p><strong>Cliente:</strong> <span id="modalCliente"></span></p>
-        <p><strong>Teléfono:</strong> <span id="modalTelefono"></span></p>
-        <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-        <p><strong>Descripción:</strong> <span id="modalDescripcion"></span></p>
-        <p><strong>Presupuesto:</strong> <span id="modalPresupuesto"></span></p>
-        <p><strong>Fecha tentativa:</strong> <span id="modalFechaTentativa"></span></p>
-        <p><strong>Urgencia:</strong> <span id="modalUrgencia"></span></p>
-        <div id="modalImagenes" class="d-flex flex-wrap"></div>
+      <!-- 📌 Sección de Necesidades de Clientes -->
+      <div class="container mt-5">
+        <h3 class="mb-4"><i class="fas fa-clipboard-list"></i> Necesidades de Clientes</h3>
+        <div class="row" id="necesidadesContainer">
+          <p class="text-muted">Cargando necesidades...</p>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      <div class="container mt-5">
+        <h3 class="mb-4"><i class="fas fa-check-circle"></i> Necesidades que Estoy Atendiendo</h3>
+        <div class="row" id="necesidadesTomadasContainer">
+          <p class="text-muted">Cargando necesidades tomadas...</p>
+        </div>
+      </div>
+      <div class="info-card mt-4">
+        <h5><i class="fas fa-star"></i> Calificaciones Recibidas</h5>
+        <div id="calificacionesAliado">
+          <p class="text-muted">Cargando calificaciones...</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <section class="container my-5" id="planes">
+    <h2 class="text-center mb-4 fw-bold">Comparación de Planes</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Características</th>
+            <th>Básico<br><small>(Gratis)</small></th>
+            <th>Intermedio<br><small>$50.000 COP/mes</small></th>
+            <th>Premium<br><small>$60.000 COP/mes</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Registro y Perfil activo</td>
+            <td>✔</td>
+            <td>✔</td>
+            <td>✔</td>
+          </tr>
+          <tr>
+            <td>Publicaciones en Marketplace</td>
+            <td>3 por mes</td>
+            <td>4 por semana</td>
+            <td>Ilimitadas</td>
+          </tr>
+          <tr>
+            <td>Ofertas destacadas</td>
+            <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Intermedio/Premium</small></td>
+            <td><i class="fas fa-lock text-muted"></i> <br><small class="text-muted">Premium</small></td>
+            <td>✔</td>
+          </tr>
+          <tr>
+            <td>Sello visual en perfil</td>
+            <td><i class="fas fa-times text-danger"></i></td>
+            <td><span class="badge bg-secondary">Gris</span></td>
+            <td><span class="badge bg-warning text-dark">Dorado</span></td>
+          </tr>
+          <tr>
+            <td>Soporte técnico</td>
+            <td>Básico</td>
+            <td>24-48h</td>
+            <td>&lt;12h</td>
+          </tr>
+          <tr>
+            <td>Visibilidad</td>
+            <td>Limitada</td>
+            <td>70%</td>
+            <td>Siempre primero</td>
+          </tr>
+          <tr>
+            <td>Renovación automática de perfil</td>
+            <td><i class="fas fa-lock text-muted"></i></td>
+            <td><i class="fas fa-lock text-muted"></i></td>
+            <td>✔</td>
+          </tr>
+          <tr>
+            <td>Acceso a funciones futuras</td>
+            <td><i class="fas fa-lock text-muted"></i></td>
+            <td><i class="fas fa-lock text-muted"></i></td>
+            <td>✔</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button onclick="elegirPlan(1)" class="btn btn-outline-secondary" disabled>Gratis</button></td>
+            <td><button onclick="elegirPlan(2)" class="btn btn-outline-primary">Suscribirse</button></td>
+            <td><button onclick="elegirPlan(3)" class="btn btn-outline-warning">Suscribirse</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!-- Botón de Chatea con nosotros -->
+  <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios"
+    class="chat-button fw-semibold pb-2" target="_blank">
+    <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
+    <small>¡Chatea con nosotros!</small>
+  </a>
+  <!-- Modal Detalle -->
+  <div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitulo">Detalle de solicitud</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Cliente:</strong> <span id="modalCliente"></span></p>
+          <p><strong>Teléfono:</strong> <span id="modalTelefono"></span></p>
+          <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+          <p><strong>Descripción:</strong> <span id="modalDescripcion"></span></p>
+          <p><strong>Presupuesto:</strong> <span id="modalPresupuesto"></span></p>
+          <p><strong>Fecha tentativa:</strong> <span id="modalFechaTentativa"></span></p>
+          <p><strong>Urgencia:</strong> <span id="modalUrgencia"></span></p>
+          <div id="modalImagenes" class="d-flex flex-wrap"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-   
-<!-- Cargar el script después de que se haya cargado todo el contenido del DOM -->
-<script src="../js/perfil.js"></script>
+
+  <!-- Cargar el script después de que se haya cargado todo el contenido del DOM -->
+  <script src="../js/perfil.js"></script>
 </body>
+
 </html>

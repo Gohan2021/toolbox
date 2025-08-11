@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Servicios de reparación y proyectos de construccion" >
+    <meta name="description" content="Servicios de reparación y proyectos de construccion">
     <meta name="robots" content="index, follow">
     <link rel="stylesheet" href="estilos.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>ToolBox</title>
     <link rel="icon" href="../imagenes/Logo.svg">
     <script src="../js/navbar.js" defer></script>
+    <script src="../js/footer_aliado.js" defer></script>
     <script src="form.js" defer></script>
     <style>
         .card {
@@ -21,88 +29,101 @@
             flex-direction: column;
             height: 100%;
         }
-    
+
         .card img {
-            height: 200px; /* Ajusta según necesidad */
+            height: 200px;
+            /* Ajusta según necesidad */
             object-fit: cover;
         }
-    
+
         .card-body {
-            flex-grow: 1; /* Permite que el contenido se expanda uniformemente */
+            flex-grow: 1;
+            /* Permite que el contenido se expanda uniformemente */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-    
+
         .btn {
             width: 100%;
         }
-        /* Estilo del botón */
-    .btn-e {
-        display: inline-block;
-        background-color: #ffc107;
-        color: #000;
-        /* font-size: 1.2rem; */
-        font-weight: 600;
-        padding: 12px 30px;
-        border-radius: 30px;
-        /* text-transform: uppercase; */
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        border: none;
-    }
 
-    .btn-e:hover {
-        background-color: #e0a800;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-    .plan-bg-basico {
-     background: linear-gradient(145deg, #bfe9c97c, #ffffff);
-    background-blend-mode: overlay; 
-    color: #1a1a1a;
-  }
-  .plan-bg-intermedio {
-    background: linear-gradient(145deg, #a9c5fc6b, #ffffff);
-    background-blend-mode: overlay;
-    color: #1a1a1a;
-  }
-  .plan-bg-premium {
-    background: linear-gradient(145deg, #eee7ce79, #f7f6f6);
-    background-blend-mode: overlay;
-    color: #1a1a1a;
-  }
-  
+        /* Estilo del botón */
+        .btn-e {
+            display: inline-block;
+            background-color: #ffc107;
+            color: #000;
+            /* font-size: 1.2rem; */
+            margin: 3.5rem 0 0 5rem;
+            font-weight: 600;
+            padding: 0.8rem 4rem;
+            border-radius: 30px;
+            /* text-transform: uppercase; */
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        .btn-e:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .plan-bg-basico {
+            background: linear-gradient(145deg, #bfe9c97c, #ffffff);
+            background-blend-mode: overlay;
+            color: #1a1a1a;
+        }
+
+        .plan-bg-intermedio {
+            background: linear-gradient(145deg, #a9c5fc6b, #ffffff);
+            background-blend-mode: overlay;
+            color: #1a1a1a;
+        }
+
+        .plan-bg-premium {
+            background: linear-gradient(145deg, #eee7ce79, #f7f6f6);
+            background-blend-mode: overlay;
+            color: #1a1a1a;
+        }
     </style>
 </head>
+
 <body>
     <!-- hero -->
     <div class="container-fluid" style="width: 100%;">
         <figure class="figure my-4" style="width: 100%;">
-            <img src="/imagenes/fondo-1.jpg" class="img-fluid rounded" id="hero-img" alt="..." >
+            <img src="/imagenes/fondo-1.jpg" class="img-fluid rounded" id="hero-img" alt="...">
             <div class="justify-content-center align-items-center px-5" id="container-text-hero">
                 <div class="title-hero mt-5">
-                    <h1>SERVICIOS EN REPARACIONES Y CONSTRUCCIÓN, CON <span class="text-warning">TOOLBOX</span> PODRÁS...</h1>
+                    <h1>SERVICIOS EN REPARACIONES Y CONSTRUCCIÓN, CON <span class="text-warning">TOOLBOX</span>
+                        PODRÁS...</h1>
                     <div class="d-flex my-5 text-center">
                         <!-- Nuevo botón que redirige a los servicios -->
-                        <button class="btn-e mt-4" onclick="scrollToServices()">Explorar servicios <i class="fas fa-chevron-down ms-2"></i></button>
+                        <button class="btn-e mt-4" onclick="scrollToServices()">Explorar servicios <i
+                                class="fas fa-chevron-down ms-2"></i></button>
                     </div>
                 </div>
-                <div class="text-hero ps-5">
+                <div class="text-hero">
                     <div class="d-flex">
                         <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center" height="30" alt="">
-                        <h5 class="fw-semibold mx-3 my-0"><a class="text-link-hero" href="#hazteConocer">Dar a conocer tu perfil profesional o técnico y ofrecer tus servicios directamente con clientes y empresas</a></h5>
+                        <h5 class="fw-semibold mx-3 my-0"><a class="text-link-hero" href="#hazteConocer">Dar a conocer
+                                tu perfil profesional o técnico y ofrecer tus servicios directamente con clientes y
+                                empresas</a></h5>
                     </div>
                     <div class="d-flex my-3">
-                        <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center" style="align-self: center;" height="30" alt="">
+                        <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center"
+                            style="align-self: center;" height="30" alt="">
                         <h5 class="fw-semibold mx-3 my-0">Acceder a un marketplace</h5>
                     </div>
                     <div class="d-flex my-3">
-                        <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center" style="align-self: center;" height="30" alt="">
+                        <img src="/imagenes/avance-rapido.png" class="w-15 align-items-center"
+                            style="align-self: center;" height="30" alt="">
                         <h5 class="fw-semibold mx-3 my-0">Promover tu empresa</h5>
                     </div>
-                    <a href="/form"><button type="button" class="btn-e ms-5 mt-4 px-5 py-2 fw-semibold">Empezar</button></a>
-                    
+                    <a href="/form"><button type="button" class="btn-e fw-semibold">Empezar</button></a>
+
                 </div>
             </div>
         </figure>
@@ -110,7 +131,7 @@
     <!-- Cards -->
     <div class="container mt-2 mb-5" id="servicios">
         <h4 class="text-start mb-4 card-title">Nuestros Servicios</h4>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="container-cards-aliado row row-cols-1 row-cols-md-3 g-4">
             <!-- Hazte Conocer -->
             <div class="col-md-4">
                 <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
@@ -118,35 +139,44 @@
                     <div class="card-body text-center">
                         <h4 class="card-title fw-bold">Hazte Conocer</h4>
                         <p class="text-muted">📢 Expande tu red y consigue clientes directos.</p>
-                        <p class="card-text">Ofrece tus servicios como <span class="fw-semibold">técnico o profesional independiente</span> y conecta con clientes y empresas que buscan tu experiencia.</p>
-                        <a href="/form" class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Únete ahora</a>
+                        <p class="card-text">Ofrece tus servicios como <span class="fw-semibold">técnico o profesional
+                                independiente</span> y conecta con clientes y empresas que buscan tu experiencia.</p>
+                        <a href="/form"
+                            class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Únete ahora</a>
                     </div>
                 </div>
             </div>
-        
+
             <!-- Marketplace -->
             <div class="col-md-4">
                 <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-                    <img src="/imagenes/dropshipping.jpg" class="card-img-top object-fit-cover opacity-75" alt="Marketplace">
+                    <img src="/imagenes/dropshipping.jpg" class="card-img-top object-fit-cover opacity-75"
+                        alt="Marketplace">
                     <div class="card-body text-center">
                         <h4 class="card-title fw-bold">Marketplace</h4>
                         <p class="text-muted">🛠️ Compra y vende productos de segunda vida.</p>
-                        <p class="card-text">Accede a un <span class="fw-semibold">marketplace exclusivo</span> para herramientas, materiales y más, promoviendo un consumo sostenible. ♻️</p>
-                        <a href="/marketplace" class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Explorar</a>
+                        <p class="card-text">Accede a un <span class="fw-semibold">marketplace exclusivo</span> para
+                            herramientas, materiales y más, promoviendo un consumo sostenible. ♻️</p>
+                        <a href="/marketplace"
+                            class="btn btn-warning text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Explorar</a>
                     </div>
                 </div>
             </div>
-        
+
             <!-- Promueve tu negocio -->
             <div class="col-md-4">
                 <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-                    <img src="/imagenes/generar.jpg" class="card-img-top object-fit-cover opacity-75" alt="Promueve tu negocio">
+                    <img src="/imagenes/generar.jpg" class="card-img-top object-fit-cover opacity-75"
+                        alt="Promueve tu negocio">
                     <div class="card-body text-center">
                         <h4 class="card-title fw-bold">Impulsa tu negocio</h4>
                         <p class="text-muted">🚀 Llega a más clientes con nuestra plataforma.</p>
-                        <p class="card-text">Estamos desarrollando un servicio exclusivo para que <span class="fw-semibold">empresas y profesionales </span>promocionen sus servicios de manera efectiva.</p>
+                        <p class="card-text">Estamos desarrollando un servicio exclusivo para que <span
+                                class="fw-semibold">empresas y profesionales </span>promocionen sus servicios de manera
+                            efectiva.</p>
                         <p class="fw-bold text-warning">📢 ¡Próximamente!</p>
-                        <a href="#" class="btn btn-dark text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Más información</a>
+                        <a href="#" class="btn btn-dark text-white fw-bold px-4 py-2 rounded-pill shadow-sm">Más
+                            información</a>
                     </div>
                 </div>
             </div>
@@ -154,180 +184,143 @@
     </div>
     <!-- Sección de Planes de Suscripción para Aliados -->
     <div class="container my-5" id="planes">
-    <h2 class="text-center mb-4 fw-bold">Elige tu plan de suscripción</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4 fw-semibold">
-  
-      <!-- Plan Básico -->
-      <div class="col">
-        <div class="card h-100  border-success shadow rounded-4 p-4 plan-bg-basico">
-          <div class="card-body">
-            <h4 class="card-title">Plan Básico (Gratis)</h4>
-            <p class="card-text">Pensado para aliados que están comenzando o quieren probar la plataforma.</p>
-            <ul class="list-unstyled">
-              <li>✔ Registro y perfil activo</li>
-              <li>✔ Visibilidad limitada en su zona</li>
-              <li>✔ Acceso al Marketplace:</li>
-              <ul style="list-style:none;">
-                <li>✔ Ver publicaciones</li>
-                <li>✔ Publicar hasta 3 productos/mes</li>
-                <li>❌ Sin publicaciones destacadas</li>
-              </ul>
-              <li>❌ Sin prioridad en ofertas</li>
-              <li>❌ Sin sello visual en el perfil</li>
-              <li>🔔 Notificaciones básicas (limitadas)</li>
-            </ul>
-            <div class="d-grid">
-              <button onclick="elegirPlan(1)" class="btn btn-outline-success fw-bold">Obtener Gratis</button>
+        <h2 class="text-center mb-4 fw-bold">Elige tu plan de suscripción</h2>
+        <div class="container-planes row row-cols-1 row-cols-md-3 g-4 fw-semibold">
+
+            <!-- Plan Básico -->
+            <div class="col">
+                <div class="card h-100  border-success shadow rounded-4 p-4 plan-bg-basico">
+                    <div class="card-body">
+                        <h4 class="card-title">Plan Básico (Gratis)</h4>
+                        <p class="card-text">Pensado para aliados que están comenzando o quieren probar la plataforma.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li>✔ Registro y perfil activo</li>
+                            <li>✔ Visibilidad limitada en su zona</li>
+                            <li>✔ Acceso al Marketplace:</li>
+                            <ul style="list-style:none;">
+                                <li>✔ Ver publicaciones</li>
+                                <li>✔ Publicar hasta 3 productos/mes</li>
+                                <li>❌ Sin publicaciones destacadas</li>
+                            </ul>
+                            <li>❌ Sin prioridad en ofertas</li>
+                            <li>❌ Sin sello visual en el perfil</li>
+                            <li>🔔 Notificaciones básicas (limitadas)</li>
+                        </ul>
+                        <div class="d-grid">
+                            <button onclick="elegirPlan(1)" class="btn btn-outline-success fw-bold">Obtener
+                                Gratis</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Plan Intermedio -->
-      <div class="col">
-        <div class="card h-100 border-primary shadow rounded-4 p-4 plan-bg-intermedio">
-          <div class="card-body">
-            <h4 class="card-title">Plan Intermedio ($50.000 COP/mes)</h4>
-            <p class="card-text">Ideal para aliados activos que buscan mayor visibilidad.</p>
-            <ul class="list-unstyled">
-              <li>✔ Todo lo del Plan Básico</li>
-              <li>✔ Acceso a todas las ofertas</li>
-              <li>✔ Visibilidad mejorada (70%)</li>
-              <li>✔ Sello gris en perfil</li>
-              <li>🔔 Notificaciones en tiempo real</li>
-              <li>✔ Marketplace:</li>
-              <ul style="list-style:none;">
-                <li>✔ Publicar hasta 4 productos/semana</li>
-                <li>❌ No aparece en destacados</li>
-              </ul>
-              <li>📞 Soporte en 24-48h</li>
-            </ul>
-            <div class="d-grid">
-              <button onclick="elegirPlan(2)" class="btn btn-outline-primary fw-bold">Suscribirse</button>
+
+            <!-- Plan Intermedio -->
+            <div class="col">
+                <div class="card h-100 border-primary shadow rounded-4 p-4 plan-bg-intermedio">
+                    <div class="card-body">
+                        <h4 class="card-title">Plan Intermedio ($50.000 COP/mes)</h4>
+                        <p class="card-text">Ideal para aliados activos que buscan mayor visibilidad.</p>
+                        <ul class="list-unstyled">
+                            <li>✔ Todo lo del Plan Básico</li>
+                            <li>✔ Acceso a todas las ofertas</li>
+                            <li>✔ Visibilidad mejorada (70%)</li>
+                            <li>✔ Sello gris en perfil</li>
+                            <li>🔔 Notificaciones en tiempo real</li>
+                            <li>✔ Marketplace:</li>
+                            <ul style="list-style:none;">
+                                <li>✔ Publicar hasta 4 productos/semana</li>
+                                <li>❌ No aparece en destacados</li>
+                            </ul>
+                            <li>📞 Soporte en 24-48h</li>
+                        </ul>
+                        <div class="d-grid">
+                            <button onclick="elegirPlan(2)" class="btn btn-outline-primary fw-bold">Suscribirse</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Plan Premium -->
-      <div class="col">
-        <div class="card h-100 border-warning shadow rounded-4 p-4 plan-bg-premium">
-          <div class="card-body">
-            <h4 class="card-title">Plan Premium ($60.000 COP/mes)</h4>
-            <p class="card-text">Para aliados que quieren destacarse y recibir más oportunidades.</p>
-            <ul class="list-unstyled">
-              <li>✔ Todo lo de los planes anteriores</li>
-              <li>✔ Máxima visibilidad (primeros en la lista)</li>
-              <li>✔ Prioridad en ofertas</li>
-              <li>✔ Sello dorado en perfil</li>
-              <li>✔ Marketplace:</li>
-              <ul style="list-style:none;">
-                <li>✔ Publicaciones ilimitadas</li>
-                <li>✔ Acceso a destacados del día</li>
-                <li>✔ Fijar 1 producto/semana</li>
-              </ul>
-              <li>🔁 Renovación automática de visibilidad</li>
-              <li>⚡ Soporte prioritario (&lt;12h)</li>
-              <li>🚀 Acceso anticipado a funciones futuras</li>
-            </ul>
-            <div class="d-grid">
-              <button onclick="elegirPlan(3)" class="btn btn-outline-warning fw-bold">Suscribirse</button>
+
+            <!-- Plan Premium -->
+            <div class="col">
+                <div class="card h-100 border-warning shadow rounded-4 p-4 plan-bg-premium">
+                    <div class="card-body">
+                        <h4 class="card-title">Plan Premium ($60.000 COP/mes)</h4>
+                        <p class="card-text">Para aliados que quieren destacarse y recibir más oportunidades.</p>
+                        <ul class="list-unstyled">
+                            <li>✔ Todo lo de los planes anteriores</li>
+                            <li>✔ Máxima visibilidad (primeros en la lista)</li>
+                            <li>✔ Prioridad en ofertas</li>
+                            <li>✔ Sello dorado en perfil</li>
+                            <li>✔ Marketplace:</li>
+                            <ul style="list-style:none;">
+                                <li>✔ Publicaciones ilimitadas</li>
+                                <li>✔ Acceso a destacados del día</li>
+                                <li>✔ Fijar 1 producto/semana</li>
+                            </ul>
+                            <li>🔁 Renovación automática de visibilidad</li>
+                            <li>⚡ Soporte prioritario (&lt;12h)</li>
+                            <li>🚀 Acceso anticipado a funciones futuras</li>
+                        </ul>
+                        <div class="d-grid">
+                            <button onclick="elegirPlan(3)" class="btn btn-outline-warning fw-bold">Suscribirse</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+
         </div>
-      </div>
-  
     </div>
-</div>
-  
+
     <!-- Botón de Chatea con nosotros -->
-    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios" 
-    class="chat-button fw-semibold pb-2" 
-    target="_blank">
+    <a href="https://wa.me/573001234567?text=Hola%20me%20interesa%20conocer%20más%20sobre%20sus%20servicios"
+        class="chat-button fw-semibold pb-2" target="_blank">
         <img src="/imagenes/whatsapp.png" alt="Chatea con nosotros" />
         <small>¡Chatea con nosotros!</small>
     </a>
-    <!-- Footer -->
-    <footer id="footer" class="contact-container mt-5 text-white bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <h4>CONTACTANOS</h4>
-                    <p>Número Telefónico:</p>
-                    <p>Correo:</p>
-                    <p>Oficina:</p>
-                    <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>SIGUENOS EN</h4>
-                    <div class="d-flex justify-content-center">
-                        <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-facebook fa-2x"></i>
-                        </a>
-                        <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-instagram fa-2x"></i>
-                        </a>
-                        <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-linkedin fa-2x"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>ACERCA DE NOSOTROS</h4>
-                    <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a dar a conocer tus habilidades y servicios.</p>
-                    <a class="text-white" href="#">Politicas de privacidad y uso</a>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
-                <div>Icons made by 
-                    <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-                </div>
-            </div>
-        </div>
-    </footer>
     <!-- Script para el desplazamiento suave -->
     <script>
         function scrollToServices() {
             document.getElementById("servicios").scrollIntoView({ behavior: "smooth" });
         }
         async function elegirPlan(idSuscripcion) {
-    try {
-        // 🔍 Verificar si el aliado está autenticado
-        const authCheck = await fetch("/api/aliado/perfil", {
-            method: "GET",
-            credentials: "include"
-        });
+            try {
+                // 🔍 Verificar si el aliado está autenticado
+                const authCheck = await fetch("/api/aliado/perfil", {
+                    method: "GET",
+                    credentials: "include"
+                });
 
-        if (authCheck.status === 401 || authCheck.status === 403) {
-            alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
-            window.location.href = "/form";
-            return;
+                if (authCheck.status === 401 || authCheck.status === 403) {
+                    alert("⚠️ Debes iniciar sesión o registrarte antes de elegir un plan.");
+                    window.location.href = "/form";
+                    return;
+                }
+
+                // 📥 Continuar con la suscripción
+                const res = await fetch("/api/aliado/suscribirse", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_suscripcion: idSuscripcion })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("✅ Te has suscrito correctamente.");
+                    window.location.href = "/hazteConocer";
+                } else {
+                    alert(`❌ Error: ${data.message}`);
+                }
+
+            } catch (error) {
+                console.error("❌ Error al suscribirse:", error);
+                alert("No se pudo completar la suscripción.");
+            }
         }
-
-        // 📥 Continuar con la suscripción
-        const res = await fetch("/api/aliado/suscribirse", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id_suscripcion: idSuscripcion })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            alert("✅ Te has suscrito correctamente.");
-            window.location.href = "/hazteConocer";
-        } else {
-            alert(`❌ Error: ${data.message}`);
-        }
-
-    } catch (error) {
-        console.error("❌ Error al suscribirse:", error);
-        alert("No se pudo completar la suscripción.");
-    }
-}
 
     </script>
 </body>
+
 </html>

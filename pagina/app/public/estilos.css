@@ -54,6 +54,10 @@ body {
     /* Asegúrate de que el contenedor ocupe el 100% del ancho */
 }
 
+.container-planes, .container-cards-aliado {
+    justify-content: center;
+}
+
 #container-text-hero-cliente {
     position: absolute;
     /* Posiciona el div de forma absoluta */
@@ -69,6 +73,7 @@ body {
 
 .title-hero,
 .text-hero {
+    padding-left: 5rem;
     width: 50%;
     /* Cada div ocupa el 50% del ancho del contenedor */
     text-align: left;
@@ -116,7 +121,6 @@ body {
     text-decoration: none;
     /* Quita el subrayado */
 }
-
 .btn-empezar {
     border: 1px solid rgb(203, 203, 203);
     background-color: #ffc108;
@@ -665,3 +669,273 @@ body {
     }
 }
 
+/* RESPONSIVE FOOTER */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 2rem 0.5rem !important;
+    text-align: center !important;
+  }
+  .contact-container .row {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .contact-container .col-12,
+  .contact-container .col-md-4 {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-bottom: 2rem !important;
+    text-align: center !important;
+  }
+  .contact-container h4 {
+    font-size: 1.2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .contact-container p,
+  .contact-container a,
+  .contact-container small {
+    font-size: 1rem !important;
+    text-align: center !important;
+  }
+  .contact-container .btn {
+    width: 80% !important;
+    margin: 0 auto 1rem auto !important;
+    display: block !important;
+  }
+  .contact-container .d-flex {
+    justify-content: center !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
+  }
+  .contact-container .fab {
+    font-size: 2rem !important;
+    margin: 0 0.5rem !important;
+  }
+  .contact-container .text-center {
+    text-align: center !important;
+  }
+}
+/* RESPONSIVE ALIADO */
+@media (max-width: 1139px) {
+  .figure {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 50rem !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+  #hero-img {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 50rem !important;
+    object-fit: cover !important;
+    opacity: 44%;
+    display: block;
+  }
+  #container-text-hero {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 95vw !important;
+    height: auto !important;
+    padding: 1rem !important;
+    z-index: 2;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent;
+    box-sizing: border-box;
+    text-align: center !important;
+  }
+  .title-hero {
+    font-size: 1.2rem !important;
+    margin-top: 1rem !important;
+    padding: 0 0.5rem !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  .title-hero h1 {
+    font-size: 1.7rem !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  .text-hero {
+    font-size: 1rem !important;
+    text-align: center !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  .text-hero .d-flex {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .btn-e {
+    width: 90% !important;
+    margin: 2rem 0.5rem auto !important;
+    font-size: 1rem !important;
+    padding: 10px 0 !important;
+  }
+  .card-img-top {
+    height: 160px !important;
+    object-fit: cover !important;
+  }
+  .card {
+    min-width: 90vw !important;
+    max-width: 95vw !important;
+    margin: 0 auto 2rem auto !important;
+    border-radius: 1rem !important;
+  }
+  .card-title {
+    font-size: 1.1rem !important;
+    text-align: center !important;
+  }
+  .card-text,
+  .text-muted {
+    font-size: 1rem !important;
+    text-align: center !important;
+  }
+  .row-cols-md-3 > .col-md-4,
+  .row-cols-1 > .col {
+    width: 100% !important;
+    max-width: 95vw !important;
+    margin-bottom: 2rem !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  #planes .card {
+    min-width: 90vw !important;
+    max-width: 95vw !important;
+    margin: 0 auto 2rem auto !important;
+    border-radius: 1rem !important;
+  }
+  #planes h2 {
+    font-size: 1.2rem !important;
+    text-align: center !important;
+  }
+  #planes ul {
+    font-size: 1rem !important;
+    padding-left: 1rem !important;
+  }
+}
+/* Responsive hazteConocer.html */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column !important;
+    padding: 1rem !important;
+    gap: 2rem !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  .profile-section {
+    width: 100% !important;
+    max-width: 95vw !important;
+    margin: 0 auto 2rem auto !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .profile-image {
+    width: 7rem !important;
+    height: 7rem !important;
+    margin: 0 auto 1rem auto !important;
+  }
+  .edit-image {
+    margin-bottom: 1rem !important;
+    font-size: 1rem !important;
+  }
+  .profile-info {
+    width: 100% !important;
+    max-width: 95vw !important;
+    margin: 0 auto !important;
+  }
+  .info-card {
+    margin-bottom: 1.5rem !important;
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+  }
+  .info-card h4, .info-card h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+    text-align: center !important;
+  }
+  .container.mt-5, .container {
+    width: 100% !important;
+    max-width: 95vw !important;
+    margin: 0 auto 2rem auto !important;
+    padding: 0 !important;
+  }
+  #publicacionesAliadoContainer {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+  }
+  .card-publicacion img {
+    height: 140px !important;
+  }
+  .card-publicacion {
+    border-radius: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .card-body-publicacion {
+    padding: 0.7rem !important;
+    font-size: 1rem !important;
+  }
+  #planes {
+    padding: 0 !important;
+    margin: 2rem auto !important;
+    width: 100% !important;
+    max-width: 95vw !important;
+  }
+  #planes h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+  }
+.table-responsive {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+  .table {
+    width: 100% !important;
+    min-width: 400px !important;
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+  }
+  .chat-button {
+    right: 10px !important;
+    bottom: 10px !important;
+    font-size: 1rem !important;
+    width: 90vw !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.5rem !important;
+  }
+  .chat-button img {
+    height: 32px !important;
+    margin-right: 0.5rem !important;
+  }
+  /* Modal responsive */
+  .modal-dialog {
+    max-width: 98vw !important;
+    margin: 1rem auto !important;
+  }
+  .modal-content {
+    border-radius: 1rem !important;
+  }
+}
