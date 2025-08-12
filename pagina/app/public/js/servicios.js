@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="row mb-3">
           <div class="col-md-12">
             <div class="card aliado-card shadow-sm p-3 ${cardClass}">
-              <div class="card-body d-flex align-items-center">
+              <div class="card-body card-body-aliado">
                 <div class="aliado-image-container me-3">
                   <img src="${aliado.foto || '../imagenes/acceso.png'}" class="aliado-image" alt="Foto de ${aliado.nombre}">
                 </div>

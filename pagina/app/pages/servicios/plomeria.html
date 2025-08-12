@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,60 +25,70 @@
     <title>Servicios</title>
     <link rel="icon" href="../../imagenes/Logo.svg">
     <script src="../js/navbar_cliente.js" defer></script>
+    <script src="../js/footer_cliente.js" defer></script>
     <style>
-          .badge-sello {
-    font-size: 0.8rem;
-    padding: 0.4em 0.6em;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    position: relative;
-  }
-  .badge-premium {
-    background-color: gold;
-    color: black;
-  }
-  .badge-intermedio {
-    background-color: gray;
-    color: white;
-  }
-  .badge-basico {
-    background-color: #d3d3d3;
-    color: #333;
-  }
-  /* Tooltip */
-  .badge-sello::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.75);
-    color: white;
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 10;
-  }
-  .badge-sello:hover::after {
-    opacity: 1;
-  }
-  /* Bordes de tarjeta según plan */
-  .card-premium {
-    border: 2px solid gold;
-  }
-  .card-intermedio {
-    border: 2px solid gray;
-  }
-  .card-basico {
-    border: 2px solid lightgray;
-  }
+        .badge-sello {
+            font-size: 0.8rem;
+            padding: 0.4em 0.6em;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .badge-premium {
+            background-color: gold;
+            color: black;
+        }
+
+        .badge-intermedio {
+            background-color: gray;
+            color: white;
+        }
+
+        .badge-basico {
+            background-color: #d3d3d3;
+            color: #333;
+        }
+
+        /* Tooltip */
+        .badge-sello::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+
+        .badge-sello:hover::after {
+            opacity: 1;
+        }
+
+        /* Bordes de tarjeta según plan */
+        .card-premium {
+            border: 2px solid gold;
+        }
+
+        .card-intermedio {
+            border: 2px solid gray;
+        }
+
+        .card-basico {
+            border: 2px solid lightgray;
+        }
     </style>
 </head>
+
 <body>
     <!-- Sección de Técnicos para Plomería -->
     <div class="container mt-5">
@@ -147,47 +158,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer id="footer" class="contact-container mt-5 text-white bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <h4>CONTACTANOS</h4>
-                    <p>Número Telefónico:</p>
-                    <p>Correo:</p>
-                    <p>Oficina:</p>
-                    <p>Registrate ahora con TOOLBOX</p><button class="btn btn-light px-3">¡Ahora!</button>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>SIGUENOS EN</h4>
-                    <div class="d-flex justify-content-center">
-                        <a href="https://www.facebook.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-facebook fa-2x"></i>
-                        </a>
-                        <a href="https://www.instagram.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-instagram fa-2x"></i>
-                        </a>
-                        <a href="https://www.tiktok.com" target="_blank" class="text-white mx-2">
-                            <i class="fab fa-linkedin fa-2x"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>ACERCA DE NOSOTROS</h4>
-                    <p>TOOLBOX ofrece servicios de reparación y proyectos de construcción. Estamos aquí para ayudarte a
-                        dar a conocer tus habilidades y servicios.</p>
-                    <a class="text-white" href="#">Politicas de privacidad y uso</a>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p>&copy; 2024 TOOLBOX. Todos los derechos reservados.</p>
-                <div>Icons made by
-                    <a class="text-white" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-                    from <a class="text-white" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 </body>
+
 </html>
