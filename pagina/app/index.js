@@ -1,5 +1,5 @@
 import express from "express";
-import multer from "multer";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import fs from "fs";
 import path from "path";
@@ -11,6 +11,9 @@ import servicesRoutes from "./public/routes/servicios.routes.js";
 import clientesRoutes from "./public/routes/clientes.js";
 import marketplaceRoutes from "./public/routes/marketplace.js";
 import aliadosRoutes from "./public/routes/aliados.js";
+import cartRoutes from "./public/routes/cart.js";
+import wompiRoutes from "./public/routes/wompi.js";
+import wompiWebhookRoutes from "./public/routes/wompi-webhook.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
@@ -122,6 +125,7 @@ app.get("/uso_cliente", (req, res) => res.sendFile(path.join(__dirname, "pages",
 app.get("/marketplace", (req, res) => res.sendFile(path.join(__dirname, "pages", "marketplace.html")));
 app.get("/publicar", (req, res) => res.sendFile(path.join(__dirname, "pages", "publicar.html")));
 app.get("/elige_registro", (req, res) => res.sendFile(path.join(__dirname, "pages", "elige_registro.html")));
+app.get("/pasarela_pagos", (req, res) => res.sendFile(path.join(__dirname, "pages", "pasarela_pagos.html")));
 
 // Rutas dinámicas para las páginas de servicios
 app.get("/servicios/:servicio", (req, res) => {
@@ -150,9 +154,78 @@ app.use("/api/cliente", clientesRoutes);
 app.use("/api", servicesRoutes);
 app.use("/api", marketplaceRoutes);
 
+//Ruta carrito de compras
+app.use("/api", cartRoutes);
+
+app.use("/api", wompiRoutes);
+
+app.use("/api", wompiWebhookRoutes);
+
+// Si estás en HTTP en local, deja HSTS tal cual (Helmet lo maneja).
+// Importante: NO pongas meta CSP en el HTML si usas Helmet (evita doble política).
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+}));
+
+app.use(helmet.contentSecurityPolicy({
+  useDefaults: true,
+  directives: {
+    defaultSrc: ["'self'"],
+
+    // JS externos permitidos
+    scriptSrc: [
+      "'self'",
+      // Wompi (script del widget)
+      "https://checkout.wompi.co",
+      // Tus CDNs de UI (si los usas)
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com"
+    ],
+
+    // CSS externos (Bootstrap/Google Fonts)
+    // Si tienes estilos inline tuyos, conserva 'unsafe-inline' en styleSrc.
+    styleSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      "https://fonts.googleapis.com",
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com"
+    ],
+
+    // Fuentes
+    fontSrc: [
+      "'self'",
+      "https://fonts.gstatic.com",
+      "data:"
+    ],
+
+    // iframes usados por el widget al abrirse
+    frameSrc: [
+      "'self'",
+      "https://checkout.wompi.co",
+      "https://checkout-sandbox.wompi.co"
+    ],
+
+    // Llamadas XHR/fetch (Wompi APIs)
+    connectSrc: [
+      "'self'",
+      "https://production.wompi.co",
+      "https://sandbox.wompi.co",
+      "https://checkout.wompi.co"
+    ],
+
+    imgSrc: ["'self'", "data:", "blob:"],
+    objectSrc: ["'none'"],
+    // Desactiva esto si te rompe en dev http
+    upgradeInsecureRequests: []
+  }
+}));
+
+
 // Iniciar el servidor solo si no es un entorno de pruebas
 if (process.env.NODE_ENV !== "test") {
     app.listen(4000, () => {
         console.log("Servidor corriendo en puerto 4000");
     });
 }
+
