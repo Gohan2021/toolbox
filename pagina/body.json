@@ -1,0 +1,19 @@
+{
+  "event": "transaction.updated",
+  "data": {
+    "transaction": {
+      "id": "tx_ok_1",
+      "status": "APPROVED",
+      "amount_in_cents": 6000000,
+      "reference": "ORD-52-1756950125490"
+    }
+  },
+  "signature": {
+    "properties": [
+      "transaction.id",
+      "transaction.status",
+      "transaction.amount_in_cents"
+    ],
+    "checksum": "c24cb8398ad19d1b62b8f42310d675596ad4d00b65762e08a4d0694106872090"
+  }
+}

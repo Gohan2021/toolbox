@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env', override: true, debug: true }); // PRIMERA línea
 import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -14,13 +16,23 @@ import aliadosRoutes from "./public/routes/aliados.js";
 import cartRoutes from "./public/routes/cart.js";
 import wompiRoutes from "./public/routes/wompi.js";
 import wompiWebhookRoutes from "./public/routes/wompi-webhook.js";
+import debugRoutes from './public/routes/debug.js'; // ✅ Importar debugRoutes
+import debugEcho from './public/routes/debug-echo.js';
+import debugWebhookRoutes from "./public/routes/debug-webhook.js";
+import debugEnvRoutes from "./public/routes/debug-env.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
-// const router = express.Router();
 
-// ✅ Configuración correcta de __dirname con ESModules
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
+// Ajusta la ruta si tu .env está en otra carpeta
+dotenv.config({
+  path: path.join(__dirname, '../.env'),
+  override: true,   // fuerza que .env reemplace valores previos del entorno
+  debug: true       // log de carga (opcional, útil para verificar)
+});
 
 // Inicializar la aplicación
 app.set("port", 4000);
@@ -156,10 +168,12 @@ app.use("/api", marketplaceRoutes);
 
 //Ruta carrito de compras
 app.use("/api", cartRoutes);
-
 app.use("/api", wompiRoutes);
-
 app.use("/api", wompiWebhookRoutes);
+app.use('/api', debugRoutes);
+app.use('/api', express.json(), debugEcho); // 👈 asegúrate de tener express.json aquí
+app.use("/api", debugWebhookRoutes);
+app.use("/api", debugEnvRoutes);
 
 // Si estás en HTTP en local, deja HSTS tal cual (Helmet lo maneja).
 // Importante: NO pongas meta CSP en el HTML si usas Helmet (evita doble política).

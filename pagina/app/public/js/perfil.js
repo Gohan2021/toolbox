@@ -243,6 +243,30 @@ async function cargarPlan() {
   }
   await cargarContadorDestacados();
 }
+async function pintarPlanActual() {
+  const planBadge = document.getElementById("planActual");
+  const cont = document.getElementById("suscripcionActiva");
+  if (!planBadge || !cont) return;
+  try {
+    const r = await fetch("/api/aliado/suscripcion-actual", { credentials: "include" });
+    const data = await r.json();
+    if (data.suscripcion) {
+      const { nombre, precio } = data.suscripcion;
+      cont.innerHTML = `<p><strong>Plan activo:</strong> ${nombre} - $${Number(precio).toLocaleString('es-CO')}/mes</p>`;
+      planBadge.textContent = (nombre || "PLAN").toUpperCase();
+      planBadge.className = "badge bg-primary fs-5 mt-2";
+    } else {
+      cont.innerHTML = `<p class="text-muted">No tienes una suscripción activa</p>`;
+      planBadge.textContent = "SIN PLAN";
+      planBadge.className = "badge bg-secondary fs-5 mt-2";
+    }
+  } catch (e) {
+    console.error("❌ Error en pintarPlanActual:", e);
+    planBadge.textContent = "No disponible";
+    planBadge.className = "badge bg-secondary fs-5 mt-2";
+    cont.innerHTML = `<p class="text-muted">No se pudo consultar tu suscripción</p>`;
+  }
+}
 
 async function elegirPlan(idSuscripcion) {
   try {
@@ -555,9 +579,9 @@ async function cargarNecesidadesTomadas() {
 
       card.innerHTML = `
         <div class="card shadow-sm h-100">
-          ${necesidad.imagen_destacada 
-            ? `<img src="${necesidad.imagen_destacada}" class="card-img-top" alt="Imagen del cliente">` 
-            : ""}
+          ${necesidad.imagen_destacada
+          ? `<img src="${necesidad.imagen_destacada}" class="card-img-top" alt="Imagen del cliente">`
+          : ""}
           <div class="card-body d-flex flex-column">
             <h5 class="card-title fw-bold">${necesidad.nombre_cliente || "Cliente"}</h5>
             <p class="card-text">${necesidad.descripcion.length > 60 ? necesidad.descripcion.slice(0, 60) + "..." : necesidad.descripcion}</p>
@@ -652,6 +676,7 @@ async function mostrarDetalleNecesidad(id_publicacion) {
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarPlan();
+  pintarPlanActual();
   cargarContadorPublicaciones();
   cargarPublicacionesAliado();
   cargarNecesidadesAliado();
