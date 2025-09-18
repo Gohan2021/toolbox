@@ -20,6 +20,7 @@ const database = async () => pool;
 export const closePool = async () => {
     try {
         await pool.end();
+        await pool.query("SET time_zone = '-05:00'"); // America/Bogota (sin DST)
         console.log('Conexiones a la base de datos cerradas.');
     } catch (error) {
         console.error('Error al cerrar el pool:', error.message);

@@ -1,0 +1,58 @@
+{
+    "event": "transaction.updated",
+    "data": {
+        "transaction": {
+            "id": "11736535-1758157476-40942",
+            "created_at": "2025-09-18T01:04:36.389Z",
+            "finalized_at": "2025-09-18T01:04:39.482Z",
+            "amount_in_cents": 5000000,
+            "reference": "ORD-52-1758157464060",
+            "customer_email": "nicoomorenoo@gmail.com",
+            "currency": "COP",
+            "payment_method_type": "NEQUI",
+            "payment_method": {
+                "type": "NEQUI",
+                "extra": {
+                    "is_three_ds": false,
+                    "transaction_id": "SANDBOX-1758157479H8rM68",
+                    "three_ds_auth_type": null,
+                    "external_identifier": "1758157479arElGi"
+                },
+                "phone_number": "3991111111"
+            },
+            "status": "APPROVED",
+            "status_message": null,
+            "shipping_address": null,
+            "redirect_url": "http://localhost:4000/hazteConocer",
+            "payment_source_id": null,
+            "payment_link_id": null,
+            "customer_data": {
+                "device_id": "f5145a0ef9e219b8d6b36dc11efb6b15",
+                "full_name": "Nicolas Moreno",
+                "browser_info": {
+                    "browser_tz": "300",
+                    "browser_language": "es-419",
+                    "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+                    "browser_color_depth": "24",
+                    "browser_screen_width": "1536",
+                    "browser_screen_height": "864"
+                },
+                "phone_number": "+573991111111",
+                "device_data_token": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wcmVzc2VkIjoiZUp6VlZVdHoyemdNL2lzY251d1pOWllzV1hYY2sxOXhNclhUVE93MGg1MU9oeUlobVdPSjFKS1VIODNrdnk5b0owN2EyYjFuZlpDSkR5RHdFUURCSjdwMnJuNndZSVlGS0VjSGRLRi95YkprbmQ1RlNGcVBVZ205cytSMlJhTHdJdnhDRUVpVEwyU2ZKbTB5ck9zU0hpSDdLbDJuRjMrK2lGUFMrbnE5V3N3RFVzb05rQm53alc2VDhkcm9DanBSRXBJbHk1bVJMOFkwb0hYSlhLNU5oV0hSY2R4RnlOTVpjZzYxbXpOVk5Ld0FWSUw5bEVTWHFGVnNLd3ZtdExrenVnYmpKTml4Ymp6dnl5U2dPOGhtOCsrQWxJMzNlR1JHWCtCN2hNSEFtNEk4ZXZoVlBXR09uWGZPdEM1S0lEZUtYNURXY0RGcHY3ZDY1Mmg0TzV0UGp4WUJ3USs1WndLMElxM1ZvazFtaHRWcnlTMXBoZnNRZjFGditybE5KdElBZC9Fa2lzalcvdXo5REVsOS9Bdkl4SU8vQlZxdTBSMGVGTGkwVWlzNjZNWUJ6UTM4M1lEaWg2Rmk1Y0Y2R2trZjNRZlV5UXArYWVYVE5hekFTTTQ2STExb3g5Q241UVpBUFVyaDFuUVE5ZUwwRmJvR1dhd3hlLzAwZVlVbW1IcTA2aUxBdGQ1Z2hxZUtaU1VJT25DbWdZQ1dtck55aVRYQTJ2eWhzbUE5MVg5WFlpdkJIc1JrOUFlK1prYnNtSUd4VnJ3eHhoOE9TU0pGQVZ2SllRR1ZOb2owc1YzQVZQSVl3WTRabnBIaFdRVW9pYjUrVXk0a3gvWlluNUp4TnNpMWNwWU8vcUsrMC9tQlhJMFFITE5TWmtiNkZiWi9nNEhPS3pMVERpdUl3SlZoYWxOSzlZWmNNM0FPbE9YckhjZ1NxeERRT1VESmRsZ3k4RUxEcFdCa1pJN3BQY3RMcGl4S2l5WDUxcmdTczNzUzdpRUhmMjRneXhxcnpVcDNPQ2tlYnQ1Q0xsWmt1bmZHbDNQQlRJbngvY3FmMU9yY2tRZU0xSGdlQzYyME85UkF4dHBZdWZYMmQwWmFKNVZmTHFIUTRQM09qOHgrQkxTeE1CUWpMT3FHRG5KV1dxeUkwTGZhclF6ekVHM1VSdW1kT3Q3V3BwREtwL0FKTDJMbGszczN1U0xmSmV5T0dSQ0FIU1JyZDJ4V2VxZU44M1VtRTgyYkNsTktydkNtTTgrNndsWmRJY1dUSzA4VzdSbE9FMnhhdjd0VGk5eDNiWlBuY3UrdHFBZWVnN090ZzczN0Q2TWYzdXlGM1dueWtQOEJTZGxVSDV6bVc2ZE5SZkhSYy9veTRiTkdsdTRUM2x0ayszRm80cDNiU253b1R1RlE4VVNyT2tGOXhRNFpuRjZBNnAyb2krSXNQUWZVbk40ZmNWUGhpTDFtRm1jMTdiTitIb3B1bHZXek5BNWprWVpweVBxUVg0YVJpTG5ndlREc1puRWk4aVNGSk8zaDEzOTRHblhqVVBDRTBkZGhlek5CYjNrdlNub3N4TzNRalM2enZraXpPQlU4aWlEUDBpenEwZWQvQU80NXVqMD0ifQ.LlBSHGxJz28TwxbdbKvXEKaxmh7-aCSx7XkCP8CyV6A"
+            },
+            "billing_data": null,
+            "origin": null
+        }
+    },
+    "sent_at": "2025-09-18T01:34:42.519Z",
+    "timestamp": 1758159282,
+    "signature": {
+        "checksum": "7347170bcfca8d56d48a78acb08764b5d677f430e00096bfca315386ec0d24ae",
+        "properties": [
+            "transaction.id",
+            "transaction.status",
+            "transaction.amount_in_cents"
+        ]
+    },
+    "environment": "test"
+}

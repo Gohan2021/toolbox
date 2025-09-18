@@ -1,36 +1,30 @@
-// routes/debug.js
-import { Router } from 'express';
-import crypto from 'crypto';
+// app/public/routes/debug.js (o donde tengas tus rutas de debug)
+import express from "express";
+import crypto from "crypto";
 
-const router = Router();
-// EN CUALQUIER ROUTER DE /api SOLO PARA PRUEBA:
-router.get("/debug/secret-fp", (req, res) => {
-  const s = (process.env.WOMPI_EVENTS_SECRET || "").trim();
-  const fp = crypto.createHash("sha256").update(s).digest("hex");
-  res.json({ len: s.length, sha256_prefix: fp.slice(0, 16) });
+const dbg = express.Router();
+
+// Recalcula HMAC de un payload pegado en el body con los secrets del .env
+dbg.post("/debug/webhook-verify", express.json({type:"*/*"}), (req,res)=>{
+  const ev = req.body;
+  const s1 = (process.env.WOMPI_EVENTS_SECRET||"").trim();
+  const s2 = (process.env.WOMPI_EVENTS_SECRET_ALT||"").trim();
+  const props = Array.isArray(ev?.signature?.properties) ? ev.signature.properties : [];
+  const data = ev?.data || {};
+  const get = (p,o)=>p.split(".").reduce((a,k)=>a?.[k],o);
+  const concat = props.map(p=>String(get(p,data)??"")).join("");
+  const h = (s)=> s ? crypto.createHmac("sha256", s).update(concat).digest("hex") : null;
+  const fp = (s)=> s ? crypto.createHash("sha256").update(s).digest("hex").slice(0,16) : null;
+
+  const recv = ev?.signature?.checksum || "";
+  const calc1 = h(s1), calc2 = h(s2);
+
+  res.json({
+    concat,
+    recv,
+    primary: { fp: fp(s1), calc: calc1, match: recv===calc1 },
+    alt:     { fp: fp(s2), calc: calc2, match: recv===calc2 }
+  });
 });
 
-router.get('/debug/webhook-check', (req, res) => {
-  try {
-    const concat = req.query.concat || '';
-    const expected = (req.query.expected || '').toLowerCase();
-    const secret = (process.env.WOMPI_EVENTS_SECRET || '').trim();
-
-    if (!concat) return res.status(400).json({ ok:false, error:'Falta ?concat=' });
-    if (!secret) return res.status(400).json({ ok:false, error:'WOMPI_EVENTS_SECRET vacío' });
-
-    const computed = crypto.createHmac('sha256', secret).update(concat).digest('hex');
-    return res.json({
-      ok: true,
-      secret_len: secret.length,     // no enviamos el secret, solo su largo
-      concat_len: concat.length,
-      computed,
-      expected,
-      matches: expected ? computed === expected : null
-    });
-  } catch (e) {
-    return res.status(500).json({ ok:false, error: e.message });
-  }
-});
-
-export default router;
+export default dbg;

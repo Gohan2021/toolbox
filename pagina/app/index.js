@@ -17,9 +17,12 @@ import cartRoutes from "./public/routes/cart.js";
 import wompiRoutes from "./public/routes/wompi.js";
 import wompiWebhookRoutes from "./public/routes/wompi-webhook.js";
 import debugRoutes from './public/routes/debug.js'; // ✅ Importar debugRoutes
-import debugEcho from './public/routes/debug-echo.js';
+import debugUtils from './public/routes/debug-utils.js';
 import debugWebhookRoutes from "./public/routes/debug-webhook.js";
 import debugEnvRoutes from "./public/routes/debug-env.js";
+import debugSecrets from "./public/routes/debud-secrets.js";
+import debugDump from "./public/routes/debug-webhook-dump.js";
+import debugWebhookVerify from "./public/routes/debug-webhook-verify.js";
 import { upload } from "./multerConfig.js"; // ✅ Importar `upload` correctamente
 const app = express();
 app.use(cookieParser()); // Middleware para manejar cookies
@@ -171,9 +174,13 @@ app.use("/api", cartRoutes);
 app.use("/api", wompiRoutes);
 app.use("/api", wompiWebhookRoutes);
 app.use('/api', debugRoutes);
-app.use('/api', express.json(), debugEcho); // 👈 asegúrate de tener express.json aquí
+app.use('/api', debugUtils); // 👈 asegúrate de tener express.json aquí
 app.use("/api", debugWebhookRoutes);
 app.use("/api", debugEnvRoutes);
+app.use("/api", debugSecrets);
+app.use("/api", debugDump);
+app.use("/api", express.json({ type: "*/*" }), debugWebhookVerify);
+
 
 // Si estás en HTTP en local, deja HSTS tal cual (Helmet lo maneja).
 // Importante: NO pongas meta CSP en el HTML si usas Helmet (evita doble política).
